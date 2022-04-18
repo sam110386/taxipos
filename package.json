@@ -1,0 +1,66 @@
+{
+  "name": "Mindseye",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@date-io/moment": "^1.3.13",
+    "@material-ui/core": "^4.12.1",
+    "@material-ui/pickers": "^3.3.10",
+    "axios": "^0.21.1",
+    "bcrypt-nodejs": "0.0.3",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^6.2.0",
+    "formik": "^2.2.9",
+    "i18next": "^15.1.3",
+    "loadjs": "^3.6.1",
+    "material-design-icons": "^3.0.1",
+    "moment": "^2.29.1",
+    "npm": "^6.14.10",
+    "otp-input-react": "^0.2.4",
+    "password-hash": "^1.2.2",
+    "pnotify": "^5.2.0",
+    "prerender-node": "^3.2.5",
+    "pubnub": "^4.34.2",
+    "pubnub-react": "^2.1.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-easy-crop": "^3.5.2",
+    "react-gtm-module": "^2.0.11",
+    "react-hot-toast": "^2.0.0",
+    "react-i18next": "^10.13.2",
+    "react-input-mask": "^2.0.4",
+    "react-input-range": "^1.3.0",
+    "react-meta-tags": "^0.7.4",
+    "react-otp-input": "^2.4.0",
+    "react-redux": "^7.2.4",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.0.4",
+    "react-seo": "^1.0.11",
+    "react-share": "^2.4.0",
+    "redux": "^4.1.0",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-persist": "^6.0.0",
+    "redux-saga": "^1.1.3",
+    "sweetalert": "^2.1.2",
+    "yup": "^0.32.9"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@pnotify/core": "^5.2.0"
+  }
+}

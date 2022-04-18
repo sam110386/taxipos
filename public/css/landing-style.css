@@ -1,0 +1,79 @@
+body {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+/**work section-landing page**/
+a.mt-5.video-thumb {background: #FFFFFF; border: 1px solid #F4F4F4; box-sizing: border-box; box-shadow: 0px 100px 80px rgb(0 0 0 / 2%), 0px 64.8148px 46.8519px rgb(0 0 0 / 2%), 0px 38.5185px 25.4815px rgb(0 0 0 / 1%), 0px 20px 13px rgb(0 0 0 / 1%), 0px 8.14815px 6.51852px rgb(0 0 0 / 1%), 0px 1.85185px 3.14815px rgb(0 0 0 / 0%);
+    border-radius: 26px; padding: 20px; z-index:99999;}
+.buycar_sec { padding: 60px 0 0; background-image: url(/images/Pattern.png); background-repeat: no-repeat;  background-position: top 66px left 160px;}
+h4.subheading{font-family: Roboto Slab; font-style: normal;font-weight: normal;letter-spacing: 2px; }
+/***banner-sec*/
+h1.white_text.head_h1{    text-shadow: 0px 2px 3px rgb(0 0 0 / 25%);}
+.bg_carsby h5.blue_text.head_h5{margin-bottom: 0px;}
+.carousel-indicators li { background: #100B41;  border-radius: 50px;  width: 12px;  height: 13px;  border: 0px;}
+.carousel-indicators{max-width: 200px; background: transparent; margin: 30px 0 0 auto; position: relative !important;}
+.carousel-control-next-icon{background-image: url('/images/next.png') !important;     height: 14px; }
+.carousel-control-prev-icon{background-image: url('/images/pre.png') !important;     height: 14px; }
+a.carousel-control-prev {right: -80px !important;  z-index: 9999;  top: 100px !important;  left:unset;}
+.carousel-control-next, .carousel-control-prev{display: block !important; }
+a.carousel-control-next{right: -80px !important; z-index: 9999;  bottom: : -150px !important; top: unset; align-items: bottom !important;}
+.app_sec .head_h1 { font-weight: 400; font-family: 'Poppins'; margin-bottom: 60px;   width: 100%;}
+.shape.shape-new { position: relative; background: #f5f9ff;}
+.work_sec{padding: 0 0 80px;position: relative;  background-image: none !important;}
+.howsworks_cls .box12 .media-left:before, .howsworks_cls .box14 .media-left:before{z-index: -999;}
+div#carouselExampleIndicators {  padding-left: 25px;}
+.profile_div { margin-left: 20px;  margin-top: 20px;}
+.app_sec {  background: #FAFCFF; padding: 60px 0 70px;}
+img.img-car { position: relative;  left: -15px;border-radius: 0px 30px 30px 0; top: 69px; width: 95%;}
+.work_box p, p.head_para_short, .howsworks_cls p, .review_text1 p, .watch_list li{font-family:'Metropolis'; }
+.work_box p {max-width: 373px;width: 100%;}
+@font-face {  font-family: 'Metropolis';  src: url('../font/Metropolis-Regular.woff2') format('woff2'),
+url('../font/Metropolis-Regular.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap;}
+a.navbar-brand img {  max-width: 138px;}
+.header .navbar-nav > li { padding: 0 15px;}
+.header .navbar {  padding: 10px 0 10px;}
+
+
+@media (max-width: 991px) {
+h1.white_text.head_h1, h2.heading_demo, h1.white_text.head_h1 strong {   font-size: 40px; line-height: 55px;}
+.shape {  display: none;}
+.banner_sec .banner_text .btn_bnner{height: 50px; min-width: unset;padding: 13px 15px;}
+img.img-car { width: 100%;}
+.media-left:after, .media-left:before{content: none;}
+.howsworks_cls .box12 .media-left:before, .howsworks_cls .box14 .media-left:before{content:none;}
+.buy_car.d-flex.justify-content-between{flex-direction: column;}
+.howsworks_cls .media{width:100%; display: flex !important; margin: 0px; padding: 0 !important;  max-width: unset;}
+.media-body {margin-top: 0; text-align: left;}
+.howork_sec .work_box p {  max-width: unset;   width: 100%;}
+.howsworks_cls .work_box .media-left{margin-right: 20px;}
+.howork_sec .work_box{min-height: unset;}
+.media.box11.box13.work_box.d-block.text-center.align-self-md-start.pt-5{top:0;}
+.media.box11.box12.work_box.d-block.text-center.align-self-md-start, .media.box11.box14.work_box.d-block.text-center.align-self-md-start {    flex-direction: row-reverse;}
+.howsworks_cls .box12 .media-left, .howsworks_cls .box14 .media-left{margin-top: 0px;}
+.howsworks_cls:after{content: none;}
+.review_sec .work_head {padding: 0 20px;}
+.bg_carsby h5.blue_text.head_h5{line-height: 30px;}
+section.buycar_sec{background-image: unset;}
+.buy_car .media:not(:last-child) { margin-bottom: 0px !important; padding-bottom: 25px !important; position: relative;}
+.buy_car .media:not(:last-child):before { content: ""; position: absolute; height: 100%; border: 1px dotted #CDCDCD; position: absolute; left: 22px;}
+}
+@media (max-width: 767px) {
+.review_sec .work_head>img { display: none !important;}
+h1.white_text.head_h1, h2.heading_demo, h1.white_text.head_h1 strong {  font-size: 30px;  line-height: 45px;}
+.carousel-control-next, .carousel-control-prev{display: none !important;}
+.watch_list li{width: 47%}
+.work_box p {max-width: unset;  width: 100%;}
+section.review_sec .col-md-6.pl-5, section.review_sec .work_head { padding-left: 15px !important;}
+.buycar_sec{padding: 0 !important;}
+img.img-car{top:0px; margin-top: 20px; margin-bottom: 40px;}
+section.review_sec {  padding: 50px 0;}
+}
+@media (max-width: 575px) {
+.banner_sec .banner_text .btn_bnner { height: 40px; min-width: unset; padding: 5px 8px; margin-right: 0 !important;}
+.app_sec a { margin: 0 0 35px 0 !important;}
+a.play-store img { max-width: 142px;}
+.review_text1 {  padding: 17px 20px;  top: 23px;  left: 20px;}   
+.watch_list li {    width: 45%;} 
+}
+
+

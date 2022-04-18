@@ -1,0 +1,49 @@
+@font-face {
+  font-family: 'AvertaDemoPE-Regular';
+  src: url('AvertaDemoPE-Regular.eot');
+  src: url('AvertaDemoPE-Regular.eot?#iefix') format('embedded-opentype'),
+       url('AvertaDemoPE-Regular.ttf') format('truetype'),
+       url('AvertaDemoPE-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'Averta-Light';
+  src: url('Averta-Light.eot');
+  src: url('Averta-Light.eot?#iefix') format('embedded-opentype'),
+       url('Averta-Light.ttf') format('truetype'),
+       url('Averta-Light.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'Averta-Semibold';
+  src: url('Averta-Semibold.eot');
+  src: url('Averta-Semibold.eot?#iefix') format('embedded-opentype'),
+       url('Averta-Semibold.ttf') format('truetype'),
+       url('Averta-Semibold.oft') format('opentype'),
+       url('Averta-Semibold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Averta-Bold';
+  src: url('Averta-Bold.eot');
+  src: url('Averta-Bold.eot?#iefix') format('embedded-opentype'),
+       url('Averta-Bold.ttf') format('truetype'),
+       url('Averta-Bold.oft') format('opentype'),
+       url('Averta-Bold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
+
+
+

@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /listing/
+Disallow: /product/
+Disallow: /faq
+Disallow: /sylc/car/
+Disallow: /thank-you
+Disallow: /loginaccount
+Disallow: /contact
+Disallow: /revue-automobile/search/
+Disallow: /blog/search/
+Disallow: /superadmin/
+Disallow: /voitures-americaines/admin/
