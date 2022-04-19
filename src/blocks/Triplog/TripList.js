@@ -292,7 +292,9 @@ const TripList = (props) => {
     }
     const processTripList=()=>{
        return(
+           
             props.trips.map(function(trip){
+               
                 //let eta = 0;
                 let bgclass,back_class,blink_class='';
                 if (trip['DispatcherTrip']['trip_status'] == 3) {

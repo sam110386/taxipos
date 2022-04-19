@@ -11,6 +11,7 @@ import moment from "moment";
 import Trips from "./TripList";
 import EditTripDetails from "./EditTripDetails";
 import toast, { Toaster } from 'react-hot-toast';
+import TripDetails from "./TripDetails";
 
 
 
@@ -33,6 +34,7 @@ const TriplogWrap = () => {
     const [CurrentDate, setCurrentDate] = useState(0);
     const [Triplist, setTriplist] = useState([]);
     const [showEditTrip, SetShowEditTrip] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
     const [currentBooking, SetCurrentBooking] = useState([]);
     const [pickupAddress, setPickupAddress] = useState();
     const [dropofAddress, setDropofAddress] = useState();
@@ -266,6 +268,7 @@ const TriplogWrap = () => {
             setSubmitting(false);
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
+                    setShowDetails(true)
                     // onSuccess(res.data);
                     return;
                 }
@@ -599,205 +602,7 @@ const TriplogWrap = () => {
                     )}
                 </Formik>
 
-                {/* <Formik
-                    initialValues={{
-                        TextShare: userDetails.ShareAllowed
-                    }}
-                    className="form-horizontal"
-                    // validationSchema={optSchema}
-                    onSubmit={(values) => {
-                        handleSubmit(values);
-                    }}
-                >
-                    {({ setFieldValue, values, submitForm }) => (
-                        <>
-                            <div className="row d-flex justify-content-left pl-0 pr-0">
-
-                                <Field
-                                    name="TextCity"
-                                    type="hidden"
-                                    value={userDetails.DispatchData.city}
-                                    onChange={(v) => setFieldValue("TextCity", v)}
-                                />
-                                <Field
-                                    name="TextState"
-                                    type="hidden"
-                                    className="form-control"
-                                    value={userDetails.DispatchData.other_state}
-                                    onChange={(v) => setFieldValue("TextState", v)}
-                                />
-                                <Field
-                                    name="TextPickupCrossStreet"
-                                    type="hidden"
-                                    className="form-control"
-                                    value={values.TextPickupCrossStreet}
-                                    onChange={(v) => setFieldValue("TextPickupCrossStreet", v)}
-
-                                />
-                                <Field
-                                    name="TextDropoffCrossStreet"
-                                    type="hidden"
-                                    className="form-control"
-                                    value={values.TextDropoffCrossStreet}
-                                    onChange={(v) => setFieldValue("TextDropoffCrossStreet", v)}
-
-                                />
-                                <div className="col-4">
-                                    <Field
-                                        id="location"
-                                        placeholder="Pick-up-Address"
-                                        name="TextLocation"
-                                        value={pickupAddress}
-                                        className="form-control autoCompleteAddress"
-                                        onChange={(e) => setPickupAddress(e.target.value)}
-                                        //onkeyup={javascript:document.getElementById('TextOriginlatlng').value=''}
-                                    />
-                                    <Field
-                                        name="TextOriginlatlng"
-                                        type="hidden"
-                                        value={values.TextOriginlatlng}
-                                        onChange={(v) => setFieldValue("TextOriginlatlng", v)}
-                                    />
-                                </div>
-                                <div className="col-1 pl-0">
-                                    <Field
-                                        name="TextPickupTime"
-                                        className="form-control cur_time_log"
-                                        value={CurrentPickupTime}
-                                        onChange={(v) => setFieldValue("TextPickupTime", v)}
-                                    />
-                                </div>
-                                <div className="col-1 pr-0 pl-0">
-                                    <Field
-                                        name="TextPickupDate"
-                                        className="form-control"
-                                        value={CurrentDate}
-                                        onChange={(v) => setFieldValue("TextPickupDate", v)}
-                                    />
-                                </div>
-                                <div className="col-1">
-                                    <Field
-                                        name="TextDirectNotificationTime"
-                                        className="form-control"
-                                        value={values.TextDirectNotificationTime}
-                                        onChange={(v) => setFieldValue("TextDirectNotificationTime", v)}
-                                    />
-                                </div>
-                                <div className="col-1 pl-0">
-                                    <Field
-                                        name="TextTelephone"
-                                        className="form-control"
-                                        value={values.TextTelephone}
-                                        onChange={(v) => setFieldValue("TextTelephone", v)}
-                                    />
-                                </div>
-
-                                <Field
-                                    name="TextDetails"
-                                    type="hidden"
-                                    className="form-control"
-                                    value={values.TextDetails}
-                                    onChange={(v) => setFieldValue("TextDetails", v)}
-                                />
-                                <div className="col-1 pr-0 pl-0">
-                                    <Field
-                                        name="TextAccountNo"
-                                        className="form-control"
-                                        value={values.TextAccountNo}
-                                        onChange={(v) => setFieldValue("TextAccountNo", v)}
-                                    />
-                                </div>
-                                <div className="col-2 pr-0">
-                                    <div role="group" aria-labelledby="checkbox-group">
-                                        <label>
-                                            <Field
-                                                type="checkbox"
-                                                name="TextShare"
-                                                checked={values.TextShare ? true : false}
-                                                defaultChecked={userDetails.ShareAllowed ? true : false}
-                                                onChange={v => setFieldValue("TextShare", v.target.checked ? 1 : 0)}
-                                            />
-                                            Sharing Allowed
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="row d-flex justify-content-left pl-0 pr-0 mt-3">
-                                <div className="col-4">
-                                    <Field
-                                        name="TextDropoffAddress"
-                                        className="form-control autoCompleteAddress"
-                                        value={values.TextDropoffAddress}
-                                        onChange={(v) => setFieldValue("TextDropoffAddress", v)}
-                                    />
-                                    <Field
-                                        name="TextDestlatlng"
-                                        type="hidden"
-                                        value={values.TextDestlatlng}
-                                        onChange={(v) => setFieldValue("TextDestlatlng", v)}
-                                    />
-                                </div>
-                                <div className="col-1 pl-0 pr-0">
-                                    <Field
-                                        name="TextFare"
-                                        className="form-control"
-                                        value={values.TextFare}
-                                        onChange={(v) => setFieldValue("TextFare", v)}
-                                    />
-                                </div>
-                                <div className="col-1 pr-0">
-
-                                    <select className="form-control w-100" onChange={(v) => setFieldValue("TextDeviceId", v)} defaultValue={userDetails.DefaultCarNo}>
-                                        {userDetails.FleetDevices && userDetails.FleetDevices.map(el => (
-                                            <option value={el.value} >{el.label}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="col-2 pr-0">
-                                    <select className="form-control w-100" onChange={(v) => setFieldValue("TextCabName", v)} defaultValue={userDetails.DefaultCarType}>
-                                        <option value="" >Car Type</option>
-                                        {userDetails.CarType && userDetails.CarType.map(el => (
-                                            <option value={el.value} >{el.label}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="col-3 pr-0">
-                                    <Button
-                                        className="border btn btn-success text-capitalize"
-                                        onClick={() => fareEstimate()}
-                                        to={``}
-                                    >
-                                        Fare Estimate
-                                    </Button>
-
-                                    <Button
-                                        className="border btn btn-success text-capitalize ml-1"
-                                        onClick={() => getFate()}
-                                        to={``}
-                                    >
-                                        Get Fare
-                                    </Button>
-
-                                    <Button
-                                        className="border btn btn-success text-capitalize ml-1"
-                                        onClick={() => openDetails()}
-                                        to={``}
-                                    >
-                                        Details
-                                    </Button>
-
-                                    <Button
-                                        className="border btn btn-success text-capitalize ml-1"
-                                        onClick={() => createTrip()}
-                                        to={``}
-                                    >
-                                        Send
-                                    </Button>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                </Formik> */}
+               
             </fieldset>
             <div className="row">
                 <div className="col-12 pull-right text-right mt-2 mb-2">
@@ -834,6 +639,7 @@ const TriplogWrap = () => {
             <Trips trips={Triplist} openTripDetails={openTripDetails} />
             {submiting && <FullPageLoader />}
             {showEditTrip && <EditTripDetails currentBooking={currentBooking} SetShowEditTrip={SetShowEditTrip} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
+            {showDetails && <TripDetails currentBooking={currentBooking} SetShowTrip={setShowDetails} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />  }
         </React.Fragment>
     );
 };
