@@ -7,20 +7,25 @@ import * as TriplogServices from '../../services/TriplogService';
 import { FullPageLoader } from "../Loaders";
 import { Button } from "@material-ui/core";
 import moment from "moment";
+
 import Trips from "./TripList";
 import EditTripDetails from "./EditTripDetails";
+import toast, { Toaster } from 'react-hot-toast';
 
 
-const optSchema = Yup.object().shape({
-    otp: Yup.string()
-        .min(5)
-        .max(5)
-        .required("Please enter activation code"),
-});
+
 
 const TriplogWrap = () => {
 
     const formikRef = useRef();
+
+    const TriplogSchema = Yup.object().shape({
+        TextLocation: Yup.string().min(4).required("Please enter Pickup-Address"),
+        TextDropoffAddress: Yup.string().required("Please enter Drop-off-Address"),
+        TextAccountNo: Yup.string().min(4).required("Please enter Account Number"),
+        TextTelephone: Yup.string().min(10),
+
+    });
 
 
     const [submiting, setSubmitting] = useState(false);
@@ -31,9 +36,23 @@ const TriplogWrap = () => {
     const [currentBooking, SetCurrentBooking] = useState([]);
     const [pickupAddress, setPickupAddress] = useState();
     const [dropofAddress, setDropofAddress] = useState();
-    const [pickupAddressLatLng, setPickupAddressLatLng] = useState();
-    const [dropofAddressLatLng, setDropofAddressLatLng] = useState();
+    const [pickupAddressLatLng, setPickupAddressLatLng] = useState("");
+    const [dropofAddressLatLng, setDropofAddressLatLng] = useState("");
 
+
+
+    const getDropOffAddress = () => {
+        const id = document.getElementById("dropoflocation")
+        var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddress")), {
+            types: ['geocode']
+        });
+
+        window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var placeorg = autocomplete.getPlace();
+            setDropofAddressLatLng(placeorg.geometry.location.lat() + ',' + placeorg.geometry.location.lng())
+            setDropofAddress(placeorg.formatted_address)
+        });
+    }
 
 
     const getPickupAddress = () => {
@@ -44,25 +63,8 @@ const TriplogWrap = () => {
 
         window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var placeorg = autocomplete.getPlace();
+            setPickupAddressLatLng(placeorg.geometry.location.lat() + ',' + placeorg.geometry.location.lng())
             setPickupAddress(placeorg.formatted_address)
-            // setPickupAddress(placeorg.geometry.location.lat() + ',' + placeorg.geometry.location.lng())
-            console.log(placeorg.formatted_address,"selected")
-
-        });
-    }
-
-    const getDropOffAddress = () => {
-        const id = document.getElementById("dropoflocation")
-        var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddress")), {
-            types: ['geocode']
-        });
-
-        window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            var placeorg = autocomplete.getPlace();
-            setDropofAddress(placeorg.formatted_address)
-            // setPickupAddress(placeorg.geometry.location.lat() + ',' + placeorg.geometry.location.lng())
-            console.log(placeorg.formatted_address,"selected")
-
         });
     }
 
@@ -72,26 +74,8 @@ const TriplogWrap = () => {
         getDropOffAddress()
     }, [1])
 
-    useEffect(() => {
-        if (formikRef.current) {
-            formikRef.current.setFieldValue(
-                "TextLocation",
-                pickupAddress,
-                "TextDropoffAddress",
-                dropofAddress
-            );
-            formikRef.current.setFieldValue(
-                "TextDropoffAddress",
-                dropofAddress
-            );
-            formikRef.current.setFieldValue(
-                "TextPickupTime",
-                " 08:22 AM"
-            );
-            
-        }
 
-    }, [pickupAddress,dropofAddress])
+
 
 
 
@@ -111,19 +95,46 @@ const TriplogWrap = () => {
         TextDropoffCrossStreet: "",
         TextLocation: "",
         TextOriginlatlng: "",
-        TextPickupTime: "",
-        TextPickupDate: "",
+        TextPickupTime: moment().format(),
+        TextPickupDate: moment().format(),
         TextDirectNotificationTime: "",
         TextTelephone: "",
+        TextDropoffAddress: "",
+        TextDestlatlng: "",
         TextDetails: "",
         TextAccountNo: "",
         TextShare: "",
-        TextDropoffAddress: "",
-        TextDestlatlng: "",
-        TextFare: ""
+        TextFare: "",
 
     }
 
+    useEffect(() => {
+        if (formikRef.current) {
+            formikRef.current.setFieldValue(
+                "TextLocation",
+                pickupAddress,
+                "TextDropoffAddress",
+                dropofAddress
+            );
+            formikRef.current.setFieldValue(
+                "TextDropoffAddress",
+                dropofAddress
+            );
+            formikRef.current.setFieldValue(
+                "TextPickupTime",
+                moment().format('h:mm a')
+            );
+            formikRef.current.setFieldValue(
+                "TextDestlatlng",
+                dropofAddressLatLng
+            );
+            formikRef.current.setFieldValue(
+                "TextOriginlatlng",
+                dropofAddressLatLng
+            );
+        }
+
+    }, [pickupAddress, dropofAddress])
     const onError = (message) => {
         //setError(true);
     };
@@ -196,7 +207,7 @@ const TriplogWrap = () => {
     };
     const handleSubmit = async (values) => {
 
-        console.log("handaled", values)
+        console.log("Submit", values)
 
         try {
             setSubmitting(true);
@@ -372,11 +383,11 @@ const TriplogWrap = () => {
                 <Formik
                     innerRef={formikRef}
                     initialValues={initiaal_Values}
-                    // validationSchema={optSchema}
+                    validationSchema={TriplogSchema}
                     onSubmit={(values) => {
                         handleSubmit(values);
                     }}>
-                    {(props) => (
+                    {({ errors, touched }) => (
                         <Form>
                             <>
                                 <div className="row d-flex justify-content-left pl-0 pr-0">
@@ -391,6 +402,7 @@ const TriplogWrap = () => {
                                         type="hidden"
                                         className="form-control"
                                     />
+
 
                                     <Field
                                         name="TextPickupCrossStreet"
@@ -412,12 +424,21 @@ const TriplogWrap = () => {
                                             className="form-control autoCompleteAddress"
 
                                         />
-
                                         <Field
                                             name="TextOriginlatlng"
                                             type="hidden"
                                         />
+
+                                        <br />
+
+                                        {errors.TextLocation && touched.TextLocation ? (
+                                            <div className="d-block invalid-feedback mt-n4 ml-3">
+                                                {errors.TextLocation}
+                                            </div>
+                                        ) : null}
+
                                     </div>
+                                    <br />
 
                                     <div className="col-1 pl-0">
                                         <Field
@@ -426,7 +447,7 @@ const TriplogWrap = () => {
                                         />
 
                                     </div>
-                                    <div className="col-1 pr-0 pl-0">
+                                    <div className="col-1 pr-0 pl-0 ">
                                         <Field
                                             type="date"
                                             name="TextPickupDate"
@@ -450,6 +471,13 @@ const TriplogWrap = () => {
 
 
                                         />
+                                        <br />
+
+                                        {errors.TextTelephone && touched.TextTelephone ? (
+                                            <div className="d-block invalid-feedback mt-n4 ml-3">
+                                                {errors.TextTelephone}
+                                            </div>
+                                        ) : null}
                                     </div>
 
                                     <Field
@@ -465,7 +493,14 @@ const TriplogWrap = () => {
                                             name="TextAccountNo"
                                             className="form-control"
                                         />
+                                        <br />
+                                        {errors.TextAccountNo && touched.TextAccountNo ? (
+                                            <div className="d-block invalid-feedback mt-n4 ml-3">
+                                                {errors.TextAccountNo}
+                                            </div>
+                                        ) : null}
                                     </div>
+
 
 
                                     <div className="col-2 pr-0">
@@ -474,9 +509,7 @@ const TriplogWrap = () => {
                                                 <Field
                                                     type="checkbox"
                                                     name="TextShare"
-
                                                     defaultChecked={userDetails.ShareAllowed ? true : false}
-
                                                 />
                                                 Sharing Allowed
                                             </label>
@@ -492,20 +525,23 @@ const TriplogWrap = () => {
                                             className="form-control autoCompleteAddress"
 
                                         />
+
                                         <Field
                                             name="TextDestlatlng"
                                             type="hidden"
-
-
                                         />
+                                        <br />
+                                        {errors.TextDropoffAddress && touched.TextDropoffAddress ? (
+                                            <div className="d-block invalid-feedback mt-n4 ml-3">
+                                                {errors.TextDropoffAddress}
+                                            </div>
+                                        ) : null}
                                     </div>
                                     <div className="col-1 pl-0 pr-0">
                                         <Field
                                             placeholder="Fare"
                                             name="TextFare"
                                             className="form-control"
-
-
                                         />
                                     </div>
                                     <div className="col-1 pr-0">
@@ -517,6 +553,7 @@ const TriplogWrap = () => {
                                         </select>
                                     </div>
                                     <div className="col-2 pr-0">
+
                                         <select className="form-control w-100" defaultValue={userDetails.DefaultCarType}>
                                             <option value="" >Car Type</option>
                                             {userDetails.CarType && userDetails.CarType.map(el => (
