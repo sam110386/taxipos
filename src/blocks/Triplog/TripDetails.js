@@ -112,7 +112,7 @@ const TripDetails = (props) => {
     // }, []);
     return (
         <React.Fragment>
-            <div className="modal d-block" tabIndex="-1" role="dialog">
+            <div className="modal d-block mymodal" tabIndex="-1" role="dialog">
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div className="align-items-center justify-content-center position-relative">
@@ -369,6 +369,20 @@ const TripDetails = (props) => {
                                                                     name="VoucherNo"
                                                                     placeholder="Please Enter stop "
                                                                     className="form-control"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group ">
+                                                                <label className="form_lbl">Voucher No : </label>
+                                                                <Field
+                                                                    id="w3review" 
+                                                                    name="w3review" 
+                                                                    rows="4" 
+                                                                    cols="50"
+                                                           
+                                                                    placeholder="Please Enter stop"
+                                                               
                                                                 />
                                                             </div>
                                                         </div>

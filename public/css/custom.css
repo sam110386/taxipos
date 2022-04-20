@@ -101,9 +101,12 @@ p {
   padding: 0 12px;
 }
 
-
-
-
+.mymodal{
+overflow-y: scroll; 
+max-height:85%;  
+margin-top: 50px; 
+margin-bottom:50px;  
+}
 .header .container .navbar-nav   li a {
   /* font-size: 14px; */
   /* color: #939393 !important; */
