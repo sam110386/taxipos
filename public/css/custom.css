@@ -136,6 +136,10 @@ color: #1E1D3C;
   font-weight: 600;
   white-space: nowrap;
 }
+#notes{
+  width: 100%;
+  height: 6rem;
+}
 .outline_btn,
 .btn:hover {
   /* background: none;

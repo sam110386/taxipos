@@ -30,7 +30,10 @@ const Dispatcher = ({ isSticky }) => {
   };
 
   return (
-    <TriplogWrap />
+    
+      <TriplogWrap />
+    
+
   );
 };
 

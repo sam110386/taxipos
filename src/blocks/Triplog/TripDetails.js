@@ -4,7 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { FullPageLoader } from "../Loaders";
 import { Button } from "@material-ui/core";
+import * as TriplogServices from '../../services/TriplogService';
 import moment from "moment";
+
 const optSchema = Yup.object().shape({
     otp: Yup.string()
         .min(5)
@@ -29,6 +31,17 @@ const TripDetails = (props) => {
     const [shareallowed, setShareallowed] = useState(false);
     const [accountnos, setAccountNo] = useState(props.currentBooking.account_setting);
     const [tripLog, setTripLog] = useState(props.currentBooking.Triplog);
+    const [submiting, setSubmitting] = useState(false);
+    const [CurrentPickupTime, setCurrentPickupTime] = useState(0);
+    const [CurrentDate, setCurrentDate] = useState(0);
+    const [Triplist, setTriplist] = useState([]);
+    const [showEditTrip, SetShowEditTrip] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
+    const [currentBooking, SetCurrentBooking] = useState([]);
+    const [pickupAddress, setPickupAddress] = useState("");
+    const [dropofAddress, setDropofAddress] = useState("");
+    const [pickupAddressLatLng, setPickupAddressLatLng] = useState("");
+    const [dropofAddressLatLng, setDropofAddressLatLng] = useState("");
 
     const { user, userDetails } = useSelector((state) => {
         return {
@@ -38,15 +51,14 @@ const TripDetails = (props) => {
     });
 
     const initiaal_Values = {
-
         TextCity: userDetails.DispatchData.city,
         TextState: userDetails.DispatchData.other_state,
         TextPickupCrossStreet: "",
         TextDropoffCrossStreet: "",
         TextLocation: "",
         TextOriginlatlng: "",
-        TextPickupTime: moment().format(),
-        TextPickupDate: moment().format(),
+        TextPickupTime: CurrentPickupTime,
+        TextPickupDate: CurrentDate,
         TextDirectNotificationTime: "",
         TextTelephone: "",
         TextDropoffAddress: "",
@@ -55,8 +67,79 @@ const TripDetails = (props) => {
         TextAccountNo: "",
         TextShare: "",
         TextFare: "",
-
     }
+
+
+    const getDropOffAddress = () => {
+        const id = document.getElementById("dropoflocation")
+        var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddress")), {
+            types: ['geocode']
+        });
+
+        window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var placeorg = autocomplete.getPlace();
+            setDropofAddressLatLng(placeorg.geometry.location.lat() + ',' + placeorg.geometry.location.lng())
+            setDropofAddress(placeorg.formatted_address)
+        });
+    }
+
+
+    const getPickupAddress = () => {
+        const id = document.getElementById("pickuplocation")
+        var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("pickupaddress")), {
+            types: ['geocode']
+        });
+
+        window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var placeorg = autocomplete.getPlace();
+            setPickupAddressLatLng(placeorg.geometry.location.lat() + ',' + placeorg.geometry.location.lng())
+            setPickupAddress(placeorg.formatted_address)
+        });
+    }
+
+    useEffect(() => {
+        getPickupAddress()
+        getDropOffAddress()
+    }, [])
+
+    useEffect(() => {
+        formikRef.current.setFieldValue(
+            "TextPickupTime",
+            CurrentPickupTime
+
+        );
+        formikRef.current.setFieldValue(
+            "TextPickupDate",
+            CurrentDate
+
+        );
+        
+    }, [CurrentPickupTime,CurrentDate]);
+
+    useEffect(() => {
+        if (formikRef.current) {
+            formikRef.current.setFieldValue(
+                "TextLocation",
+                pickupAddress,
+                "TextDropoffAddress",
+                dropofAddress
+            );
+            formikRef.current.setFieldValue(
+                "TextDropoffAddress",
+                dropofAddress
+            );
+           
+            formikRef.current.setFieldValue(
+                "TextDestlatlng",
+                dropofAddressLatLng
+            );
+            formikRef.current.setFieldValue(
+                "TextOriginlatlng",
+                dropofAddressLatLng
+            );
+        }
+
+    }, [pickupAddress, dropofAddress])
 
     const handleSubmit = () => {
 
@@ -67,6 +150,61 @@ const TripDetails = (props) => {
     const getFare = () => {
 
     }
+
+    const onError = (message) => {
+        //setError(true);
+    };
+
+
+
+    const initialize = () => {
+        updateCurrentTime();
+        loadTripList();
+    }
+    const updateCurrentTime = async () => {
+        try {
+            const res = await TriplogServices.getCurrentDateTime();
+            if (res && res.status === 200) {
+                if (res.data && res.data.status === 1) {
+                    setCurrentPickupTime(res.data.time);
+                    setCurrentDate(res.data.date);
+                    let currentTime = moment(res.data.date + " " + res.data.time);
+                    if (!refreshIntervalId) {
+                        clearInterval(refreshIntervalId);
+                    }
+                    //start timer
+                    var refreshIntervalId = setInterval(function () {
+                        currentTime = currentTime.subtract(30, 'seconds');
+                        setCurrentPickupTime(currentTime.format('LT'));
+                    }, 30000);
+                    return;
+                }
+                onError(res.data.message);
+            }
+        } catch (err) {
+            onError();
+        }
+    }
+    const loadTripList = async () => {
+        try {
+            const res = await TriplogServices.getTriplist();
+            if (res && res.status === 200) {
+                if (res.data && res.data.status === 1) {
+
+                    setTriplist(res.data.result);
+                    return;
+                }
+                onError(res.data.message);
+            }
+        } catch (err) {
+            onError();
+        }
+    }
+
+    useEffect(()=>{
+        initialize();
+    },[])
+
     const initall = () => {
         setAccountNo(props.currentBooking.account_setting);
         setTripLog(props.currentBooking.Triplog);
@@ -166,8 +304,8 @@ const TripDetails = (props) => {
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Pick Up Date: </label>
                                                                 <Field
-                                                                    name="pickup_time"
-                                                                    type="text"
+                                                                    name="TextPickupDate"
+                                                                    type="date"
                                                                     className="form-control"
                                                                 />
                                                             </div>
@@ -211,7 +349,7 @@ const TripDetails = (props) => {
                                                                 <Field
                                                                     id="pickupaddress2"
                                                                     placeholder="Pick-up-Address"
-                                                                    name="TextLocation"
+                                                                    name="TextLocation2"
                                                                     className="form-control autoCompleteAddress"
 
                                                                 />
@@ -235,7 +373,7 @@ const TripDetails = (props) => {
                                                                 <label className="form_lbl">Drop off Address2: </label>
                                                                 <Field
                                                                     name="TextDropoffAddress2"
-                                                                    id="dropofaddress"
+                                                                    id="dropofaddress2"
                                                                     placeholder="Please Enter Drop-off-Address"
                                                                     className="form-control autoCompleteAddress"
 
@@ -372,22 +510,131 @@ const TripDetails = (props) => {
                                                                 />
                                                             </div>
                                                         </div>
-                                                        <div className="col-md-4">
-                                                            <div className="form-group ">
-                                                                <label className="form_lbl">Voucher No : </label>
+                                                        <div className="col-md-4  text-center">
+
+                                                        </div>
+                                                        <div className="col-md-4  text-center">
+                                                            <div className="form-group">
+                                                                <label className="form_lbl">Notes : </label>
                                                                 <Field
-                                                                    id="w3review" 
-                                                                    name="w3review" 
-                                                                    rows="4" 
-                                                                    cols="50"
-                                                           
-                                                                    placeholder="Please Enter stop"
-                                                               
+                                                                    id="notes"
+                                                                    name="notes"
+
                                                                 />
                                                             </div>
                                                         </div>
-                                                       
-                                                        <div className="form-group col-md-12">
+                                                        <div className="col-md-4  text-center">
+
+                                                        </div>
+                                                        <div className="col-md-2  text-center">
+
+                                                        </div>
+                                                        <div className="col-md-2  text-center">
+                                                            <div >
+                                                                <label className="form_lbl">Make this round trip : </label>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="col-md-8 ">
+                                                            <div className="form-group">
+                                                                <Field
+                                                                    type="checkbox"
+                                                                    name="TextShare"
+                                                                    defaultChecked={userDetails.ShareAllowed ? true : false}
+                                                                />
+                                                                Sharing Allowed
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="col-md-3">
+                                                            <div >
+                                                                <label className="form_lbl"> Copy Same Trip For Date Range With Days: </label>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="col-md-3">
+                                                            <div >
+                                                                <Field
+                                                                    name="e"
+                                                                    className="form-control"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-3">
+                                                            <Field
+                                                                name="z"
+                                                                className="form-control"
+                                                            />
+                                                        </div>
+                                                        <div className="col-md-3">
+                                                            <div >
+                                                                <label className="form_lbl"> (It will work if correct pickup address entered) </label>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div className="col-md-12 mt-3">
+                                                            <Field
+                                                                type="checkbox"
+                                                                name="Tue"
+                                                                defaultChecked=""
+                                                            />
+                                                            <span> Tuesday </span>
+
+                                                            <Field
+                                                                type="checkbox"
+                                                                name="Wed"
+                                                                defaultChecked=""
+                                                            />
+
+                                                            <span> Wednesday </span>
+
+                                                            <Field
+                                                                type="checkbox"
+                                                                name="Thu"
+                                                                defaultChecked=""
+                                                            />
+
+                                                            <span> Thursday </span>
+
+                                                            <Field
+                                                                type="checkbox"
+                                                                name="Fri"
+                                                                defaultChecked=""
+                                                            />
+
+                                                            <span> Friday </span>
+
+                                                            <Field
+                                                                type="checkbox"
+                                                                name="Sat"
+                                                                defaultChecked=""
+                                                            />
+
+                                                            <span> Saturday </span>
+
+                                                            <Field
+                                                                type="checkbox"
+                                                                name="Sun"
+                                                                defaultChecked=""
+                                                            />
+
+                                                            <span> Sunday </span>
+
+                                                            <Field
+                                                                type="checkbox"
+                                                                name="Mon"
+                                                                defaultChecked=""
+                                                            />
+
+                                                            <span> Moday </span>
+                                                        </div>
+                                                      
+                                                     
+
+                                                        <div className="form-group col-md-12 mt-4">
                                                             <label className="form_lbl">&nbsp; </label>
 
                                                             <Button

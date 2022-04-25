@@ -7,7 +7,7 @@ import { FullPageLoader } from "../Loaders";
 import { Button } from "@material-ui/core";
 import { render } from "react-dom";
 import moment from "moment";
-
+import { GiCrossMark } from 'react-icons/gi';
 const TripList = (props) => {
    
   //const [Trips, setTrips]=useState(props.trips);
@@ -333,7 +333,8 @@ const TripList = (props) => {
   return (
     <React.Fragment>
         <table cellPadding="0" cellSpacing="0" border='.5'  id="tripLogTable" width="100%">
-        <thead>
+            
+        <thead className="text-primary">
             <tr>
             
             {TriplogSetting && TriplogSettingFields && Object.keys(TriplogSetting).map((el,i)=>{

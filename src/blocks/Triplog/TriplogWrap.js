@@ -12,6 +12,7 @@ import Trips from "./TripList";
 import EditTripDetails from "./EditTripDetails";
 import toast, { Toaster } from 'react-hot-toast';
 import TripDetails from "./TripDetails";
+import TimePicker from 'react-time-picker';
 
 
 
@@ -21,10 +22,11 @@ const TriplogWrap = () => {
     const formikRef = useRef();
 
     const TriplogSchema = Yup.object().shape({
-        TextLocation: Yup.string().min(4).required("Please enter Pickup-Address"),
-        TextDropoffAddress: Yup.string().required("Please enter Drop-off-Address"),
-        TextAccountNo: Yup.string().min(4).required("Please enter Account Number"),
-        TextTelephone: Yup.string().min(10),
+        pickup_address: Yup.string().required("Please enter Pickup-Address"),
+        dropoff_address: Yup.string().required("Please enter Drop-Off-Address"),
+        account_no: Yup.number().min(4),
+        telephone: Yup.string().matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, 'Telephone number is not valid'),
+        fare:Yup.number("Please Enter Currect Fare")
 
     });
 
@@ -36,50 +38,12 @@ const TriplogWrap = () => {
     const [showEditTrip, SetShowEditTrip] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
     const [currentBooking, SetCurrentBooking] = useState([]);
-    const [pickupAddress, setPickupAddress] = useState();
-    const [dropofAddress, setDropofAddress] = useState();
-    const [pickupAddressLatLng, setPickupAddressLatLng] = useState("");
-    const [dropofAddressLatLng, setDropofAddressLatLng] = useState("");
-
-
-
-    const getDropOffAddress = () => {
-        const id = document.getElementById("dropoflocation")
-        var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddress")), {
-            types: ['geocode']
-        });
-
-        window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            var placeorg = autocomplete.getPlace();
-            setDropofAddressLatLng(placeorg.geometry.location.lat() + ',' + placeorg.geometry.location.lng())
-            setDropofAddress(placeorg.formatted_address)
-        });
-    }
-
-
-    const getPickupAddress = () => {
-        const id = document.getElementById("pickuplocation")
-        var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("pickupaddress")), {
-            types: ['geocode']
-        });
-
-        window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            var placeorg = autocomplete.getPlace();
-            setPickupAddressLatLng(placeorg.geometry.location.lat() + ',' + placeorg.geometry.location.lng())
-            setPickupAddress(placeorg.formatted_address)
-        });
-    }
-
-
-    useEffect(() => {
-        getPickupAddress()
-        getDropOffAddress()
-    }, [1])
-
-
-
-
-
+    const [pickupAddress, setPickupAddress] = useState("");
+    const [dropofAddress, setDropofAddress] = useState("");
+    const [pickupAddressLat, setPickupAddressLat] = useState("");
+    const [pickupAddressLng, setPickupAddressLng] = useState("");
+    const [dropofAddressLat, setDropofAddressLat] = useState("");
+    const [dropofAddressLng, setDropofAddressLng] = useState("");
 
     const { user, userDetails } = useSelector((state) => {
         return {
@@ -91,52 +55,114 @@ const TriplogWrap = () => {
 
     const initiaal_Values = {
 
-        TextCity: userDetails.DispatchData.city,
-        TextState: userDetails.DispatchData.other_state,
-        TextPickupCrossStreet: "",
-        TextDropoffCrossStreet: "",
-        TextLocation: "",
-        TextOriginlatlng: "",
-        TextPickupTime: moment().format(),
-        TextPickupDate: moment().format(),
-        TextDirectNotificationTime: "",
-        TextTelephone: "",
-        TextDropoffAddress: "",
-        TextDestlatlng: "",
-        TextDetails: "",
-        TextAccountNo: "",
-        TextShare: "",
-        TextFare: "",
-
+        pickup_lat: "",
+        pickup_lng: "",
+        pickup_address: "",
+        device_id: "",
+        pickup_date: "",
+        pickup_time: "",
+        dropoff_lat: "",
+        dropoff_lng: "",
+        dropoff_address: "",
+        car_no: "",
+        cab_name: "",
+        telephone: "",
+        telephone_line: "",
+        amt_of_passengers: "",
+        fare: "",
+        details: "",
+        direct_notification_time: "",
+        pickdrop_fare: "",
+        account_no: "",
+        share: "",
+        pickup_cross_street: "",
+        dropoff_cross_street: "",
     }
+
+    const getDropOffAddress = () => {
+        var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddress")), {
+            types: ['geocode']
+        });
+
+        window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var placeorg = autocomplete.getPlace();
+            setDropofAddressLat(placeorg.geometry.location.lat())
+            setDropofAddressLng(placeorg.geometry.location.lng())
+            setDropofAddress(placeorg.formatted_address)
+        });
+    }
+
+
+    const getPickupAddress = () => {
+        var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("pickupaddress")), {
+            types: ['geocode']
+        });
+
+        window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var placeorg = autocomplete.getPlace();
+            setPickupAddressLat(placeorg.geometry.location.lat())
+            setPickupAddressLng(placeorg.geometry.location.lng())
+            setPickupAddress(placeorg.formatted_address)
+        });
+    }
+
+
+    useEffect(() => {
+        getPickupAddress()
+        getDropOffAddress()
+    }, [initiaal_Values.dropoff_address, initiaal_Values.pickup_address])
+
+    useEffect(() => {
+        formikRef.current.setFieldValue(
+            "pickup_time",
+            CurrentPickupTime
+
+        );
+        formikRef.current.setFieldValue(
+            "pickup_date",
+            CurrentDate
+
+        );
+
+    }, [CurrentPickupTime, CurrentDate]);
+
+
+
 
     useEffect(() => {
         if (formikRef.current) {
             formikRef.current.setFieldValue(
-                "TextLocation",
+                "pickup_address",
                 pickupAddress,
-                "TextDropoffAddress",
+            );
+            formikRef.current.setFieldValue(
+                "pickup_lat",
+                pickupAddressLat
+            );
+            formikRef.current.setFieldValue(
+                "pickup_lng",
+                pickupAddressLng
+            );
+            formikRef.current.setFieldValue(
+                "dropoff_address",
                 dropofAddress
             );
             formikRef.current.setFieldValue(
-                "TextDropoffAddress",
-                dropofAddress
+                "dropoff_lat",
+                dropofAddressLat
             );
             formikRef.current.setFieldValue(
-                "TextPickupTime",
-                moment().format('h:mm a')
-            );
-            formikRef.current.setFieldValue(
-                "TextDestlatlng",
-                dropofAddressLatLng
-            );
-            formikRef.current.setFieldValue(
-                "TextOriginlatlng",
-                dropofAddressLatLng
+                "dropoff_lng",
+                dropofAddressLng
             );
         }
 
     }, [pickupAddress, dropofAddress])
+
+
+
+
+
     const onError = (message) => {
         //setError(true);
     };
@@ -155,6 +181,7 @@ const TriplogWrap = () => {
             const res = await TriplogServices.getCurrentDateTime();
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
+                    console.log("current time",res.data)
                     setCurrentPickupTime(res.data.time);
                     setCurrentDate(res.data.date);
                     let currentTime = moment(res.data.date + " " + res.data.time);
@@ -163,7 +190,7 @@ const TriplogWrap = () => {
                     }
                     //start timer
                     var refreshIntervalId = setInterval(function () {
-                        currentTime = currentTime.subtract(30, 'seconds');
+                        currentTime = currentTime.add(60, 'seconds');
                         setCurrentPickupTime(currentTime.format('LT'));
                     }, 30000);
                     return;
@@ -190,6 +217,10 @@ const TriplogWrap = () => {
         }
     }
 
+    useEffect(() => {
+        initialize();
+    }, [])
+
     const createTrip = async (values) => {
         try {
             setSubmitting(true);
@@ -213,7 +244,7 @@ const TriplogWrap = () => {
 
         try {
             setSubmitting(true);
-            const res = await TriplogServices.getTriplist({});
+            const res = await TriplogServices.sendPushNotification(values);
             setSubmitting(false);
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
@@ -371,275 +402,293 @@ const TriplogWrap = () => {
         initialize()
     }, []);
     return (
-        <React.Fragment>
-            <fieldset className="pendingentries">
-                <legend>Pending Entries</legend>
-                <img src="/images/clear_button.png" alt="Clear" className="clearchatsidebar" />
-                <section className="chat-sidebar" id="chatsidebar">
+        <React.Fragment >
+            <div >
+                <fieldset className="pendingentries" >
+                    <legend>Pending Entries</legend>
+                    <img src="/images/clear_button.png" alt="Clear" className="clearchatsidebar" />
+                    <section className="chat-sidebar" id="chatsidebar">
 
-                </section>
-                <div id="latestCallerInfo" className="latestCallerInfo"></div>
-            </fieldset>
-            <fieldset className="DispatchInfoDriver">
+                    </section>
+                    <div id="latestCallerInfo" className="latestCallerInfo"></div>
+                </fieldset>
+                <fieldset className="DispatchInfoDriver">
 
-                <legend> Dispatch info to Driver </legend>
-                <Formik
-                    innerRef={formikRef}
-                    initialValues={initiaal_Values}
-                    validationSchema={TriplogSchema}
-                    onSubmit={(values) => {
-                        handleSubmit(values);
-                    }}>
-                    {({ errors, touched }) => (
-                        <Form>
-                            <>
-                                <div className="row d-flex justify-content-left pl-0 pr-0">
+                    <legend> Dispatch info to Driver </legend>
+                    <Formik
+                        innerRef={formikRef}
+                        initialValues={initiaal_Values}
+                        validationSchema={TriplogSchema}
+                        onSubmit={(values) => {
+                            handleSubmit(values);
+                        }}>
+                        {({ errors, touched }) => (
+                            <Form>
+                                <>
+                                    <div className="row d-flex justify-content-left pl-0 pr-0">
 
-                                    <Field
-                                        name="TextCity"
-                                        type="hidden"
-                                        className="form-control"
-                                    />
-                                    <Field
-                                        name="TextState"
-                                        type="hidden"
-                                        className="form-control"
-                                    />
-
-
-                                    <Field
-                                        name="TextPickupCrossStreet"
-                                        type="hidden"
-                                        className="form-control"
-                                    />
-
-                                    <Field
-                                        name="TextDropoffCrossStreet"
-                                        type="hidden"
-                                        className="form-control"
-                                    />
-
-                                    <div className="col-4">
                                         <Field
-                                            id="pickupaddress"
-                                            placeholder="Pick-up-Address"
-                                            name="TextLocation"
-                                            className="form-control autoCompleteAddress"
-
-                                        />
-                                        <Field
-                                            name="TextOriginlatlng"
+                                            name="TextCity"
                                             type="hidden"
+                                            className="form-control"
+                                        />
+                                        <Field
+                                            name="TextState"
+                                            type="hidden"
+                                            className="form-control"
                                         />
 
+
+                                        <Field
+                                            name="TextPickupCrossStreet"
+                                            type="hidden"
+                                            className="form-control"
+                                        />
+
+                                        <Field
+                                            name="TextDropoffCrossStreet"
+                                            type="hidden"
+                                            className="form-control"
+                                        />
+
+                                        <div className="col-4">
+                                            <Field
+                                                id="pickupaddress"
+                                                placeholder="Pick-up-Address"
+                                                name="pickup_address"
+                                                className={`form-control ${
+                                                    touched.pickup_address && errors.pickup_address
+                                                      ? "is-invalid"
+                                                      : ""
+                                                  }`}
+
+                                            />
+                                            <Field
+                                                name="pickup_lat"
+                                                type="hidden"
+                                            />
+                                            <Field
+                                                name="pickup_lng"
+                                                type="hidden"
+                                            />
+                                            <br />
+                                            {errors.pickup_address && touched.pickup_address ? (
+                                                <div className="d-block invalid-feedback mt-n4 ml-3">
+                                                    {errors.pickup_address}
+                                                </div>
+                                            ) : null}
+
+                                        </div>
                                         <br />
 
-                                        {errors.TextLocation && touched.TextLocation ? (
-                                            <div className="d-block invalid-feedback mt-n4 ml-3">
-                                                {errors.TextLocation}
-                                            </div>
-                                        ) : null}
+                                        <div className="col-1 pl-0">
+                                            <Field
+                                                name="pickup_time"
+                                                className="form-control cur_time_log"
+                                            />
 
-                                    </div>
-                                    <br />
+                                        </div>
+                                        <div className="col-2 pr-0 pl-0 ">
+                                            <Field
+                                                type="date"
+                                                name="pickup_date"
+                                                className="form-control unstyled"
+                                            />
+                                        </div>
+                                        <div className="col-1">
+                                            <Field
+                                                name="TextDirectNotificationTime"
+                                                placeholder="Notification"
+                                                className="form-control"
+                                            />
+                                        </div>
+                                        <div className="col-1 pl-0">
+                                            <Field
+                                                name="telephone"
+                                                placeholder="Telephone"
+                                                className="form-control"
 
-                                    <div className="col-1 pl-0">
-                                        <Field
-                                            name="TextPickupTime"
-                                            className="form-control cur_time_log"
-                                        />
 
-                                    </div>
-                                    <div className="col-1 pr-0 pl-0 ">
+                                            />
+                                            <br />
+
+                                            {errors.telephone && touched.telephone ? (
+                                                <div className="d-block invalid-feedback mt-n4 ml-3">
+                                                    {errors.telephone}
+                                                </div>
+                                            ) : null}
+                                        </div>
+
                                         <Field
-                                            type="date"
-                                            name="TextPickupDate"
-                                            className="form-control unstyled"
-                                        />
-                                    </div>
-                                    <div className="col-1">
-                                        <Field
-                                            name="TextDirectNotificationTime"
-                                            placeholder="Notification"
+                                            name="TextDetails"
+                                            type="hidden"
                                             className="form-control"
 
 
                                         />
-                                    </div>
-                                    <div className="col-1 pl-0">
-                                        <Field
-                                            name="TextTelephone"
-                                            placeholder="Telephone"
-                                            className="form-control"
+                                        <div className="col-1 pr-0 pl-0">
+                                            <Field
+                                                placeholder="Account Number"
+                                                name="account_no"
+                                                className="form-control"
+                                            />
+                                            <br />
+                                            {errors.account_no && touched.account_no ? (
+                                                <div className="d-block invalid-feedback mt-n4 ml-3">
+                                                    {errors.account_no}
+                                                </div>
+                                            ) : null}
+                                        </div>
 
 
-                                        />
-                                        <br />
 
-                                        {errors.TextTelephone && touched.TextTelephone ? (
-                                            <div className="d-block invalid-feedback mt-n4 ml-3">
-                                                {errors.TextTelephone}
+                                        <div className="col-2 pr-0">
+                                            <div role="group" aria-labelledby="checkbox-group">
+                                                <label>
+                                                    <Field
+                                                        type="checkbox"
+                                                        name="TextShare"
+                                                        defaultChecked={userDetails.ShareAllowed ? true : false}
+                                                    />
+                                                    Sharing Allowed
+                                                </label>
                                             </div>
-                                        ) : null}
-                                    </div>
-
-                                    <Field
-                                        name="TextDetails"
-                                        type="hidden"
-                                        className="form-control"
-
-
-                                    />
-                                    <div className="col-1 pr-0 pl-0">
-                                        <Field
-                                            placeholder="Account Number"
-                                            name="TextAccountNo"
-                                            className="form-control"
-                                        />
-                                        <br />
-                                        {errors.TextAccountNo && touched.TextAccountNo ? (
-                                            <div className="d-block invalid-feedback mt-n4 ml-3">
-                                                {errors.TextAccountNo}
-                                            </div>
-                                        ) : null}
-                                    </div>
-
-
-
-                                    <div className="col-2 pr-0">
-                                        <div role="group" aria-labelledby="checkbox-group">
-                                            <label>
-                                                <Field
-                                                    type="checkbox"
-                                                    name="TextShare"
-                                                    defaultChecked={userDetails.ShareAllowed ? true : false}
-                                                />
-                                                Sharing Allowed
-                                            </label>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="row d-flex justify-content-left pl-0 pr-0 mt-3 ">
-                                    <div className="col-4">
-                                        <Field
-                                            name="TextDropoffAddress"
-                                            id="dropofaddress"
-                                            placeholder="drop-off-Address"
-                                            className="form-control autoCompleteAddress"
+                                    <div className="row d-flex justify-content-left pl-0 pr-0 mt-3 ">
+                                        <div className="col-4">
+                                            <Field
+                                                name="dropoff_address"
+                                                id="dropofaddress"
+                                                placeholder="drop-off-Address"
+                                                className={`form-control ${
+                                                    touched.dropoff_address && errors.dropoff_address
+                                                      ? "is-invalid"
+                                                      : ""
+                                                  }`}
 
-                                        />
+                                            />
 
-                                        <Field
-                                            name="TextDestlatlng"
-                                            type="hidden"
-                                        />
-                                        <br />
-                                        {errors.TextDropoffAddress && touched.TextDropoffAddress ? (
-                                            <div className="d-block invalid-feedback mt-n4 ml-3">
-                                                {errors.TextDropoffAddress}
-                                            </div>
-                                        ) : null}
+                                            <Field
+                                                name="dropoff_lat"
+                                                type="hidden"
+                                            />
+                                            <Field
+                                                name="dropoff_lng"
+                                                type="hidden"
+                                            />
+                                            <br />
+                                            {errors.dropoff_address && touched.dropoff_address ? (
+                                                <div className="d-block invalid-feedback mt-n4 ml-3">
+                                                    {errors.dropoff_address}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                        <div className="col-1 pl-0 pr-0">
+                                            <Field
+                                                placeholder="Fare"
+                                                name="fare"
+                                                className={`form-control ${
+                                                    touched.fare && errors.fare
+                                                      ? "is-invalid"
+                                                      : ""
+                                                  }`}
+                                            />
+                                            
+                                        </div>
+                                        
+                                        <div className="col-1 pr-0">
+                                            <Field as="select" className="form-control w-100" name="car_no">
+                                                {userDetails.FleetDevices && userDetails.FleetDevices.map(el => (
+                                                    <option  >{el.label}</option>
+                                                ))}
+                                            </Field>
+                                        </div>
+                                        <div className="col-2 pr-0">
+
+                                        <Field as="select" className="form-control w-100" name="cab_name">
+                                                {userDetails.CarType && userDetails.CarType.map(el => (
+                                                    <option value={el.label} >{el.label}</option>
+                                                ))}
+                                        </Field>
+                                        </div>
+                                        <div className="col-4 pr-0">
+                                            <Button
+                                                className="border btn btn-success text-capitalize"
+                                                onClick={() => fareEstimate()}
+                                                to={``}
+                                            >
+                                                Fare Estimate
+                                            </Button>
+
+                                            <Button
+                                                className="border btn btn-success text-capitalize ml-1"
+                                                onClick={() => getFate()}
+                                                to={``}
+                                            >
+                                                Get Fare
+                                            </Button>
+
+                                            <Button
+                                                className="border btn btn-success text-capitalize ml-1"
+                                                onClick={() => openDetails()}
+                                                to={``}
+                                            >
+                                                Details
+                                            </Button>
+
+                                            <Button
+                                                className="border btn btn-success text-capitalize ml-1"
+                                                type="submit"
+                                            >
+                                                Send
+                                            </Button>
+                                        </div>
                                     </div>
-                                    <div className="col-1 pl-0 pr-0">
-                                        <Field
-                                            placeholder="Fare"
-                                            name="TextFare"
-                                            className="form-control"
-                                        />
-                                    </div>
-                                    <div className="col-1 pr-0">
+                                </>
+                            </Form>
+                        )}
+                    </Formik>
 
-                                        <select className="form-control w-100" defaultValue={userDetails.DefaultCarNo}>
-                                            {userDetails.FleetDevices && userDetails.FleetDevices.map(el => (
-                                                <option  >{el.label}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div className="col-2 pr-0">
 
-                                        <select className="form-control w-100" defaultValue={userDetails.DefaultCarType}>
-                                            <option value="" >Car Type</option>
-                                            {userDetails.CarType && userDetails.CarType.map(el => (
-                                                <option >{el.label}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div className="col-3 pr-0">
-                                        <Button
-                                            className="border btn btn-success text-capitalize"
-                                            onClick={() => fareEstimate()}
-                                            to={``}
-                                        >
-                                            Fare Estimate
-                                        </Button>
-
-                                        <Button
-                                            className="border btn btn-success text-capitalize ml-1"
-                                            onClick={() => getFate()}
-                                            to={``}
-                                        >
-                                            Get Fare
-                                        </Button>
-
-                                        <Button
-                                            className="border btn btn-success text-capitalize ml-1"
-                                            onClick={() => openDetails()}
-                                            to={``}
-                                        >
-                                            Details
-                                        </Button>
-
-                                        <Button
-                                            className="border btn btn-success text-capitalize ml-1"
-                                            type="submit"
-                                        >
-                                            Send
-                                        </Button>
-                                    </div>
-                                </div>
-                            </>
-                        </Form>
-                    )}
-                </Formik>
-
-               
-            </fieldset>
-            <div className="row">
-                <div className="col-12 pull-right text-right mt-2 mb-2">
-                    <Button
-                        className="border link-success text-capitalize ml-1"
-                        onClick={() => otherTrips()}
-                        to={``}
-                    >
-                        Other Trips
-                    </Button>
-                    <Button
-                        className="border link-success text-capitalize ml-1"
-                        onClick={() => otherTrips()}
-                        to={``}
-                    >
-                        Full View Map
-                    </Button>
-                    <Button
-                        className="border link-success text-capitalize ml-1"
-                        onClick={() => otherTrips()}
-                        to={``}
-                    >
-                        Today History
-                    </Button>
-                    <Button
-                        className="border link-success text-capitalize ml-1"
-                        onClick={() => otherTrips()}
-                        to={``}
-                    >
-                        Sort Trips
-                    </Button>
+                </fieldset>
+                <div className="row">
+                    <div className="col-12 pull-right text-right mt-2 mb-2">
+                        <Button
+                            className="border link-success text-capitalize ml-1"
+                            onClick={() => otherTrips()}
+                            to={``}
+                        >
+                            Other Trips
+                        </Button>
+                        <Button
+                            className="border link-success text-capitalize ml-1"
+                            onClick={() => otherTrips()}
+                            to={``}
+                        >
+                            Full View Map
+                        </Button>
+                        <Button
+                            className="border link-success text-capitalize ml-1"
+                            onClick={() => otherTrips()}
+                            to={``}
+                        >
+                            Today History
+                        </Button>
+                        <Button
+                            className="border link-success text-capitalize ml-1"
+                            onClick={() => otherTrips()}
+                            to={``}
+                        >
+                            Sort Trips
+                        </Button>
+                    </div>
                 </div>
+                <Trips trips={Triplist} openTripDetails={openTripDetails} />
+                {submiting && <FullPageLoader />}
+                {showEditTrip && <EditTripDetails currentBooking={currentBooking} SetShowEditTrip={SetShowEditTrip} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
+                {showDetails && <TripDetails currentBooking={currentBooking} SetShowTrip={setShowDetails} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
             </div>
-            <Trips trips={Triplist} openTripDetails={openTripDetails} />
-            {submiting && <FullPageLoader />}
-            {showEditTrip && <EditTripDetails currentBooking={currentBooking} SetShowEditTrip={SetShowEditTrip} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
-            {showDetails && <TripDetails currentBooking={currentBooking} SetShowTrip={setShowDetails} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />  }
         </React.Fragment>
     );
 };

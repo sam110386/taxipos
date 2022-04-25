@@ -11,11 +11,13 @@ const path = {
   BOOK_VEHICLE: "book",
   ADD_VEHICLE_TO_FAVOURITE: "addVehicleToWishlist",
   REMOVE_VEHICLE_TO_FAVOURITE: "removeWishlistVehicle",
+  SEND_PUSH_NOTIFICATION : "/dispachers/send_push_notification"
 };
 
 export const getCurrentDateTime = async (data) => {
   try {
     const res = await API.get(path.GET_CURRENT_TIME, data);
+    console.log("current time",res.data)
     return res;
   } catch (err) {
     return null;
@@ -25,12 +27,25 @@ export const getCurrentDateTime = async (data) => {
 export const getTriplist = async (data) => {
   try {
     const res = await API.post(path.GET_TRIP_LIST, data, getHeader());
-    console.log("trip list",res);
     return res;
   } catch (err) {
     return null;
   }
 };
+
+
+export const sendPushNotification = async (data) => {
+  try {
+    const res = await API.post(path.SEND_PUSH_NOTIFICATION, data, getHeader())
+    console.log("sendpush",res.data)
+    return res;
+  } catch (err) {
+    return null;
+  }
+};
+
+
+
 export const getTripDetails = async (data) => {
   try {
     const res = await API.post(path.GET_TRIP_DETAILS, data, getHeader());
