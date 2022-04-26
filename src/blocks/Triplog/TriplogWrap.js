@@ -26,7 +26,7 @@ const TriplogWrap = () => {
         dropoff_address: Yup.string().required("Please enter Drop-Off-Address"),
         account_no: Yup.number().min(4),
         telephone: Yup.string().matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, 'Telephone number is not valid'),
-        fare:Yup.number("Please Enter Currect Fare")
+        fare: Yup.number("Please Enter Currect Fare")
 
     });
 
@@ -92,7 +92,6 @@ const TriplogWrap = () => {
         });
     }
 
-
     const getPickupAddress = () => {
         var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("pickupaddress")), {
             types: ['geocode']
@@ -110,7 +109,7 @@ const TriplogWrap = () => {
     useEffect(() => {
         getPickupAddress()
         getDropOffAddress()
-    }, [initiaal_Values.dropoff_address, initiaal_Values.pickup_address])
+    }, [])
 
     useEffect(() => {
         formikRef.current.setFieldValue(
@@ -181,7 +180,7 @@ const TriplogWrap = () => {
             const res = await TriplogServices.getCurrentDateTime();
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-                    console.log("current time",res.data)
+                    console.log("current time", res.data)
                     setCurrentPickupTime(res.data.time);
                     setCurrentDate(res.data.date);
                     let currentTime = moment(res.data.date + " " + res.data.time);
@@ -190,7 +189,7 @@ const TriplogWrap = () => {
                     }
                     //start timer
                     var refreshIntervalId = setInterval(function () {
-                        currentTime = currentTime.add(60, 'seconds');
+                        currentTime = currentTime.add(30, 'seconds');
                         setCurrentPickupTime(currentTime.format('LT'));
                     }, 30000);
                     return;
@@ -406,12 +405,86 @@ const TriplogWrap = () => {
             <div >
                 <fieldset className="pendingentries" >
                     <legend>Pending Entries</legend>
-                    <img src="/images/clear_button.png" alt="Clear" className="clearchatsidebar" />
+                    <img src="/images/clear_button.png" alt="Clear" className="clearchatsidebar mb-1"  />
+                    
                     <section className="chat-sidebar" id="chatsidebar">
 
+    
                     </section>
-                    <div id="latestCallerInfo" className="latestCallerInfo"></div>
+
+
+                    <div id="latestCallerInfo" >
+
+                        <table class="blank_ul">
+                            <tbody><tr class="inner_div">
+
+                                <th class="mid_th comtab">F1</th>
+                                <th class="mid_th" width="100"></th><th class="mid_th"></th></tr>
+
+                                <tr class="inner_div">
+
+                                    <th class="mid_th">F2</th>
+                                    <th class="mid_th" width="100"></th><th class="mid_th"></th> </tr>
+
+                                <tr class="inner_div">
+
+                                    <th class="mid_th">F3</th>
+                                    <th class="mid_th" width="100"></th><th class="mid_th"></th>            </tr>
+
+                            </tbody></table>
+                        <table class="blank_ul ml-1 text-center">
+                            <tbody><tr class="inner_div text-center">
+
+                                <th class="mid_th comtab">F4</th>
+                                <th class="mid_th" width="100"></th><th class="mid_th"></th></tr>
+
+                                <tr class="inner_div">
+
+                                    <th class="mid_th">F5</th>
+                                    <th class="mid_th" width="100"></th><th class="mid_th"></th> </tr>
+
+                                <tr class="inner_div">
+
+                                    <th class="mid_th">F6</th>
+                                    <th class="mid_th" width="100"></th><th class="mid_th"></th>            </tr>
+
+                            </tbody></table>
+                        <table class="blank_ul  ml-1">
+                            <tbody><tr class="inner_div">
+
+                                <th class="mid_th comtab">F7</th>
+                                <th class="mid_th" width="100"></th><th class="mid_th"></th></tr>
+
+                                <tr class="inner_div">
+
+                                    <th class="mid_th">F8</th>
+                                    <th class="mid_th" width="100"></th><th class="mid_th"></th> </tr>
+
+                                <tr class="inner_div">
+
+                                    <th class="mid_th">F9</th>
+                                    <th class="mid_th" width="100"></th><th class="mid_th"></th>            </tr>
+
+                            </tbody></table>
+                        <table class="blank_ul ml-1">
+                            <tbody><tr class="inner_div">
+
+                                <th class="mid_th comtab">F10</th>
+                                <th class="mid_th" width="100"></th><th class="mid_th"></th></tr>
+
+                                <tr class="inner_div">
+
+                                    <th class="mid_th">F11</th>
+                                    <th class="mid_th" width="100"></th><th class="mid_th"></th> </tr>
+
+                                <tr class="inner_div">
+                                    <th class="mid_th">F12</th>
+                                    <th class="mid_th" width="100"></th><th class="mid_th"></th></tr>
+
+                            </tbody></table>
+                    </div>
                 </fieldset>
+
                 <fieldset className="DispatchInfoDriver">
 
                     <legend> Dispatch info to Driver </legend>
@@ -456,11 +529,10 @@ const TriplogWrap = () => {
                                                 id="pickupaddress"
                                                 placeholder="Pick-up-Address"
                                                 name="pickup_address"
-                                                className={`form-control ${
-                                                    touched.pickup_address && errors.pickup_address
-                                                      ? "is-invalid"
-                                                      : ""
-                                                  }`}
+                                                className={`form-control ${touched.pickup_address && errors.pickup_address
+                                                    ? "is-invalid"
+                                                    : ""
+                                                    }`}
 
                                             />
                                             <Field
@@ -561,11 +633,10 @@ const TriplogWrap = () => {
                                                 name="dropoff_address"
                                                 id="dropofaddress"
                                                 placeholder="drop-off-Address"
-                                                className={`form-control ${
-                                                    touched.dropoff_address && errors.dropoff_address
-                                                      ? "is-invalid"
-                                                      : ""
-                                                  }`}
+                                                className={`form-control ${touched.dropoff_address && errors.dropoff_address
+                                                    ? "is-invalid"
+                                                    : ""
+                                                    }`}
 
                                             />
 
@@ -588,15 +659,14 @@ const TriplogWrap = () => {
                                             <Field
                                                 placeholder="Fare"
                                                 name="fare"
-                                                className={`form-control ${
-                                                    touched.fare && errors.fare
-                                                      ? "is-invalid"
-                                                      : ""
-                                                  }`}
+                                                className={`form-control ${touched.fare && errors.fare
+                                                    ? "is-invalid"
+                                                    : ""
+                                                    }`}
                                             />
-                                            
+
                                         </div>
-                                        
+
                                         <div className="col-1 pr-0">
                                             <Field as="select" className="form-control w-100" name="car_no">
                                                 {userDetails.FleetDevices && userDetails.FleetDevices.map(el => (
@@ -606,11 +676,11 @@ const TriplogWrap = () => {
                                         </div>
                                         <div className="col-2 pr-0">
 
-                                        <Field as="select" className="form-control w-100" name="cab_name">
+                                            <Field as="select" className="form-control w-100" name="cab_name">
                                                 {userDetails.CarType && userDetails.CarType.map(el => (
                                                     <option value={el.label} >{el.label}</option>
                                                 ))}
-                                        </Field>
+                                            </Field>
                                         </div>
                                         <div className="col-4 pr-0">
                                             <Button

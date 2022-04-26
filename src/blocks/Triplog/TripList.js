@@ -294,6 +294,7 @@ const TripList = (props) => {
        return(
            
             props.trips.map(function(trip){
+                console.log("triplist....",trip)
                
                 //let eta = 0;
                 let bgclass,back_class,blink_class='';
@@ -321,10 +322,10 @@ const TripList = (props) => {
                         {Object.keys(TriplogSetting).map((key,TriplogSetng)=>{
                             return getTriplogColumn(key,trip,DispatcherId,blink_class,bgclass);
                         })}    
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
                     </tr>
                 )
             })

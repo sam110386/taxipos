@@ -106,6 +106,29 @@ overflow-y: scroll;
 max-height:85%;  
 margin-top: 50px; 
 margin-bottom:50px;  
+z-index: 9 !important;
+}
+
+.mid_th{
+  border: 2px solid black;
+height: 22px;
+text-align: left;
+}
+
+.blank_ul{
+  float: left;
+width:24%;
+height:94px;
+border: 1px solid black;
+
+border-collapse:collapse;
+}
+.inner_div{
+  height:22px;
+border: 1px solid black;
+}
+colored{
+  background-color: #C0C0C0;
 }
 .header .container .navbar-nav   li a {
   /* font-size: 14px; */
@@ -3198,6 +3221,30 @@ section.review_sec {
     line-height: 32px;
     color: #5E6282;
     margin-bottom: 30px;
+}
+
+#latestCallerInfo{
+  width: 90%;float: right;
+}
+
+.comtab{
+  width:26px;
+}
+.tripModal{
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1.5px 5px 0 rgba(0, 0, 0, 0.19);
+  border: 2px solid black;
+}
+
+.chat-sidebar {
+  width: 10%;
+  position: absolute;
+  height: 80px;
+  left: 0px;
+  bottom: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 1px solid rgba(29, 49, 91, .3);
+  overflow-y: scroll;
 }
 
 
