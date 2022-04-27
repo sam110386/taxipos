@@ -11,13 +11,14 @@ const path = {
   BOOK_VEHICLE: "book",
   ADD_VEHICLE_TO_FAVOURITE: "addVehicleToWishlist",
   REMOVE_VEHICLE_TO_FAVOURITE: "removeWishlistVehicle",
-  SEND_PUSH_NOTIFICATION : "/dispachers/send_push_notification"
+  CREATE_TRIPE : "/dispachers/send_push_notification",
+  GET_FARE:"getfare",
+  CANCEL_TRIP:"cancel"
 };
 
 export const getCurrentDateTime = async (data) => {
   try {
     const res = await API.get(path.GET_CURRENT_TIME, data);
-    console.log("current time",res.data)
     return res;
   } catch (err) {
     return null;
@@ -27,6 +28,17 @@ export const getCurrentDateTime = async (data) => {
 export const getTriplist = async (data) => {
   try {
     const res = await API.post(path.GET_TRIP_LIST, data, getHeader());
+    console.log("triplist",res.data)
+    return res;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const getFare = async (data) => {
+  console.log("faresub",data)
+  try {
+    const res = await API.post(path.GET_FARE, data, getHeader());
     return res;
   } catch (err) {
     return null;
@@ -34,10 +46,20 @@ export const getTriplist = async (data) => {
 };
 
 
-export const sendPushNotification = async (data) => {
+export const createTrip = async (data) => {
   try {
-    const res = await API.post(path.SEND_PUSH_NOTIFICATION, data, getHeader())
-    console.log("sendpush",res.data)
+    const res = await API.post(path.CREATE_TRIPE, data, getHeader())
+    console.log("CRETAE TRIPE",res.data)
+    return res;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const cancelTrip = async (data) => {
+  try {
+    const res = await API.post(path.CANCEL_TRIP, data, getHeader())
+    console.log("CRETAE TRIPE",res.data)
     return res;
   } catch (err) {
     return null;

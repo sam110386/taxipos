@@ -108,6 +108,15 @@ margin-top: 50px;
 margin-bottom:50px;  
 z-index: 9 !important;
 }
+.rmbtn{
+  cursor: pointer;
+  height: 1.2rem;
+  margin: .5rem;
+}
+.notrip{
+  
+}
+
 
 .mid_th{
   border: 2px solid black;
@@ -3230,10 +3239,7 @@ section.review_sec {
 .comtab{
   width:26px;
 }
-.tripModal{
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1.5px 5px 0 rgba(0, 0, 0, 0.19);
-  border: 2px solid black;
-}
+
 
 .chat-sidebar {
   width: 10%;

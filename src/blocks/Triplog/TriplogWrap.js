@@ -44,6 +44,7 @@ const TriplogWrap = () => {
     const [pickupAddressLng, setPickupAddressLng] = useState("");
     const [dropofAddressLat, setDropofAddressLat] = useState("");
     const [dropofAddressLng, setDropofAddressLng] = useState("");
+    const [cabName ,setCabName] = useState("Business Sedan");
 
     const { user, userDetails } = useSelector((state) => {
         return {
@@ -154,15 +155,14 @@ const TriplogWrap = () => {
                 "dropoff_lng",
                 dropofAddressLng
             );
+          
         }
 
     }, [pickupAddress, dropofAddress])
 
 
-
-
-
     const onError = (message) => {
+        toast.error(message)
         //setError(true);
     };
 
@@ -180,7 +180,6 @@ const TriplogWrap = () => {
             const res = await TriplogServices.getCurrentDateTime();
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-                    console.log("current time", res.data)
                     setCurrentPickupTime(res.data.time);
                     setCurrentDate(res.data.date);
                     let currentTime = moment(res.data.date + " " + res.data.time);
@@ -243,7 +242,7 @@ const TriplogWrap = () => {
 
         try {
             setSubmitting(true);
-            const res = await TriplogServices.sendPushNotification(values);
+            const res = await TriplogServices.createTrip(values);
             setSubmitting(false);
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
@@ -274,10 +273,16 @@ const TriplogWrap = () => {
             onError();
         }
     };
-    const getFate = async (values) => {
+    const getFate = async (value) => {
+        
+        if(!value.pickupAddress){
+            return toast("Please Enter Pick-up-Address")
+        }else if(!value.dropofAddress){
+            return toast("Please Enter Drop-of-Address")
+        }
         try {
             setSubmitting(true);
-            const res = await TriplogServices.getTriplist({});
+            const res = await TriplogServices.getFare({orglatlng:`${value.pickupAddressLat},${value.pickupAddressLng}`,deslatlng:`${value.dropofAddressLat},${value.dropofAddressLng}`,orgadress:value.pickupAddress,desadress:value.dropofAddress,cab_type:value.cabName});
             setSubmitting(false);
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
@@ -400,6 +405,9 @@ const TriplogWrap = () => {
     useEffect(() => {
         initialize()
     }, []);
+
+    console.log("cabname",cabName)
+
     return (
         <React.Fragment >
             <div >
@@ -579,8 +587,6 @@ const TriplogWrap = () => {
                                                 name="telephone"
                                                 placeholder="Telephone"
                                                 className="form-control"
-
-
                                             />
                                             <br />
 
@@ -611,16 +617,13 @@ const TriplogWrap = () => {
                                                 </div>
                                             ) : null}
                                         </div>
-
-
-
                                         <div className="col-2 pr-0">
                                             <div role="group" aria-labelledby="checkbox-group">
                                                 <label>
                                                     <Field
                                                         type="checkbox"
                                                         name="TextShare"
-                                                        defaultChecked={userDetails.ShareAllowed ? true : false}
+                                                
                                                     />
                                                     Sharing Allowed
                                                 </label>
@@ -637,9 +640,7 @@ const TriplogWrap = () => {
                                                     ? "is-invalid"
                                                     : ""
                                                     }`}
-
                                             />
-
                                             <Field
                                                 name="dropoff_lat"
                                                 type="hidden"
@@ -670,13 +671,13 @@ const TriplogWrap = () => {
                                         <div className="col-1 pr-0">
                                             <Field as="select" className="form-control w-100" name="car_no">
                                                 {userDetails.FleetDevices && userDetails.FleetDevices.map(el => (
-                                                    <option  >{el.label}</option>
+                                                    <option value={el.label}>{el.label}</option>
                                                 ))}
                                             </Field>
                                         </div>
                                         <div className="col-2 pr-0">
 
-                                            <Field as="select" className="form-control w-100" name="cab_name">
+                                            <Field as="select" className="form-control w-100" name="cab_name" onChange={(e)=>{setCabName(e.target.value)}}>
                                                 {userDetails.CarType && userDetails.CarType.map(el => (
                                                     <option value={el.label} >{el.label}</option>
                                                 ))}
@@ -693,7 +694,7 @@ const TriplogWrap = () => {
 
                                             <Button
                                                 className="border btn btn-success text-capitalize ml-1"
-                                                onClick={() => getFate()}
+                                                onClick={() => getFate({pickupAddress,pickupAddressLat,pickupAddressLng,dropofAddress,dropofAddressLat,dropofAddressLng,cabName})}
                                                 to={``}
                                             >
                                                 Get Fare
@@ -754,10 +755,10 @@ const TriplogWrap = () => {
                         </Button>
                     </div>
                 </div>
+                
                 <Trips trips={Triplist} openTripDetails={openTripDetails} />
-                {submiting && <FullPageLoader />}
                 {showEditTrip && <EditTripDetails currentBooking={currentBooking} SetShowEditTrip={SetShowEditTrip} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
-                {showDetails && <TripDetails currentBooking={currentBooking} SetShowTrip={setShowDetails} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
+                {showDetails && <TripDetails  SetShowTrip={setShowDetails} />}
             </div>
         </React.Fragment>
     );

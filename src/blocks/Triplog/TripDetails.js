@@ -20,12 +20,7 @@ const TripDetails = (props) => {
         fare: Yup.number("Please Enter Currect Fare")
     });
 
-    const [device_id, setDeviceId] = useState('');
-    const [editable, setEditable] = useState(false);
-    const [selectedOption, setSelectedOption] = useState('');
-    const [shareallowed, setShareallowed] = useState(false);
-    const [accountnos, setAccountNo] = useState(props.currentBooking.account_setting);
-    const [tripLog, setTripLog] = useState(props.currentBooking.Triplog);
+  
     const [CurrentPickupTime, setCurrentPickupTime] = useState(0);
     const [CurrentDate, setCurrentDate] = useState(0);
     const [Triplist, setTriplist] = useState([]);
@@ -253,45 +248,45 @@ const TripDetails = (props) => {
         initialize();
     }, [])
 
-    const initall = () => {
-        setAccountNo(props.currentBooking.account_setting);
-        setTripLog(props.currentBooking.Triplog);
+    // const initall = () => {
+    //     setAccountNo(props.currentBooking.account_setting);
+    //     setTripLog(props.currentBooking.Triplog);
 
-        if (tripLog.send_order == 'all') {
-            if ((tripLog.device_id).length > 0) {
-                setDeviceId(tripLog.device_id);
-            } else {
-                setDeviceId("all");
-            }
-        } else {
-            if ((tripLog.device_id).length > 0) {
-                setDeviceId(tripLog.device_id);
-            } else {
-                setDeviceId("");
-            }
-        }
-        if (tripLog.status == 0 || tripLog.status == 1 || tripLog.status == 3) {
-            setEditable(false);
-        } else {
-            setEditable(true);
-        }
-        if (tripLog.status == 0) {
-            setEditable(false);
-        } else {
-            setEditable(true);
-        }
+    //     if (tripLog.send_order == 'all') {
+    //         if ((tripLog.device_id).length > 0) {
+    //             setDeviceId(tripLog.device_id);
+    //         } else {
+    //             setDeviceId("all");
+    //         }
+    //     } else {
+    //         if ((tripLog.device_id).length > 0) {
+    //             setDeviceId(tripLog.device_id);
+    //         } else {
+    //             setDeviceId("");
+    //         }
+    //     }
+    //     if (tripLog.status == 0 || tripLog.status == 1 || tripLog.status == 3) {
+    //         setEditable(false);
+    //     } else {
+    //         setEditable(true);
+    //     }
+    //     if (tripLog.status == 0) {
+    //         setEditable(false);
+    //     } else {
+    //         setEditable(true);
+    //     }
 
-        if (tripLog.is_uber == 1) {
-            setSelectedOption('uber');
-        } else if (tripLog.is_uber == 0 && (tripLog.car_no).length > 0 && tripLog.car_no != "Car #") {
-            setSelectedOption(tripLog.device_id);
-        } else if (tripLog.send_order == 'all' && tripLog.call_type != 'NET') {
-            setSelectedOption('all');
-        } else if (tripLog.call_type == 'NET') {
-            setSelectedOption('net');
-        }
-        setShareallowed(tripLog.share)
-    }
+    //     if (tripLog.is_uber == 1) {
+    //         setSelectedOption('uber');
+    //     } else if (tripLog.is_uber == 0 && (tripLog.car_no).length > 0 && tripLog.car_no != "Car #") {
+    //         setSelectedOption(tripLog.device_id);
+    //     } else if (tripLog.send_order == 'all' && tripLog.call_type != 'NET') {
+    //         setSelectedOption('all');
+    //     } else if (tripLog.call_type == 'NET') {
+    //         setSelectedOption('net');
+    //     }
+    //     setShareallowed(tripLog.share)
+    // }
 
     // useEffect(() => {
     //     initall()
@@ -738,8 +733,6 @@ const TripDetails = (props) => {
 
                                                             <span> Moday </span>
                                                         </div>
-
-
 
                                                         <div className="form-group col-md-12 mt-4">
                                                             <label className="form_lbl">&nbsp; </label>

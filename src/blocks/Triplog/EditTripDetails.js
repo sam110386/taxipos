@@ -26,7 +26,6 @@ const EditTripDetails = (props) => {
             userDetails: state.auth.userDetails
         };
     });
-    console.log('EditTripDetails');
     const initall = () => {
         setAccountNo(props.currentBooking.account_setting);
         setTripLog(props.currentBooking.Triplog);
@@ -72,7 +71,7 @@ const EditTripDetails = (props) => {
     }, []);
     return (
         <React.Fragment>
-            <div className="modal d-block" tabIndex="-1" role="dialog">
+            <div className="modal d-block mymodal" tabIndex="-1" role="dialog">
             <div className="modal-dialog" role="document">
                 <div className="modal-content">
                 <div className="align-items-center justify-content-center position-relative">
