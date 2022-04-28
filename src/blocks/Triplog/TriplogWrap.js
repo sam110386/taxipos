@@ -7,15 +7,12 @@ import * as TriplogServices from '../../services/TriplogService';
 import { FullPageLoader } from "../Loaders";
 import { Button } from "@material-ui/core";
 import moment from "moment";
-
 import Trips from "./TripList";
 import EditTripDetails from "./EditTripDetails";
 import toast, { Toaster } from 'react-hot-toast';
 import TripDetails from "./TripDetails";
-import TimePicker from 'react-time-picker';
-
-
-
+import { loadTripListDataSuccess } from "../../store/actions/TripAction";
+import { store } from "../../store/store";
 
 const TriplogWrap = () => {
 
@@ -44,12 +41,13 @@ const TriplogWrap = () => {
     const [pickupAddressLng, setPickupAddressLng] = useState("");
     const [dropofAddressLat, setDropofAddressLat] = useState("");
     const [dropofAddressLng, setDropofAddressLng] = useState("");
-    const [cabName ,setCabName] = useState("Business Sedan");
+    const [cabName, setCabName] = useState("Business Sedan");
 
-    const { user, userDetails } = useSelector((state) => {
+    const { user,trip, userDetails } = useSelector((state) => {
         return {
             user: state.auth,
-            userDetails: state.auth.userDetails
+            userDetails: state.auth.userDetails,
+            trip:state.trip
         };
     });
 
@@ -84,7 +82,6 @@ const TriplogWrap = () => {
         var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddress")), {
             types: ['geocode']
         });
-
         window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var placeorg = autocomplete.getPlace();
             setDropofAddressLat(placeorg.geometry.location.lat())
@@ -97,7 +94,6 @@ const TriplogWrap = () => {
         var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("pickupaddress")), {
             types: ['geocode']
         });
-
         window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var placeorg = autocomplete.getPlace();
             setPickupAddressLat(placeorg.geometry.location.lat())
@@ -105,7 +101,6 @@ const TriplogWrap = () => {
             setPickupAddress(placeorg.formatted_address)
         });
     }
-
 
     useEffect(() => {
         getPickupAddress()
@@ -116,17 +111,12 @@ const TriplogWrap = () => {
         formikRef.current.setFieldValue(
             "pickup_time",
             CurrentPickupTime
-
         );
         formikRef.current.setFieldValue(
             "pickup_date",
             CurrentDate
-
         );
-
     }, [CurrentPickupTime, CurrentDate]);
-
-
 
 
     useEffect(() => {
@@ -155,7 +145,7 @@ const TriplogWrap = () => {
                 "dropoff_lng",
                 dropofAddressLng
             );
-          
+
         }
 
     }, [pickupAddress, dropofAddress])
@@ -204,7 +194,7 @@ const TriplogWrap = () => {
             const res = await TriplogServices.getTriplist();
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-
+                    store.dispatch(loadTripListDataSuccess(res.data.result))
                     setTriplist(res.data.result);
                     return;
                 }
@@ -237,15 +227,15 @@ const TriplogWrap = () => {
         }
     };
     const handleSubmit = async (values) => {
-
-        console.log("Submit", values)
-
         try {
             setSubmitting(true);
             const res = await TriplogServices.createTrip(values);
             setSubmitting(false);
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
+                    console.log("dispatalksjdf",res.data)
+                    store.dispatch(loadTripListDataSuccess(res.data.result))
+                    toast.success(res.data.message)
                     // onSuccess(res.data);
                     return;
                 }
@@ -256,6 +246,7 @@ const TriplogWrap = () => {
             onError();
         }
     };
+
     const fareEstimate = async (values) => {
         try {
             setSubmitting(true);
@@ -274,15 +265,15 @@ const TriplogWrap = () => {
         }
     };
     const getFate = async (value) => {
-        
-        if(!value.pickupAddress){
+
+        if (!value.pickupAddress) {
             return toast("Please Enter Pick-up-Address")
-        }else if(!value.dropofAddress){
+        } else if (!value.dropofAddress) {
             return toast("Please Enter Drop-of-Address")
         }
         try {
             setSubmitting(true);
-            const res = await TriplogServices.getFare({orglatlng:`${value.pickupAddressLat},${value.pickupAddressLng}`,deslatlng:`${value.dropofAddressLat},${value.dropofAddressLng}`,orgadress:value.pickupAddress,desadress:value.dropofAddress,cab_type:value.cabName});
+            const res = await TriplogServices.getFare({ orglatlng: `${value.pickupAddressLat},${value.pickupAddressLng}`, deslatlng: `${value.dropofAddressLat},${value.dropofAddressLng}`, orgadress: value.pickupAddress, desadress: value.dropofAddress, cab_type: value.cabName });
             setSubmitting(false);
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
@@ -406,21 +397,36 @@ const TriplogWrap = () => {
         initialize()
     }, []);
 
-    console.log("cabname",cabName)
+    window.$('#timepicker').timepicker({
+        dynamic: false,
+    });
+
+    window.$('#notification').timepicker({
+        timeFormat: 'H:mm',
+        interval: 10,
+        minTime: '00:10',
+        maxTime: '11:59pm',
+        defaultTime: '11',
+        startTime: '00:10',
+        dynamic: false,
+        dropdown: true,
+        scrollbar: true
+    });
+
+
+    console.log("cabname", cabName)
 
     return (
         <React.Fragment >
             <div >
                 <fieldset className="pendingentries" >
                     <legend>Pending Entries</legend>
-                    <img src="/images/clear_button.png" alt="Clear" className="clearchatsidebar mb-1"  />
-                    
+                    <img src="/images/clear_button.png" alt="Clear" className="clearchatsidebar mb-1" />
+
                     <section className="chat-sidebar" id="chatsidebar">
 
-    
+
                     </section>
-
-
                     <div id="latestCallerInfo" >
 
                         <table class="blank_ul">
@@ -495,7 +501,7 @@ const TriplogWrap = () => {
 
                 <fieldset className="DispatchInfoDriver">
 
-                    <legend> Dispatch info to Driver </legend>
+                    <legend>Dispatch info to Driver</legend>
                     <Formik
                         innerRef={formikRef}
                         initialValues={initiaal_Values}
@@ -512,6 +518,7 @@ const TriplogWrap = () => {
                                             name="TextCity"
                                             type="hidden"
                                             className="form-control"
+
                                         />
                                         <Field
                                             name="TextState"
@@ -537,6 +544,7 @@ const TriplogWrap = () => {
                                                 id="pickupaddress"
                                                 placeholder="Pick-up-Address"
                                                 name="pickup_address"
+                                                autocomplete="off"
                                                 className={`form-control ${touched.pickup_address && errors.pickup_address
                                                     ? "is-invalid"
                                                     : ""
@@ -564,6 +572,8 @@ const TriplogWrap = () => {
                                         <div className="col-1 pl-0">
                                             <Field
                                                 name="pickup_time"
+                                                id="timepicker"
+                                                autocomplete="off"
                                                 className="form-control cur_time_log"
                                             />
 
@@ -572,14 +582,17 @@ const TriplogWrap = () => {
                                             <Field
                                                 type="date"
                                                 name="pickup_date"
+                                                autocomplete="off"
                                                 className="form-control unstyled"
                                             />
                                         </div>
                                         <div className="col-1">
                                             <Field
-                                                name="TextDirectNotificationTime"
+                                                name="direct_notification_time"
                                                 placeholder="Notification"
+                                                id="notification"
                                                 className="form-control"
+                                                autocomplete="off"
                                             />
                                         </div>
                                         <div className="col-1 pl-0">
@@ -587,6 +600,7 @@ const TriplogWrap = () => {
                                                 name="telephone"
                                                 placeholder="Telephone"
                                                 className="form-control"
+                                                autocomplete="off"
                                             />
                                             <br />
 
@@ -601,14 +615,13 @@ const TriplogWrap = () => {
                                             name="TextDetails"
                                             type="hidden"
                                             className="form-control"
-
-
                                         />
                                         <div className="col-1 pr-0 pl-0">
                                             <Field
                                                 placeholder="Account Number"
                                                 name="account_no"
                                                 className="form-control"
+                                                autocomplete="off"
                                             />
                                             <br />
                                             {errors.account_no && touched.account_no ? (
@@ -623,7 +636,7 @@ const TriplogWrap = () => {
                                                     <Field
                                                         type="checkbox"
                                                         name="TextShare"
-                                                
+
                                                     />
                                                     Sharing Allowed
                                                 </label>
@@ -635,6 +648,7 @@ const TriplogWrap = () => {
                                             <Field
                                                 name="dropoff_address"
                                                 id="dropofaddress"
+                                                autocomplete="off"
                                                 placeholder="drop-off-Address"
                                                 className={`form-control ${touched.dropoff_address && errors.dropoff_address
                                                     ? "is-invalid"
@@ -660,6 +674,7 @@ const TriplogWrap = () => {
                                             <Field
                                                 placeholder="Fare"
                                                 name="fare"
+                                                autocomplete="off"
                                                 className={`form-control ${touched.fare && errors.fare
                                                     ? "is-invalid"
                                                     : ""
@@ -677,7 +692,7 @@ const TriplogWrap = () => {
                                         </div>
                                         <div className="col-2 pr-0">
 
-                                            <Field as="select" className="form-control w-100" name="cab_name" onChange={(e)=>{setCabName(e.target.value)}}>
+                                            <Field as="select" className="form-control w-100" name="cab_name" onChange={(e) => { setCabName(e.target.value) }}>
                                                 {userDetails.CarType && userDetails.CarType.map(el => (
                                                     <option value={el.label} >{el.label}</option>
                                                 ))}
@@ -694,7 +709,7 @@ const TriplogWrap = () => {
 
                                             <Button
                                                 className="border btn btn-success text-capitalize ml-1"
-                                                onClick={() => getFate({pickupAddress,pickupAddressLat,pickupAddressLng,dropofAddress,dropofAddressLat,dropofAddressLng,cabName})}
+                                                onClick={() => getFate({ pickupAddress, pickupAddressLat, pickupAddressLng, dropofAddress, dropofAddressLat, dropofAddressLng, cabName })}
                                                 to={``}
                                             >
                                                 Get Fare
@@ -720,7 +735,6 @@ const TriplogWrap = () => {
                             </Form>
                         )}
                     </Formik>
-
 
                 </fieldset>
                 <div className="row">
@@ -755,10 +769,10 @@ const TriplogWrap = () => {
                         </Button>
                     </div>
                 </div>
-                
-                <Trips trips={Triplist} openTripDetails={openTripDetails} />
+
+                <Trips trips={trip.tripList} openTripDetails={openTripDetails} />
                 {showEditTrip && <EditTripDetails currentBooking={currentBooking} SetShowEditTrip={SetShowEditTrip} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
-                {showDetails && <TripDetails  SetShowTrip={setShowDetails} />}
+                {showDetails && <TripDetails SetShowTrip={setShowDetails} />}
             </div>
         </React.Fragment>
     );

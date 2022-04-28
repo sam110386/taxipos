@@ -243,6 +243,7 @@ const TripDetails = (props) => {
             onError();
         }
     }
+  
 
     useEffect(() => {
         initialize();
@@ -292,6 +293,22 @@ const TripDetails = (props) => {
     //     initall()
     // }, []);
     console.log("drop2", dropofAddress2)
+    window.$('#timepicker').timepicker({
+        dynamic: false,
+        dropdown: true,
+    });
+
+    window.$('#notifi').timepicker({
+        timeFormat: 'H:mm',
+        interval: 10,
+        minTime: '00:10',
+        maxTime: '11:59pm',
+        defaultTime: '11',
+        startTime: '00:10',
+        dynamic: false,
+        dropdown: true,
+        scrollbar: true
+    });
     return (
         <React.Fragment>
             <div className="modal d-block mymodal tripModal" tabIndex="-1" role="dialog">
@@ -351,6 +368,8 @@ const TripDetails = (props) => {
                                                                     name="pickup_date"
                                                                     type="date"
                                                                     className="form-control"
+                                                                     autocomplete="off"
+
                                                                 />
                                                             </div>
                                                         </div>
@@ -359,7 +378,9 @@ const TripDetails = (props) => {
                                                                 <label className="form_lbl">Pick Up Time: </label>
                                                                 <Field
                                                                     name="pickup_time"
+                                                                    id="timepicker"
                                                                     className="form-control cur_time_log"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -368,9 +389,11 @@ const TripDetails = (props) => {
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Notification: </label>
                                                                 <Field
-                                                                    name="TextDirectNotificationTime"
+                                                                    name="direct_notification_time"
+                                                                    id="notifi"
                                                                     placeholder="Notification"
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -381,6 +404,7 @@ const TripDetails = (props) => {
                                                                     name="pickup_address"
                                                                     id="pickupaddressid"
                                                                     placeholder="Pick-up-Address"
+                                                                    autocomplete="off"
                                                                     className={`form-control ${touched.pickup_address && errors.pickup_address
                                                                         ? "is-invalid"
                                                                         : ""
@@ -405,6 +429,7 @@ const TripDetails = (props) => {
                                                                     placeholder="Pick-up-Address"
                                                                     name="pickup_address2"
                                                                     className="form-control autoCompleteAddress"
+                                                                    autocomplete="off"
 
                                                                 />
                                                             </div>
@@ -416,6 +441,7 @@ const TripDetails = (props) => {
                                                                     name="dropoff_address"
                                                                     id="dropofaddressid"
                                                                     placeholder="drop-off-Address"
+                                                                    autocomplete="off"
                                                                     className={`form-control ${touched.dropoff_address && errors.dropoff_address
                                                                         ? "is-invalid"
                                                                         : ""
@@ -433,7 +459,7 @@ const TripDetails = (props) => {
                                                                     id="dropofaddressid2"
                                                                     placeholder="Please Enter Drop-off-Address"
                                                                     className="form-control autoCompleteAddress"
-
+                                                                    autocomplete="off"
                                                                 />
                                                                 <Field
                                                                     name="dropoff_lat"
@@ -453,6 +479,7 @@ const TripDetails = (props) => {
                                                                     placeholder="Please Enter Pickup Cross Street"
                                                                     name="pickup_cross_street"
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -464,6 +491,7 @@ const TripDetails = (props) => {
                                                                     name="dropoff_cross_street"
                                                                     placeholder="Please Enter Drop Cross Street"
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -474,6 +502,7 @@ const TripDetails = (props) => {
                                                                     placeholder="Please Enter Telephone Number"
                                                                     name="telephone"
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -485,6 +514,7 @@ const TripDetails = (props) => {
                                                                     name="passenger_name"
                                                                     placeholder="Please Enter Passenger Name "
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -512,6 +542,7 @@ const TripDetails = (props) => {
                                                                     name="dispatchTime"
                                                                     placeholder="Please Enter Dispatch Time "
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -522,6 +553,7 @@ const TripDetails = (props) => {
                                                                 <Field
                                                                     name="fare"
                                                                     placeholder="Please Enter Tip "
+                                                                    autocomplete="off"
                                                                     className={`form-control ${touched.fare && errors.fare
                                                                         ? "is-invalid"
                                                                         : ""
@@ -536,6 +568,7 @@ const TripDetails = (props) => {
                                                                     name="tip"
                                                                     placeholder="Please Enter Fare "
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -546,6 +579,7 @@ const TripDetails = (props) => {
                                                                     name="tolls"
                                                                     placeholder="Please Enter tolls "
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -556,6 +590,7 @@ const TripDetails = (props) => {
                                                                     name="waittime"
                                                                     placeholder="Please Enter wait Time "
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -566,6 +601,7 @@ const TripDetails = (props) => {
                                                                     name="Stops"
                                                                     placeholder="Please Enter stop "
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -576,6 +612,7 @@ const TripDetails = (props) => {
                                                                     name="Misc"
                                                                     placeholder="Please Enter Misc "
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -586,6 +623,7 @@ const TripDetails = (props) => {
                                                                     name="account_no"
                                                                     placeholder="Please Enter Account Number "
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -596,6 +634,7 @@ const TripDetails = (props) => {
                                                                     name="VoucherNo"
                                                                     placeholder="Please Enter stop "
                                                                     className="form-control"
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -608,7 +647,7 @@ const TripDetails = (props) => {
                                                                 <Field
                                                                     id="notes"
                                                                     name="notes"
-
+                                                                    autocomplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -641,9 +680,6 @@ const TripDetails = (props) => {
                                                                 value="1"
                                                             />
                                                         </div>
-
-
-
                                                         <div className="col-md-3 text-left mt-4">
                                                             <div >
                                                                 Copy Same Trip For Date Range With Days:

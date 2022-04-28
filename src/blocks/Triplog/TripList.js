@@ -9,21 +9,26 @@ import { render } from "react-dom";
 import moment from "moment";
 import { FcCancel } from 'react-icons/fc';
 import toast from "react-hot-toast";
+import { store } from "../../store/store";
+import { loadTripListDataRemove ,loadTripListDataSuccess} from "../../store/actions/TripAction";
 
 const TripList = (props) => {
 
     //const [Trips, setTrips] = useState(props.trips);
     const [submiting, setSubmitting] = useState(false);
 
-    const { user, userDetails, TriplogSetting, TriplogSettingFields, DispatcherId } = useSelector((state) => {
+    const { user,trip, userDetails, TriplogSetting, TriplogSettingFields, DispatcherId } = useSelector((state) => {
         return {
             user: state.auth,
             userDetails: state.auth.userDetails,
             TriplogSetting: state.auth.userDetails.TriplogSetting,
             TriplogSettingFields: state.auth.userDetails.TriplogSettingFields,
-            DispatcherId: state.auth.userDetails.DispatcherId
+            DispatcherId: state.auth.userDetails.DispatcherId,
+            trip:state.trip
         };
     });
+
+    console.log("tripdetailsss",trip)
     const openTripDetails = async (trip, dispacher, el) => {
         props.openTripDetails(trip, dispacher, el);
     };
@@ -297,12 +302,19 @@ const TripList = (props) => {
 
     }
     const CancelTrip = async(tripid)=>{ 
+        console.log(">>>>>>>>>>>>2",trip.tripList);
+        console.log(">>>>>>>>>>>>>>>>>>",trip.tripList.filter((item) => item.Triplog.id !== tripid))
             try {
                 setSubmitting(true);
                 const res = await TriplogServices.cancelTrip({id:tripid});
+                
                 setSubmitting(false);
                 if (res && res.status === 200) {
                     if (res.data && res.data.status === 1) {
+                       
+                       
+                        store.dispatch(loadTripListDataSuccess(trip.tripList.filter((item) => item.Triplog.id !== {id:tripid})))
+                        // store.dispatch(loadTripListDataRemove()
                         toast.success(res.data.message)
                         return;
                     }
@@ -324,7 +336,6 @@ const TripList = (props) => {
                 } else {
                     bgclass = getTriplogStatus(trip['Triplog']['status']);
                 }
-
                 if (trip['Triplog']['uu_trip_id'] != "" || trip['Triplog']['process_type'] == "booking" || trip['Triplog']['process_type'] == "kiosk") {
                     back_class = 'gray';
                 }

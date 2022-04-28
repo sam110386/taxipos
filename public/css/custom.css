@@ -106,6 +106,7 @@ overflow-y: scroll;
 max-height:85%;  
 margin-top: 50px; 
 margin-bottom:50px;  
+/* z-index: inherit; */
 z-index: 9 !important;
 }
 .rmbtn{
@@ -115,6 +116,11 @@ z-index: 9 !important;
 }
 .notrip{
   
+}
+.ui-timepicker-container{ 
+  z-index:9 !important; 
+  width: 20%;
+  height: 20%;
 }
 
 

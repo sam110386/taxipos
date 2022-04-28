@@ -11,7 +11,7 @@ const path = {
   BOOK_VEHICLE: "book",
   ADD_VEHICLE_TO_FAVOURITE: "addVehicleToWishlist",
   REMOVE_VEHICLE_TO_FAVOURITE: "removeWishlistVehicle",
-  CREATE_TRIPE : "/dispachers/send_push_notification",
+  CREATE_TRIPE : "/createTrip",
   GET_FARE:"getfare",
   CANCEL_TRIP:"cancel"
 };
@@ -36,7 +36,6 @@ export const getTriplist = async (data) => {
 };
 
 export const getFare = async (data) => {
-  console.log("faresub",data)
   try {
     const res = await API.post(path.GET_FARE, data, getHeader());
     return res;
@@ -49,7 +48,6 @@ export const getFare = async (data) => {
 export const createTrip = async (data) => {
   try {
     const res = await API.post(path.CREATE_TRIPE, data, getHeader())
-    console.log("CRETAE TRIPE",res.data)
     return res;
   } catch (err) {
     return null;
