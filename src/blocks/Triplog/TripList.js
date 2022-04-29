@@ -10,25 +10,28 @@ import moment from "moment";
 import { FcCancel } from 'react-icons/fc';
 import toast from "react-hot-toast";
 import { store } from "../../store/store";
-import { loadTripListDataRemove ,loadTripListDataSuccess} from "../../store/actions/TripAction";
+import { loadTripListDataRemove, loadTripListDataSuccess } from "../../store/actions/TripAction";
 
 const TripList = (props) => {
 
-    //const [Trips, setTrips] = useState(props.trips);
     const [submiting, setSubmitting] = useState(false);
+    const [tripAllList, setTripAllList] = useState([])
 
-    const { user,trip, userDetails, TriplogSetting, TriplogSettingFields, DispatcherId } = useSelector((state) => {
+    useEffect(() => {
+        setTripAllList(props.trips)
+    }, [props.trips])
+
+    const { user, userDetails, TriplogSetting, TriplogSettingFields, DispatcherId } = useSelector((state) => {
         return {
             user: state.auth,
             userDetails: state.auth.userDetails,
             TriplogSetting: state.auth.userDetails.TriplogSetting,
             TriplogSettingFields: state.auth.userDetails.TriplogSettingFields,
             DispatcherId: state.auth.userDetails.DispatcherId,
-            trip:state.trip
         };
     });
 
-    console.log("tripdetailsss",trip)
+
     const openTripDetails = async (trip, dispacher, el) => {
         props.openTripDetails(trip, dispacher, el);
     };
@@ -298,23 +301,25 @@ const TripList = (props) => {
             return "";
         }
     }
-    const onError = () =>{
+    const onError = () => {
 
     }
-    const CancelTrip = async(tripid)=>{ 
-        console.log(">>>>>>>>>>>>2",trip.tripList);
-        console.log(">>>>>>>>>>>>>>>>>>",trip.tripList.filter((item) => item.Triplog.id !== tripid))
+
+ 
+
+    const CancelTrip = async (i, tripid) => {
+        const confir = window.confirm("Are you sure you want to cancel this booking ?")
+        if (confir) {
             try {
                 setSubmitting(true);
-                const res = await TriplogServices.cancelTrip({id:tripid});
-                
+                const res = await TriplogServices.cancelTrip({ id: tripid });
+
                 setSubmitting(false);
                 if (res && res.status === 200) {
                     if (res.data && res.data.status === 1) {
-                       
-                       
-                        store.dispatch(loadTripListDataSuccess(trip.tripList.filter((item) => item.Triplog.id !== {id:tripid})))
-                        // store.dispatch(loadTripListDataRemove()
+                        tripAllList.splice(i, 1)
+                        setTripAllList([...tripAllList])
+                        store.dispatch(loadTripListDataRemove(tripAllList))
                         toast.success(res.data.message)
                         return;
                     }
@@ -324,11 +329,15 @@ const TripList = (props) => {
                 setSubmitting(false);
                 onError();
             }
+        }
+        else {
+            return
+        }
     }
     const processTripList = () => {
         return (
 
-         props.trips.length >0 ? props.trips.map(function (trip) {
+            tripAllList.length > 0 ? tripAllList.map(function (trip, index) {
                 //let eta = 0;
                 let bgclass, back_class, blink_class = '';
                 if (trip['DispatcherTrip']['trip_status'] == 3) {
@@ -354,12 +363,12 @@ const TripList = (props) => {
                         {Object.keys(TriplogSetting).map((key, TriplogSetng) => {
                             return getTriplogColumn(key, trip, DispatcherId, blink_class, bgclass);
                         })}
-                        <td><img src="/images/b_drop.png" onClick={()=>CancelTrip(trip.DispatcherTrip.trip_id)} className="rmbtn" alt="Cancel" /></td>
+                        <td><img src="/images/b_drop.png" onClick={() => CancelTrip(index, trip.DispatcherTrip.trip_id)} className="rmbtn" alt="Cancel" /></td>
                         <td></td>
                         <td></td>
                     </tr>
                 )
-            }):<div><span>No Trips Available</span></div>
+            }) : <div><span>No Trips Available</span></div>
         )
     }
     return (

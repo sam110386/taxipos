@@ -13,7 +13,27 @@ const path = {
   REMOVE_VEHICLE_TO_FAVOURITE: "removeWishlistVehicle",
   CREATE_TRIPE : "/createTrip",
   GET_FARE:"getfare",
-  CANCEL_TRIP:"cancel"
+  CANCEL_TRIP:"cancel",
+  LOAD_CALLER_INFO_TRIPLOG :"load_caller_info_triplog",
+  OPEN_TRIPS_TRIPLOG : "open_trips_triplog"
+};
+
+export const loadCallerInfoTriplog = async (data) => {
+  try {
+    const res = await API.get(path.LOAD_CALLER_INFO_TRIPLOG, data);
+    return res;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const openTripsTriplog = async (data) => {
+  try {
+    const res = await API.get(path.OPEN_TRIPS_TRIPLOG, data);
+    return res;
+  } catch (err) {
+    return null;
+  }
 };
 
 export const getCurrentDateTime = async (data) => {
@@ -28,7 +48,6 @@ export const getCurrentDateTime = async (data) => {
 export const getTriplist = async (data) => {
   try {
     const res = await API.post(path.GET_TRIP_LIST, data, getHeader());
-    console.log("triplist",res.data)
     return res;
   } catch (err) {
     return null;
@@ -57,7 +76,6 @@ export const createTrip = async (data) => {
 export const cancelTrip = async (data) => {
   try {
     const res = await API.post(path.CANCEL_TRIP, data, getHeader())
-    console.log("CRETAE TRIPE",res.data)
     return res;
   } catch (err) {
     return null;

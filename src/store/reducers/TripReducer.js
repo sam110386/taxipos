@@ -1,13 +1,16 @@
-import { TRIP_LIST_LOAD, 
-    TRIP_LIST_SUCCESS, 
+import {
+    TRIP_LIST_LOAD,
+    TRIP_LIST_SUCCESS,
     TRIP_LIST_FAIL,
-    TRIP_LIST_REMOVE } 
-from "../actions/TripAction";
+    TRIP_LIST_UPDATE,
+    TRIP_LIST_REMOVE
+}
+    from "../actions/TripAction";
 
 const initialState = {
     loading: false,
     tripList: [],
-    error:false
+    error: false
 };
 
 const TripReducer = (state = initialState, action) => {
@@ -20,17 +23,19 @@ const TripReducer = (state = initialState, action) => {
         case TRIP_LIST_SUCCESS:
             return {
                 ...state,
-                tripList: action.data,
+                tripList: action.data
+            };
+      ;
+        case TRIP_LIST_REMOVE:
+            return {
+                ...state,
+                tripList: action.data
             };
         case TRIP_LIST_FAIL:
             return {
                 ...state,
                 error: true,
             };
-        case TRIP_LIST_REMOVE:
-            return{
-                ...state,
-            }
         default:
             return state;
     }

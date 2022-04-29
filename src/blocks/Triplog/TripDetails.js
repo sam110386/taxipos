@@ -292,7 +292,6 @@ const TripDetails = (props) => {
     // useEffect(() => {
     //     initall()
     // }, []);
-    console.log("drop2", dropofAddress2)
     window.$('#timepicker').timepicker({
         dynamic: false,
         dropdown: true,

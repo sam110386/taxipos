@@ -13,9 +13,23 @@ import toast, { Toaster } from 'react-hot-toast';
 import TripDetails from "./TripDetails";
 import { loadTripListDataSuccess } from "../../store/actions/TripAction";
 import { store } from "../../store/store";
+import KeyboardEventHandler from 'react-keyboard-event-handler';
+
+
 
 const TriplogWrap = () => {
 
+    useEffect(()=>{
+        document.addEventListener("keydown", onKeyDown, false);
+        function onKeyDown(e) {
+            var x = e.keyCode;
+            if (x == 112) {
+                alert('Your pressed Fn+F1');
+            }
+        }
+    },[])
+
+  
     const formikRef = useRef();
 
     const TriplogSchema = Yup.object().shape({
@@ -43,11 +57,11 @@ const TriplogWrap = () => {
     const [dropofAddressLng, setDropofAddressLng] = useState("");
     const [cabName, setCabName] = useState("Business Sedan");
 
-    const { user,trip, userDetails } = useSelector((state) => {
+    const { user, trip, userDetails } = useSelector((state) => {
         return {
             user: state.auth,
             userDetails: state.auth.userDetails,
-            trip:state.trip
+            trip: state.trip
         };
     });
 
@@ -161,6 +175,16 @@ const TriplogWrap = () => {
         //setErrorMessage("");
     };
 
+    const LoadCallorInfoTripLog = async() =>{
+        try {
+            const res = await TriplogServices.openTripsTriplog();
+            console.log("loadcaller",res.data)
+        } catch (err) {
+            onError();
+        }
+    }
+    LoadCallorInfoTripLog()
+
     const initialize = () => {
         updateCurrentTime();
         loadTripList();
@@ -194,7 +218,6 @@ const TriplogWrap = () => {
             const res = await TriplogServices.getTriplist();
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-                    store.dispatch(loadTripListDataSuccess(res.data.result))
                     setTriplist(res.data.result);
                     return;
                 }
@@ -207,7 +230,7 @@ const TriplogWrap = () => {
 
     useEffect(() => {
         initialize();
-    }, [])
+    }, [submiting])
 
     const createTrip = async (values) => {
         try {
@@ -233,7 +256,7 @@ const TriplogWrap = () => {
             setSubmitting(false);
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-                    console.log("dispatalksjdf",res.data)
+
                     store.dispatch(loadTripListDataSuccess(res.data.result))
                     toast.success(res.data.message)
                     // onSuccess(res.data);
@@ -375,6 +398,10 @@ const TriplogWrap = () => {
             onError();
         }
     };
+
+
+
+
     const saveEditBooking = async (values) => {
         try {
             setSubmitting(true);
@@ -414,13 +441,14 @@ const TriplogWrap = () => {
     });
 
 
-    console.log("cabname", cabName)
-
     return (
         <React.Fragment >
+
             <div >
+               
                 <fieldset className="pendingentries" >
                     <legend>Pending Entries</legend>
+            
                     <img src="/images/clear_button.png" alt="Clear" className="clearchatsidebar mb-1" />
 
                     <section className="chat-sidebar" id="chatsidebar">
@@ -432,7 +460,7 @@ const TriplogWrap = () => {
                         <table class="blank_ul">
                             <tbody><tr class="inner_div">
 
-                                <th class="mid_th comtab">F1</th>
+                                <th class="mid_th comtab" >F1</th>
                                 <th class="mid_th" width="100"></th><th class="mid_th"></th></tr>
 
                                 <tr class="inner_div">
@@ -770,7 +798,7 @@ const TriplogWrap = () => {
                     </div>
                 </div>
 
-                <Trips trips={trip.tripList} openTripDetails={openTripDetails} />
+                {Triplist && <Trips trips={Triplist} openTripDetails={openTripDetails} />}
                 {showEditTrip && <EditTripDetails currentBooking={currentBooking} SetShowEditTrip={SetShowEditTrip} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
                 {showDetails && <TripDetails SetShowTrip={setShowDetails} />}
             </div>
@@ -779,504 +807,3 @@ const TriplogWrap = () => {
 };
 
 export default TriplogWrap;
-{/*
-    
-   
-<!-- right-content Ends -->
-<section class="right-pannel" style="float: right;width: 100%">
-<?php
-$options = array('one' => 'One Device', 'all' => 'All Device');
-$fleet_devices['all'] = 'Send To All';
-$fleet_devices['net'] = 'Send To NET';
-$fleet_devices['auto'] = 'Auto-Dispatch';
-?>
-
-   
-
-<script type="text/javascript">
-    window.oldMarkers = [];
-    var map;
-    var infowindow = null;
-    var gmarkers = [];
-    var lastClickedUniqueID = null;
-    $(document).ready(initialize);
-    
-    function initialize() {
-        //sort table on load
-        sortTable();
-        setInterval(function() {
-            loadCurTime();
-        }, 50000);
-        setInterval(function() {
-            sortTable();
-        }, 30000);
-    }
-
-</script>
-<div style='display:none'>
-    <div id="tripEnterMoreDetailsBox">
-        <section class="top_section form-control">
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>Enter Trip Details : </h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <label>Car# : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->select('Push.device_id', $fleet_devices, array('class' => 'select TextDeviceId', 'empty' => 'Car #','onchange'=>"change_car()")); ?>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <label>Car Type: </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->select('Push.cab_name', $cabname, array('class' => 'select cab_name', 'empty' => 'Car Type')); ?>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <label>Pick Up Date : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.pickup_date', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false, 'value' => date('Y-m-d'), 'readonly' => 'readonly')); ?>
-                    </div>
-                </div>
-                
-            </div>
-            <div class="row">
-                    <div class="col-md-6">
-                    <label>Pick Up time : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.pickup_time', array('size' => '30', 'class' => 'textfield required', 'value' => $curpickuptime, 'label' => false, 'div' => false)); ?>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                   <label>Notification : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.direct_notification_time', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false,'onkeypress'=>"return false;")); ?>
-                    </div>     
-                </div>
-            </div>
-            <form id="trip-details-form">
-            <div class="row">
-                <div class="col-md-6">
-                     <label>Pick Up Address : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.pickup_address', array('size' => '30', 'class' => 'textfield required autoCompleteAddress', 'label' => false, 'div' => false,"onkeyup"=>"javascript:document.getElementById('PushOriginlatlng').value=''","placeholder"=>"Please enter pickup address")); ?>
-                        <?php echo $this->Form->hidden('Push.originlatlng', array("value"=>"")); ?>
-                    </div>   
-                </div>
-                <div class="col-md-6">
-                     <label>Pick Up Address2 : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.pickup_address2', array('size' => '30', 'class' => 'textfield required autoCompleteAddress', 'label' => false, 'div' => false,"placeholder"=>"Please enter pickup address2")); ?>
-                    </div>   
-                </div>
-            </div> 
-            <div class="row">
-                <div class="col-md-6">
-                    <label>Cross Street : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.pickup_cross_street', array('size' => '30', 'class' => 'textfield required autoCompleteAddress', 'label' => false, 'div' => false,"placeholder"=>"Please enter cross street address")); ?>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label>Drop off Address : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.dropoff_address', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false,"onkeyup"=>"javascript:document.getElementById('PushDestlatlng').value=''","placeholder"=>"Please enter dropoff address")); ?>
-                        <?php echo $this->Form->hidden('Push.destlatlng', array("value"=>"")); ?>
-                    </div>    
-                </div>
-                <div class="col-md-6">
-                    <label>Drop off Address2 : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.dropoff_address2', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false,"placeholder"=>"Please enter dropoff address2")); ?>                        
-                    </div> 
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label>Cross Street : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.dropoff_cross_street', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false,"placeholder"=>"Please enter cross street address")); ?>                        
-                    </div>
-                </div>
-             </div>
-            </form>
-            <div class="row">
-                <div class="col-md-6">
-                    <label>Telephone number :</label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.telephone', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false,"placeholder"=>"Please enter telephone")); ?>
-                    </div>    
-                </div>
-                <div class="col-md-6">
-                    <label>Passenger Name : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.passenger_name', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false,"placeholder"=>"Please enter passenger name")); ?>
-                    </div>  
-                </div>
-               
-            </div>
-            <div class="row">
-                 <div class="col-md-6">
-                   <label>Number of Passengers : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->select('Push.amt_of_passengers', array(1=>1,2=>2,3=>3,4=>4,5=>5,6=>6),array('class' => 'textfield required', 'label' => false, 'div' => false,"empty"=>false,'default'=>1)); ?>
-                    </div>     
-                </div>
-                <div class="col-md-6">
-                    <label>Dispatch Time : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.dispatch_time', array('class' => 'textfield required', 'label' => false, 'div' => false,'onkeypress'=>"return false;","placeholder"=>"Please choose dispatch time")); ?>
-                    </div>  
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <label>Sharing Allowed : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->checkbox('Push.share', array( 'class' => 'required', 'label' => false, 'div' => false)); ?>
-                    </div>    
-                </div>
-                <div class="col-md-4">
-                     <label>Fare : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.fare', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false,"placeholder"=>"Please enter fare")); ?>
-                    </div>   
-                </div>
-                <div class="col-md-4">
-                    <label>Tip : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.tip', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false,"placeholder"=>"Please enter tip")); ?>
-                    </div>   
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <label>Tolls : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.toll', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false,"placeholder"=>"Please enter toll")); ?>
-                    </div>   
-                </div>
-                 <div class="col-md-4">
-                     <label>Wait time : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.wait_time', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false,"placeholder"=>"Please enter wait time fee")); ?>
-                    </div>   
-                </div>
-                 <div class="col-md-4">
-                    <label>Stops : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.stops', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false,"placeholder"=>"Please enter stop charges")); ?>
-                    </div>   
-                </div>
-            </div> 
-            <div class="row">
-                <div class="col-md-4">
-                    <label>Misc : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.misc', array('size' => '30', 'class' => 'textfield required', 'label' => false, 'div' => false,"placeholder"=>"Please enter misc")); ?>
-                    </div>  
-                </div>
-                <div class="col-md-4">
-                    <label>Account No : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.account_no', array('type' => 'text', 'class' => 'textfield required', 'label' => false, 'div' => false,"placeholder"=>"Please enter Accoun#")); ?>
-                    </div>   
-                </div>
-                <div class="col-md-4">
-                    <label>Voucher No : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.voucher_no', array('type' => 'text', 'class' => 'textfield required', 'label' => false, 'div' => false,"placeholder"=>"Please enter voucher#")); ?>
-                    </div>   
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-10">
-                   <label>Notes : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Push.details', array('type' => 'textarea', 'class' => 'textfield required', 'label' => false, 'div' => false)); ?>
-                    </div>     
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-10">
-                   <label>Make This Round Trip : </label>
-                    <div class="field_widget">
-                        <?php echo $this->Form->checkbox('Push.roundtrip', array( 'class' => 'required', 'label' => false, 'div' => false)); ?>
-                        <em>(It will work if correct drop off address entered)</em> 
-                    </div>     
-                </div>
-                
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-3">
-                        Copy Same Trip For Date Range With Days: 
-                    </div>
-                    <div class="col-md-2">
-                        <?php echo $this->Form->input('Push.multildaystart', array('size' => '30', 'class' => 'textfield', 'label' => false, 'div' => false, 'value' => '', 'readonly' => 'readonly',"style"=>"width:90%")); ?>
-                    </div>
-                    <div class="col-md-2">
-                        <?php echo $this->Form->input('Push.multildayend', array('size' => '30', 'class' => 'textfield', 'label' => false, 'div' => false, 'value' => '', 'readonly' => 'readonly',"style"=>"width:90%")); ?>
-                    </div>
-                    <div class="col-md-4">
-                        <em>(It will work if correct pickup address entered)</em>
-                    </div> 
-                </div>
-            </div>
-            <div class="row" id="multidaysparent">
-                <div class="col-md-12">
-                    <div class="col-md-2">&nbsp;</div>
-                    <div class="col-md-10">
-                        <?php for($i=1;$i<=7;$i++):?>
-                        <?php echo "&nbsp;&nbsp;".$this->Form->checkbox('Push.multildays', array("name"=>"PushMultidays[]", 'class' => 'required PushMultidays',"value"=>date('l',strtotime("+$i days")), 'label' => false, 'div' => false)); ?> <?php echo date('l',strtotime("+$i days"));?>
-                        <?php endfor;?>
-                    </div> 
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <label>&nbsp;</label>
-                    <div class="field_widget">
-                    <?php
-                        echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'btn no-margin', 'div' => false, 'id' => 'savePushDetailsBtn'));
-                        echo " ";
-                        echo $this->Form->button('Cancel', array('type' => 'button', 'class' => 'btn no-margin', 'div' => false, 'id' => 'cancelPushDetailsBtn'));
-                        echo " ";
-                    ?>
-                    <?php echo $this->Form->button('Fare Estimate', array('type' => 'button', 'class' => 'btn no-margin', 'div' => false,'onclick'=>'fare_estimate_detail()', 'style' => 'margin-right:6px;')); ?>
-                    <?php echo " ";echo $this->Form->button('Get Fare', array('type' => 'button', 'class' => 'btn no-margin', 'div' => false, 'onclick' => 'getfare_detail()', 'style' => 'margin-right:6px;')); ?>
-                    </div>     
-                </div>
-            </div>    
-           
-    </div>
-</div>
-<div style='display:none'>
-    <div id="searchbarBox">
-        <section class="top_section form-control">
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>Search </h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="field_widget">
-                        <?php echo $this->Form->input('Serachbar.key', array('class' => 'textfield',"div"=>false,"label"=>false, 'palceholder' => 'Search...')); ?>
-                    </div>
-                </div>
-            </div>    
-        </section>
-        <section id="SerachbarResult" class="form-control">
-                
-        </section>
-    </div>
-</div>
-<?php
-echo $this->Html->script('colorbox');
-echo $this->Html->script('jquery.timeentry.triplog');
-echo $this->Html->css('colorbox');
-?>
-<div id="caller_popup">
-
-</div>
-<script type="text/javascript">
-
-    function checkKey(e) {
-        switch (e.keyCode) {
-            case 112:
-                document.getElementById("TextLocation").focus();
-                break;
-            case 113:
-                location.href = "#left-content";
-                break;
-            default:
-        }
-    }
-    if ($.browser.mozilla) {
-        $(document).keypress(checkKey);
-    } else {
-        $(document).keydown(checkKey);
-    }
-
-</script>
-
-<script type="text/javascript">
-
-    $(document).ready(function() {
-        var triplog_device_id = "<?php echo $this->Session->read('triplog_device_id'); ?>";
-        $('#TextDeviceId').val(triplog_device_id);
-        change_car();
-    });
-</script>
-<script type="text/javascript">
-    var flag = 0;
-    $(document).ready(function() {
-        $(document).keypress(function() {
-            flag = 1;
-        });
-    });
-    function checkKeyPress() {
-        //if (flag == 0) {
-        window.location.reload();
-       // }
-    }
-    function resetFlag() {
-        flag = 0;
-    }
-    setTimeout(checkKeyPress, 30 * 60 * 1000);
-    setTimeout(resetFlag, 1 * 60 * 1000);
-</script>
-<script type="text/javascript">
-var pubnub = new PubNub({
-	subscribeKey: "<?php echo Configure::read('PUBNUB.sub_key');?>",
-	publishKey: "<?php echo Configure::read('PUBNUB.pub_key');?>"
-});
-pubnub.addListener({
-    message: function(m) {
-        // handle message
-        var channelName = m.channel; // The channel for which the message belongs
-        var channelGroup = m.subscription; // The channel group or wildcard subscription match (if exists)
-        var pubTT = m.timetoken; // Publish timetoken
-        var msg = m.message; // The Payload
-        var publisher = m.publisher; //The Publisher
-        //alert(msg.tripid);
-        console.log(msg);
-        processpubnub(msg);
-    },
-    presence: function(p) {
-        // handle presence
-        var action = p.action; // Can be join, leave, state-change or timeout
-        var channelName = p.channel; // The channel for which the message belongs
-        var occupancy = p.occupancy; // No. of users connected with the channel
-        var state = p.state; // User State
-        var channelGroup = p.subscription; //  The channel group or wildcard subscription match (if exists)
-        var publishTime = p.timestamp; // Publish timetoken
-        var timetoken = p.timetoken;  // Current timetoken
-        var uuid = p.uuid; // UUIDs of users who are connected with the channel
-    },
-    status: function(s) {
-        var affectedChannelGroups = s.affectedChannelGroups;
-        var affectedChannels = s.affectedChannels;
-        var category = s.category;
-        var operation = s.operation;
-    }
-});
-pubnub.subscribe({
-    channels: ['PCAPP_<?php echo $this->Session->read('dispacherId');?>','CTGPCAPP_<?php echo $this->Session->read('dispacherId');?>']
-});
-
-
-function processpubnub(msg){
-    var TripId=msg.tripid;
-    if(msg.messageType=='cancelTripWeb'){
-        $("table#tripLogTable tr#tripRow"+TripId).remove();
-        return;
-    }
-    if(msg.status=="3"){
-        $("table#tripLogTable tr#tripRow"+TripId).remove();
-        return;
-    }
-    if(msg.messageType=='Add'){
-        grabTripDetails(TripId,'Add');
-    }
-    if(msg.messageType=='Edit'){
-        grabTripDetails(TripId,'Edit');
-    }
-    if(msg.messageType=='statusUpdate'){
-        grabTripDetails(TripId,'Edit');
-    }
-    if(msg.messageType=='award'){
-        grabTripDetails(TripId,'Edit');
-    }
-    if(msg.messageType=='callerid'){
-        getcallerinfo();
-    }
-
-}
-
-function getcallerinfo(){
-    $.post("/dispachers/load_caller_info_triplog", {}, function(data) {
-        jQuery('#latestCallerInfo').html(data);
-    });
-}
-
-function grabTripDetails(TripId,action){
-    if(!TripId)return;
-    $.ajax({
-        url: SITE_URL + "dispachers/grabTripDetails",
-        type: "post",
-        dataType:'json',
-        data: {"TripId":TripId},
-        async: false,
-        success: function (data) {
-            if(data.sessiontimeout){
-                //dispacher session timed out
-                document.location.reload(true);
-            }
-            if(data.status==3){
-                $("table#tripLogTable tr#tripRow"+TripId).remove();
-            }
-            if(data.status==0){
-                $("table#tripLogTable tbody#awardarrive tr#tripRow"+TripId).remove();
-                $("table#tripLogTable tbody#pickedup tr#tripRow"+TripId).remove();
-                //$("table#tripLogTable").find("#webBooking").append(data);
-                if($("table#tripLogTable tbody#new tr#tripRow"+TripId).length>0){
-                    $("table#tripLogTable tbody#new tr#tripRow"+TripId).replaceWith(data.html);
-                }else if($("table#tripLogTable tbody#new").find("tr").length>0){
-                    $("table#tripLogTable tbody#new").find("tr:last").after(data.html);
-                }else{
-                    $("table#tripLogTable").find("tbody#new").html(data.html);
-                }
-            }
-            
-            //if(action==='Edit'){
-                if(data.status==4){
-                    $("table#tripLogTable tbody#awardarrive tr#tripRow"+TripId).remove();
-                    $("table#tripLogTable tbody#new tr#tripRow"+TripId).remove();
-                    if($("table#tripLogTable tbody#pickedup tr#tripRow"+TripId).length>0){
-                        $("table#tripLogTable tbody#pickedup tr#tripRow"+TripId).replaceWith(data.html);
-                    }else if($("table#tripLogTable tbody#pickedup ").find("tr").length>0){
-                        $("table#tripLogTable tbody#pickedup ").find("tr:last").after(data.html);
-                    }else{
-                        $("table#tripLogTable").find("tbody#pickedup").html(data.html);
-                    }  
-                }else if(data.status==1 || data.status==5){
-                    $("table#tripLogTable tbody#pickedup tr#tripRow"+TripId).remove();
-                    $("table#tripLogTable tbody#new tr#tripRow"+TripId).remove();
-                    if($("table#tripLogTable tbody#awardarrive tr#tripRow"+TripId).length>0){
-                        $("table#tripLogTable tbody#awardarrive tr#tripRow"+TripId).replaceWith(data.html);
-                    }else if($("table#tripLogTable tbody#awardarrive").find("tr").length>0){
-                        $("table#tripLogTable tbody#awardarrive").find("tr:last").after(data.html);
-                    }else{
-                        $("table#tripLogTable").find("tbody#awardarrive").html(data.html);
-                    } 
-                }else{
-                    if($("table#tripLogTable tbody#new tr#tripRow"+TripId).length>0){
-                        $("table#tripLogTable tbody#new tr#tripRow"+TripId).replaceWith(data.html);
-                    }else if($("table#tripLogTable tbody#new").find("tr").length>0){
-                        $("table#tripLogTable tbody#new").find("tr:last").after(data.html);
-                    }else{
-                        $("table#tripLogTable").find("tbody#new").html(data.html);
-                    }
-                }
-            //}
-        }
-    });
-}
-</script>
-            
-<script type="text/javascript">
-   var sendInfoToAffiliatetriplogFlag=false;
-    $(document).ready(function() {
-        $(':input').focus(function() {
-            $(':input').removeClass("focused");
-            $(this).addClass("focused");
-        });
-    });
-  </script>
-*/}
