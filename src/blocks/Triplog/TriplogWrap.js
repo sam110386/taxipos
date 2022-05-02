@@ -14,6 +14,7 @@ import TripDetails from "./TripDetails";
 import { loadTripListDataSuccess } from "../../store/actions/TripAction";
 import { store } from "../../store/store";
 import KeyboardEventHandler from 'react-keyboard-event-handler';
+import CallerIdInfo from "./CallerIdInfo";
 
 
 
@@ -24,7 +25,7 @@ const TriplogWrap = () => {
         function onKeyDown(e) {
             var x = e.keyCode;
             if (x == 112) {
-                alert('Your pressed Fn+F1');
+                console.log('Your pressed Fn+F1');
             }
         }
     },[])
@@ -174,16 +175,6 @@ const TriplogWrap = () => {
         //setError(false);
         //setErrorMessage("");
     };
-
-    const LoadCallorInfoTripLog = async() =>{
-        try {
-            const res = await TriplogServices.openTripsTriplog();
-            console.log("loadcaller",res.data)
-        } catch (err) {
-            onError();
-        }
-    }
-    LoadCallorInfoTripLog()
 
     const initialize = () => {
         updateCurrentTime();
@@ -455,76 +446,7 @@ const TriplogWrap = () => {
 
 
                     </section>
-                    <div id="latestCallerInfo" >
-
-                        <table class="blank_ul">
-                            <tbody><tr class="inner_div">
-
-                                <th class="mid_th comtab" >F1</th>
-                                <th class="mid_th" width="100"></th><th class="mid_th"></th></tr>
-
-                                <tr class="inner_div">
-
-                                    <th class="mid_th">F2</th>
-                                    <th class="mid_th" width="100"></th><th class="mid_th"></th> </tr>
-
-                                <tr class="inner_div">
-
-                                    <th class="mid_th">F3</th>
-                                    <th class="mid_th" width="100"></th><th class="mid_th"></th>            </tr>
-
-                            </tbody></table>
-                        <table class="blank_ul ml-1 text-center">
-                            <tbody><tr class="inner_div text-center">
-
-                                <th class="mid_th comtab">F4</th>
-                                <th class="mid_th" width="100"></th><th class="mid_th"></th></tr>
-
-                                <tr class="inner_div">
-
-                                    <th class="mid_th">F5</th>
-                                    <th class="mid_th" width="100"></th><th class="mid_th"></th> </tr>
-
-                                <tr class="inner_div">
-
-                                    <th class="mid_th">F6</th>
-                                    <th class="mid_th" width="100"></th><th class="mid_th"></th>            </tr>
-
-                            </tbody></table>
-                        <table class="blank_ul  ml-1">
-                            <tbody><tr class="inner_div">
-
-                                <th class="mid_th comtab">F7</th>
-                                <th class="mid_th" width="100"></th><th class="mid_th"></th></tr>
-
-                                <tr class="inner_div">
-
-                                    <th class="mid_th">F8</th>
-                                    <th class="mid_th" width="100"></th><th class="mid_th"></th> </tr>
-
-                                <tr class="inner_div">
-
-                                    <th class="mid_th">F9</th>
-                                    <th class="mid_th" width="100"></th><th class="mid_th"></th>            </tr>
-
-                            </tbody></table>
-                        <table class="blank_ul ml-1">
-                            <tbody><tr class="inner_div">
-
-                                <th class="mid_th comtab">F10</th>
-                                <th class="mid_th" width="100"></th><th class="mid_th"></th></tr>
-
-                                <tr class="inner_div">
-
-                                    <th class="mid_th">F11</th>
-                                    <th class="mid_th" width="100"></th><th class="mid_th"></th> </tr>
-
-                                <tr class="inner_div">
-                                    <th class="mid_th">F12</th>
-                                    <th class="mid_th" width="100"></th><th class="mid_th"></th></tr>
-
-                            </tbody></table>
-                    </div>
+                    <CallerIdInfo/>
                 </fieldset>
 
                 <fieldset className="DispatchInfoDriver">
@@ -664,7 +586,6 @@ const TriplogWrap = () => {
                                                     <Field
                                                         type="checkbox"
                                                         name="TextShare"
-
                                                     />
                                                     Sharing Allowed
                                                 </label>
