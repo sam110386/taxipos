@@ -35,16 +35,17 @@ const CallerIdInfo = () => {
         }
     }
 
+    const ShowModal = (phone) =>{
+        setShowDetails(true)
+    }
+
 
     useEffect(() => {
         setInterval(() => {
             LoadCallorInfoTripLog()
-        }, 30000)
+        }, 1000)
     }, [])
-
-
-
-
+    
 
     const openCallerIdDetail = () => {
         setShowDetails(true)
@@ -77,11 +78,10 @@ const CallerIdInfo = () => {
                                                     if(ele3.UrlSend.Line == f_numb){
                                                         return (
                                                             <>  
-                                                            <th class="mid_th text-center" width="100"  >{ele3.UrlSend.Phone}</th>
-                                                            <th class="mid_th">...</th>
+                                                            <th class="mid_th text-center" width="100" onClick={()=>ShowModal(ele3.UrlSend.Phone)}  >{ele3.UrlSend.Phone}</th>
+                                                            <th class="mid_th"> ... </th>
                                                             </>
-                                                        ) 
-                                                    }
+                                                    )}
                                                 })}
                                             </tr>
                                         )
@@ -94,7 +94,7 @@ const CallerIdInfo = () => {
                 })}
             </div>
 
-            {showDetails && <CallerIdDetails SetShowTrip={setShowDetails} />}
+            {showDetails && <CallerIdDetails SetShowCallerId={setShowDetails} />}
         </>
     )
 }

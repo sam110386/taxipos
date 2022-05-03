@@ -6,6 +6,7 @@ import { FullPageLoader } from "../Loaders";
 import { Button } from "@material-ui/core";
 import * as TriplogServices from '../../services/TriplogService';
 import moment from "moment";
+import TripDetails from "./TripDetails";
 
 
 const CallerIdDetails = (props) => {
@@ -32,6 +33,7 @@ const CallerIdDetails = (props) => {
     const [dropofAddressLat, setDropofAddressLat] = useState("");
     const [dropofAddressLng, setDropofAddressLng] = useState("");
     const [dropofAddress2, setDropofAddress2] = useState("");
+    const [showDetails,setShowDetails] = useState(false)
 
 
     const { user, userDetails } = useSelector((state) => {
@@ -83,41 +85,34 @@ const CallerIdDetails = (props) => {
         var autocomplete1 = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddressid")), {
             types: ['geocode']
         });
-
         window.google.maps.event.addListener(autocomplete1, 'place_changed', function () {
             var placeorg = autocomplete1.getPlace();
             setDropofAddressLat(placeorg.geometry.location.lat())
             setDropofAddressLng(placeorg.geometry.location.lng())
             setDropofAddress(placeorg.formatted_address)
         });
-
         var autocomplete2 = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddressid2")), {
             types: ['geocode']
         });
-
         window.google.maps.event.addListener(autocomplete2, 'place_changed', function () {
             var placeorg = autocomplete2.getPlace();
             setDropofAddress2(placeorg.formatted_address)
         });
     }
 
-
     const getPickupAddress = () => {
         var autocomplete1 = new window.google.maps.places.Autocomplete((document.getElementById("pickupaddressid")), {
             types: ['geocode']
         });
-
         window.google.maps.event.addListener(autocomplete1, 'place_changed', function () {
             var placeorg = autocomplete1.getPlace();
             setPickupAddressLat(placeorg.geometry.location.lat())
             setPickupAddressLng(placeorg.geometry.location.lng())
             setPickupAddress(placeorg.formatted_address)
         });
-
         var autocomplete2 = new window.google.maps.places.Autocomplete((document.getElementById("pickupaddressid2")), {
             types: ['geocode']
         });
-
         window.google.maps.event.addListener(autocomplete2, 'place_changed', function () {
             var placeorg = autocomplete2.getPlace();
             setPickupAddress2(placeorg.formatted_address)
@@ -175,9 +170,7 @@ const CallerIdDetails = (props) => {
                 "dropoff_address2",
                 dropofAddress2
             );
-
         }
-
     }, [pickupAddress, dropofAddress, dropofAddress2, pickupAddress2])
 
 
@@ -197,6 +190,11 @@ const CallerIdDetails = (props) => {
     const onError = (message) => {
         //setError(true);
     };
+
+    const showTripDetails = ()=>{
+        setShowDetails(true) 
+        
+    }
 
 
 
@@ -268,16 +266,16 @@ const CallerIdDetails = (props) => {
     });
     return (
         <React.Fragment>
-            <div className="modal d-block mymodal tripModal" tabIndex="-1" role="dialog">
-                <div className="modal-dialog" role="document">
+            <div className="modal d-block callidmodal tripModal" tabIndex="-1" role="dialog">
+                <div className="modal-dialog callmodal" role="document">
                     <div className="modal-content">
                         <div className="align-items-center justify-content-center position-relative">
                             <div className="modal-header">
-                                <h5 className="modal-title">Enter Trip Details</h5>
+                                <h6 className="modal-title">No Previous Trip Details Found :</h6>
                                 <button
                                     type="button"
                                     className="close-btn btn-close font-weight-cold"
-                                    onClick={() => { props.SetShowTrip(false) }}
+                                    onClick={() => { props.SetShowCallerId(false) }}
                                 >
                                     X
                                 </button>
@@ -295,7 +293,7 @@ const CallerIdDetails = (props) => {
                                             <Form>
                                                 <>
                                                     <div className="row d-flex justify-content-left pl-0 pr-0 text-center">
-                                                        <div className="col-md-4">
+                                                        {/* <div className="col-md-4">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Car#: </label>
                                                                 <Field as="select" name="car_no" className="form-control w-100">
@@ -305,8 +303,8 @@ const CallerIdDetails = (props) => {
 
                                                                 </Field>
                                                             </div>
-                                                        </div>
-                                                        <div className="col-md-4">
+                                                        </div> */}
+                                                        {/* <div className="col-md-4">
 
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Cat Type: </label>
@@ -317,44 +315,20 @@ const CallerIdDetails = (props) => {
                                                                     ))}
                                                                 </Field>
                                                             </div>
+                                                        </div> */}
+                                                           <div className="col-md-4">
+                                                            <div className="form-group ">
+                                                                <label className="form_lbl">Telephone : </label>
+                                                                <Field
+                                                                    placeholder="Please Enter Telephone Number"
+                                                                    name="telephone"
+                                                                    className="form-control"
+                                                                    autocomplete="off"
+                                                                />
+                                                            </div>
                                                         </div>
+
                                                         <div className="col-md-4">
-                                                            <div className="form-group ">
-                                                                <label className="form_lbl">Pick Up Date: </label>
-                                                                <Field
-                                                                    name="pickup_date"
-                                                                    type="date"
-                                                                    className="form-control"
-                                                                    autocomplete="off"
-
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-md-6">
-                                                            <div className="form-group ">
-                                                                <label className="form_lbl">Pick Up Time: </label>
-                                                                <Field
-                                                                    name="pickup_time"
-                                                                    id="timepicker"
-                                                                    className="form-control cur_time_log"
-                                                                    autocomplete="off"
-                                                                />
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="col-md-6">
-                                                            <div className="form-group ">
-                                                                <label className="form_lbl">Notification: </label>
-                                                                <Field
-                                                                    name="direct_notification_time"
-                                                                    id="notifi"
-                                                                    placeholder="Notification"
-                                                                    className="form-control"
-                                                                    autocomplete="off"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-md-6">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Pick Up Address: </label>
                                                                 <Field
@@ -378,7 +352,7 @@ const CallerIdDetails = (props) => {
                                                             </div>
                                                         </div>
 
-                                                        <div className="col-md-6">
+                                                        <div className="col-md-4">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Drop off Address: </label>
                                                                 <Field
@@ -395,22 +369,7 @@ const CallerIdDetails = (props) => {
                                                             </div>
                                                         </div>
 
-
-
-                                                        <div className="col-md-6">
-                                                            <div className="form-group ">
-                                                                <label className="form_lbl">Pickup Cross Street: </label>
-                                                                <Field
-                                                                    placeholder="Please Enter Pickup Cross Street"
-                                                                    name="pickup_cross_street"
-                                                                    className="form-control"
-                                                                    autocomplete="off"
-                                                                />
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div className="col-md-6">
+                                                        <div className="col-md-4">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Telephone : </label>
                                                                 <Field
@@ -422,8 +381,69 @@ const CallerIdDetails = (props) => {
                                                             </div>
                                                         </div>
 
+                                                        <div className="col-md-4">
+                                                            <div className="form-group ">
+                                                                <label className="form_lbl">Pickup Cross Street: </label>
+                                                                <Field
+                                                                    placeholder="Please Enter Pickup Cross Street"
+                                                                    name="pickup_cross_street"
+                                                                    className="form-control"
+                                                                    autocomplete="off"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group ">
+                                                                <label className="form_lbl">Drop Cross Street: </label>
+                                                                <Field
+                                                                    placeholder="Please Enter Drop Cross Street"
+                                                                    name="telephone"
+                                                                    className="form-control"
+                                                                    autocomplete="off"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-2">
+                                                            <div className="form-group ">
+                                                                <label className="form_lbl">Pick Up Date: </label>
+                                                                <Field
+                                                                    name="pickup_date"
+                                                                    type="date"
+                                                                    className="form-control"
+                                                                    autocomplete="off"
 
-                                                        <div className="col-md-6">
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-2">
+                                                            <div className="form-group ">
+                                                                <label className="form_lbl">Pick Up Time: </label>
+                                                                <Field
+                                                                    name="pickup_time"
+                                                                    id="timepicker"
+                                                                    className="form-control cur_time_log"
+                                                                    autocomplete="off"
+                                                                />
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="col-md-2">
+                                                            <div className="form-group ">
+                                                                <label className="form_lbl">Notification: </label>
+                                                                <Field
+                                                                    name="direct_notification_time"
+                                                                    id="notifi"
+                                                                    placeholder="Notification"
+                                                                    className="form-control"
+                                                                    autocomplete="off"
+                                                                />
+                                                            </div>
+                                                        </div>
+
+
+
+
+                                                        <div className="col-md-2">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Fare : </label>
                                                                 <Field
@@ -437,6 +457,17 @@ const CallerIdDetails = (props) => {
                                                                 />
                                                             </div>
                                                         </div>
+                                                        <div className="col-md-4">
+                                                            <div className="form-group ">
+                                                                <label className="form_lbl">Notes: </label>
+                                                                <Field
+                                                                    name="notes"
+                                                                    id="not"
+                                                                    className="form-control cur_time_log"
+                                                                    autocomplete="off"
+                                                                />
+                                                            </div>
+                                                        </div>
 
 
                                                         <div className="form-group col-md-12 mt-4">
@@ -445,14 +476,19 @@ const CallerIdDetails = (props) => {
                                                             <Button
                                                                 className="border btn btn-success text-capitalize ml-1"
                                                                 type="submit"
-                                                            > Save
+                                                            > Enter
                                                             </Button>
                                                             <Button
+                                                                className="border btn btn-success text-capitalize ml-1"
+                                                                onClick={showTripDetails}
+                                                            > Details
+                                                            </Button>
+                                                            {/* <Button
                                                                 className="border btn btn-success text-capitalize ml-1"
                                                                 onClick={() => { props.SetShowTrip(false) }}
                                                                 to={``}
                                                             > Close
-                                                            </Button>
+                                                            </Button> */}
                                                             <Button
                                                                 className="border btn btn-success text-capitalize ml-1"
                                                                 onClick={() => { props.SetShowTrip(false) }}
@@ -479,6 +515,7 @@ const CallerIdDetails = (props) => {
                     </div>
                 </div>
             </div>
+            {showDetails && <TripDetails SetShowTrip={setShowDetails} />}
         </React.Fragment>
     );
 };
