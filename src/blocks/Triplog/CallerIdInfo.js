@@ -4,11 +4,10 @@ import CallerIdDetails from "./CallerIdDetails";
 
 const CallerIdInfo = () => {
 
-
+    let arr1 = [1,,2,3,4]
     const [callerTripInfo, setCallerTripInfo] = useState([])
     const [showDetails, setShowDetails] = useState(false);
-    const tbloop = [1, 2, 3, 4];
-    const tbloop2 = [1, 2, 3, 4, 5]
+ 
 
     const onError = () => {
 
@@ -17,9 +16,6 @@ const CallerIdInfo = () => {
     const LoadCallorInfoTripLog = async () => {
         try {
             const res = await TriplogServices.loadCallerInfoTriplog();
-
-            console.log("loadcaller", res.data)
-
 
         } catch (err) {
             onError();
@@ -42,11 +38,9 @@ const CallerIdInfo = () => {
     useEffect(() => {
         setInterval(() => {
             LoadCallorInfoTripLog()
-        }, 3000)
+        }, 30000)
     }, [])
 
-
-    console.log("response callser data", callerTripInfo)
 
 
 
@@ -55,34 +49,7 @@ const CallerIdInfo = () => {
         setShowDetails(true)
     }
 
-    const drawtable = () => {
-        for (let i = 1; i < 5; i++) {
-            return (
-                tbloop.map((el1, index1) => (
-                    <table class="blank_ul">
-                        <tbody><tr class="inner_div">
-
-                            <th class="mid_th comtab" >F{i}</th>
-                            {/* <th class="mid_th" width="100"></th>
-                        <th class="mid_th"> </th> */}
-                        </tr>
-
-                            {/* <tr class="inner_div">
-
-                        <th class="mid_th">11</th>
-                        <th class="mid_th" width="100"></th><th class="mid_th"></th> </tr>
-
-                    <tr class="inner_div">
-
-                        <th class="mid_th">11</th>
-                        <th class="mid_th" width="100"></th><th class="mid_th"></th> </tr> */}
-
-                        </tbody>
-                    </table>
-                )))
-        }
-
-    }
+   
     const arrr = [
         {
             UrlSend: {
@@ -148,13 +115,32 @@ const CallerIdInfo = () => {
     return (
         <>
             <div id="latestCallerInfo" >
-                {arrr.length > 0 && arrr.map((el, index, caller) => {
+            {/* <table class="blank_ul">
 
-                    if (index < 4) {
+                <tr class="inner_div">
+                <th class="mid_th comtab" >F1</th>
+                <th class="mid_th text-center" width="100"  ></th>
+                <th class="mid_th"></th>
+                </tr>
+                <tr class="inner_div">
+                <th class="mid_th comtab" >F2</th>
+                <th class="mid_th text-center" width="100"  ></th>
+                <th class="mid_th"></th>
+                </tr>
+                <tr class="inner_div">
+                <th class="mid_th comtab" >F3</th>
+                <th class="mid_th text-center" width="100"  ></th>
+                 <th class="mid_th"></th>
+                </tr>
+
+            </table> */}
+            
+                {arr1.length > 0 && arr1.map((el, index, caller) => {
+                    
                         return (
                             <table class="blank_ul">
 
-                                {caller.map((el2, index2,arr) => {
+                                {callerTripInfo.map((el2, index2,arr) => {
                                     
                                     if (index2 < 3) {
                                         let f_numb;
@@ -197,7 +183,7 @@ const CallerIdInfo = () => {
 
                             </table>
                         )
-                    }
+                    
                 })}
             </div>
 

@@ -6,6 +6,9 @@ import { FullPageLoader } from "../Loaders";
 import { Button } from "@material-ui/core";
 import * as TriplogServices from '../../services/TriplogService';
 import moment from "moment";
+import { store } from "../../store/store";
+import { loadTripListDataSuccess } from "../../store/actions/TripAction";
+import toast, { Toaster } from 'react-hot-toast';
 
 
 const TripDetails = (props) => {
@@ -22,6 +25,7 @@ const TripDetails = (props) => {
 
   
     const [CurrentPickupTime, setCurrentPickupTime] = useState(0);
+    const [submiting, setSubmitting] = useState(false);
     const [CurrentDate, setCurrentDate] = useState(0);
     const [Triplist, setTriplist] = useState([]);
     const [pickupAddress, setPickupAddress] = useState("");
@@ -183,9 +187,27 @@ const TripDetails = (props) => {
 
 
 
-    const handleSubmit = (values) => {
-        console.log("submit")
-        console.log(values)
+    const handleSubmit = async(values) => {
+        console.log("submit",values)
+        try {
+            setSubmitting(true);
+            const res = await TriplogServices.createTrip(values);
+            setSubmitting(false);
+            if (res && res.status === 200) {
+                if (res.data && res.data.status === 1) {
+                 
+                    store.dispatch(loadTripListDataSuccess(res.data.result))
+                    toast.success(res.data.message)
+                    // onSuccess(res.data);
+                    return;
+                }
+                onError(res.data.message);
+            }
+        } catch (err) {
+            setSubmitting(false);
+            onError();
+        }
+       
     }
     const fareEstimate = () => {
 

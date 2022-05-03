@@ -15,22 +15,19 @@ import { loadTripListDataSuccess } from "../../store/actions/TripAction";
 import { store } from "../../store/store";
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 import CallerIdInfo from "./CallerIdInfo";
+import { Loader, LoaderOptions } from 'google-maps';
 
 
 
 const TriplogWrap = () => {
+    // document.addEventListener("keydown", onKeyDown, false);
+    // function onKeyDown(e) {
+    //     var x = e.keyCode;
+    //     if (x == 112) {
+    //         console.log('Your pressed Fn+F1');
+    //     }
+    // } 
 
-    useEffect(()=>{
-        document.addEventListener("keydown", onKeyDown, false);
-        function onKeyDown(e) {
-            var x = e.keyCode;
-            if (x == 112) {
-                console.log('Your pressed Fn+F1');
-            }
-        }
-    },[])
-
-  
     const formikRef = useRef();
 
     const TriplogSchema = Yup.object().shape({
@@ -68,7 +65,6 @@ const TriplogWrap = () => {
 
 
     const initiaal_Values = {
-
         pickup_lat: "",
         pickup_lng: "",
         pickup_address: "",
@@ -93,23 +89,29 @@ const TriplogWrap = () => {
         dropoff_cross_street: "",
     }
 
-    const getDropOffAddress = () => {
-        var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddress")), {
+    const loader = new Loader(`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`);
+
+
+    const getDropOffAddress = async () => {
+        let google = await loader.load()
+        let autocomplete = new google.maps.places.Autocomplete((document.getElementById("dropofaddress")), {
             types: ['geocode']
         });
-        window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var placeorg = autocomplete.getPlace();
             setDropofAddressLat(placeorg.geometry.location.lat())
             setDropofAddressLng(placeorg.geometry.location.lng())
             setDropofAddress(placeorg.formatted_address)
         });
+
     }
 
-    const getPickupAddress = () => {
-        var autocomplete = new window.google.maps.places.Autocomplete((document.getElementById("pickupaddress")), {
+    const getPickupAddress = async() => {
+        var google = await loader.load()
+        let autocomplete = new google.maps.places.Autocomplete((document.getElementById("pickupaddress")), {
             types: ['geocode']
         });
-        window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var placeorg = autocomplete.getPlace();
             setPickupAddressLat(placeorg.geometry.location.lat())
             setPickupAddressLng(placeorg.geometry.location.lng())
@@ -117,10 +119,11 @@ const TriplogWrap = () => {
         });
     }
 
+
     useEffect(() => {
-        getPickupAddress()
-        getDropOffAddress()
-    }, [])
+        getPickupAddress();
+        getDropOffAddress();
+    }, [1])
 
     useEffect(() => {
         formikRef.current.setFieldValue(
@@ -160,9 +163,7 @@ const TriplogWrap = () => {
                 "dropoff_lng",
                 dropofAddressLng
             );
-
         }
-
     }, [pickupAddress, dropofAddress])
 
 
@@ -436,17 +437,17 @@ const TriplogWrap = () => {
         <React.Fragment >
 
             <div >
-               
+
                 <fieldset className="pendingentries" >
                     <legend>Pending Entries</legend>
-            
+
                     <img src="/images/clear_button.png" alt="Clear" className="clearchatsidebar mb-1" />
 
                     <section className="chat-sidebar" id="chatsidebar">
 
 
                     </section>
-                    <CallerIdInfo/>
+                    <CallerIdInfo />
                 </fieldset>
 
                 <fieldset className="DispatchInfoDriver">
