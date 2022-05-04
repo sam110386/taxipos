@@ -13,8 +13,10 @@ import toast, { Toaster } from 'react-hot-toast';
 
 const TripDetails = (props) => {
 
-    const formikRef = useRef();
 
+    console.log("props",props)
+
+    const formikRef = useRef();
     const TriplogSchema = Yup.object().shape({
         pickup_address: Yup.string().required("Please enter Pickup-Address"),
         dropoff_address: Yup.string().required("Please enter Drop-Off-Address"),
@@ -187,11 +189,13 @@ const TripDetails = (props) => {
 
 
 
-    const handleSubmit = async(values) => {
+    const handleSubmit = async(values,{resetForm}) => {
         console.log("submit",values)
+    
         try {
             setSubmitting(true);
             const res = await TriplogServices.createTrip(values);
+            resetForm({})
             setSubmitting(false);
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
@@ -319,7 +323,7 @@ const TripDetails = (props) => {
         dropdown: true,
     });
 
-    window.$('#notifi').timepicker({
+   window.$('#direct_notification_time').timepicker({
         timeFormat: 'H:mm',
         interval: 10,
         minTime: '00:10',
@@ -330,21 +334,17 @@ const TripDetails = (props) => {
         dropdown: true,
         scrollbar: true
     });
+
     return (
         <React.Fragment>
             <div className="modal d-block mymodal tripModal" tabIndex="-1" role="dialog">
-                <div className="modal-dialog" role="document">
+                <div className="modal-dialog detailsmodal" role="document">
                     <div className="modal-content">
                         <div className="align-items-center justify-content-center position-relative">
                             <div className="modal-header">
                                 <h5 className="modal-title">Enter Trip Details</h5>
-                                <button
-                                    type="button"
-                                    className="close-btn btn-close font-weight-cold"
-                                    onClick={() => { props.SetShowTrip(false) }}
-                                >
-                                    X
-                                </button>
+                               
+                                <img src="/images/b_drop.png" onClick={() =>  { props.SetShowTrip(false) }} className="rmbtn" alt="Cancel" />
                             </div>
                             <div className="modal-body py-3">
                                 <div className="col-12">
@@ -353,7 +353,9 @@ const TripDetails = (props) => {
                                         initialValues={initiaal_Values}
                                         validationSchema={TriplogSchema}
                                         onSubmit={(values) => {
+                                            
                                             handleSubmit(values);
+                            
                                         }}>
                                         {({ errors, touched }) => (
                                             <Form>
@@ -411,7 +413,7 @@ const TripDetails = (props) => {
                                                                 <label className="form_lbl">Notification: </label>
                                                                 <Field
                                                                     name="direct_notification_time"
-                                                                    id="notifi"
+                                                                    id="direct_notification_time"
                                                                     placeholder="Notification"
                                                                     className="form-control"
                                                                     autocomplete="off"

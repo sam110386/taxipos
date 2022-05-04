@@ -7,6 +7,7 @@ const CallerIdInfo = () => {
 
     const [callerTripInfo, setCallerTripInfo] = useState([])
     const [showDetails, setShowDetails] = useState(false);
+    const [tripData,setTripData] = useState({});
     let ar = [1,2,3,4]
  
 
@@ -15,13 +16,6 @@ const CallerIdInfo = () => {
     }
 
     const LoadCallorInfoTripLog = async () => {
-        try {
-            const res = await TriplogServices.loadCallerInfoTriplog();
-
-        } catch (err) {
-            onError();
-        }
-
         try {
             const res = await TriplogServices.loadCallerInfoTriplog();
             if (res && res.status === 200) {
@@ -35,22 +29,35 @@ const CallerIdInfo = () => {
         }
     }
 
-    const ShowModal = (phone) =>{
+    const ShowModal = async(phone,id) =>{
+        console.log(id)
+        try {
+            const res = await TriplogServices.openTripsTriplog({id:id});
+            if (res && res.status === 200) {
+                if (res.data && res.data.status === 1) {
+                    setTripData(res.data.result)
+                }
+                onError(res.data.message);
+            }
+        } catch (err) {
+            onError();
+        }
+        
         setShowDetails(true)
     }
 
 
     useEffect(() => {
+        LoadCallorInfoTripLog()
         setInterval(() => {
             LoadCallorInfoTripLog()
-        }, 1000)
+        },30000)
     }, [])
     
 
     const openCallerIdDetail = () => {
         setShowDetails(true)
     }
-
 
     return (
         <>
@@ -76,10 +83,18 @@ const CallerIdInfo = () => {
                                                <th class="mid_th comtab" >F{f_numb}</th>
                                                 {callerTripInfo.map((ele3)=>{
                                                     if(ele3.UrlSend.Line == f_numb){
+                                                        document.addEventListener("keydown", onKeyDown, false);
+                                                        function onKeyDown(e) {
+                                                            var x = e.keyCode;
+                                                            var keyName = {F:111}
+                                                            if (x == keyName.F+f_numb) {
+                                                                ShowModal(ele3.UrlSend.Phone,ele3.UrlSend.id)
+                                                            }
+                                                        }
                                                         return (
                                                             <>  
-                                                            <th class="mid_th text-center" width="100" onClick={()=>ShowModal(ele3.UrlSend.Phone)}  >{ele3.UrlSend.Phone}</th>
-                                                            <th class="mid_th"> ... </th>
+                                                            <th class="mid_th text-center" width="100" onClick={()=>ShowModal(ele3.UrlSend.Phone,ele3.UrlSend.id)}  >{ele3.UrlSend.Phone}</th>
+                                                            <th class="mid_th"> ...  </th>
                                                             </>
                                                     )}
                                                 })}
@@ -94,7 +109,7 @@ const CallerIdInfo = () => {
                 })}
             </div>
 
-            {showDetails && <CallerIdDetails SetShowCallerId={setShowDetails} />}
+            {showDetails && <CallerIdDetails SetShowCallerId={setShowDetails} details={tripData}/>}
         </>
     )
 }

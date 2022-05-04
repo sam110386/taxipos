@@ -19,6 +19,7 @@ const path = {
 };
 
 export const loadCallerInfoTriplog = async (data) => {
+  
   try {
     const res = await API.get(path.LOAD_CALLER_INFO_TRIPLOG, data);
     return res;
@@ -29,7 +30,7 @@ export const loadCallerInfoTriplog = async (data) => {
 
 export const openTripsTriplog = async (data) => {
   try {
-    const res = await API.get(path.OPEN_TRIPS_TRIPLOG, data);
+    const res = await API.post(path.OPEN_TRIPS_TRIPLOG, data);
     return res;
   } catch (err) {
     return null;

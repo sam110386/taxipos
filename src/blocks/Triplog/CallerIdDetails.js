@@ -10,7 +10,7 @@ import TripDetails from "./TripDetails";
 
 
 const CallerIdDetails = (props) => {
-
+    console.log(props.details.all_trips, "lskjdflsjflkd")
     const formikRef = useRef();
 
     const TriplogSchema = Yup.object().shape({
@@ -33,7 +33,7 @@ const CallerIdDetails = (props) => {
     const [dropofAddressLat, setDropofAddressLat] = useState("");
     const [dropofAddressLng, setDropofAddressLng] = useState("");
     const [dropofAddress2, setDropofAddress2] = useState("");
-    const [showDetails,setShowDetails] = useState(false)
+    const [showDetails, setShowDetails] = useState(false)
 
 
     const { user, userDetails } = useSelector((state) => {
@@ -119,7 +119,24 @@ const CallerIdDetails = (props) => {
         });
     }
 
+    const setPickupDetails = (pickup_address, pickup_lat, pickup_lng) => {
+        setPickupAddressLat(pickup_lat)
+        setPickupAddressLng(pickup_lng)
+        setPickupAddress(pickup_address)
+    }
+    const setDropOffDetails = (dropoff_address, dropoff_lat, dropoff_lng) => {
+        setDropofAddressLat(dropoff_lat)
+        setDropofAddressLng(dropoff_lng)
+        setDropofAddress(dropoff_address)
+    }
 
+    //    document.addEventListener("keydown", onKeyDown, false);
+    //     function onKeyDown(e) {
+    //         var x = e.keyCode;
+    //         if (x == 40) {
+    //             setPickupDetails(pickup_address,pickup_lat,pickup_lng);
+    //         }
+    //     } 
     useEffect(() => {
         getPickupAddress()
         getDropOffAddress()
@@ -191,9 +208,9 @@ const CallerIdDetails = (props) => {
         //setError(true);
     };
 
-    const showTripDetails = ()=>{
-        setShowDetails(true) 
-        
+    const showTripDetails = () => {
+        setShowDetails(true)
+
     }
 
 
@@ -264,6 +281,10 @@ const CallerIdDetails = (props) => {
         dropdown: true,
         scrollbar: true
     });
+
+  
+   
+
     return (
         <React.Fragment>
             <div className="modal d-block callidmodal tripModal" tabIndex="-1" role="dialog">
@@ -272,13 +293,8 @@ const CallerIdDetails = (props) => {
                         <div className="align-items-center justify-content-center position-relative">
                             <div className="modal-header">
                                 <h6 className="modal-title">No Previous Trip Details Found :</h6>
-                                <button
-                                    type="button"
-                                    className="close-btn btn-close font-weight-cold"
-                                    onClick={() => { props.SetShowCallerId(false) }}
-                                >
-                                    X
-                                </button>
+
+                                <img src="/images/b_drop.png" onClick={() => { props.SetShowCallerId(false) }} className="rmbtn" alt="Cancel" />
                             </div>
                             <div className="modal-body py-3">
                                 <div className="col-12">
@@ -293,42 +309,60 @@ const CallerIdDetails = (props) => {
                                             <Form>
                                                 <>
                                                     <div className="row d-flex justify-content-left pl-0 pr-0 text-center">
-                                                        {/* <div className="col-md-4">
+                                                        <div className="col-md-2">
                                                             <div className="form-group ">
-                                                                <label className="form_lbl">Car#: </label>
-                                                                <Field as="select" name="car_no" className="form-control w-100">
-                                                                    {userDetails.FleetDevices && userDetails.FleetDevices.map(el => (
-                                                                        <option value={el.value} >{el.label}</option>
-                                                                    ))}
-
-                                                                </Field>
+                                                                Telephone Numaber
                                                             </div>
-                                                        </div> */}
-                                                        {/* <div className="col-md-4">
+                                                        </div>
+                                                        <div className="col-md-5">
+                                                            <div className="form-group ">
 
-                                                            <div className="form-group ">
-                                                                <label className="form_lbl">Cat Type: </label>
-                                                                <Field as="select" name="cab_name" className="form-control w-100" >
-                                                                    <option value="" >Car Type</option>
-                                                                    {userDetails.CarType && userDetails.CarType.map(el => (
-                                                                        <option >{el.label}</option>
-                                                                    ))}
-                                                                </Field>
+                                                                Pick Up Address
                                                             </div>
-                                                        </div> */}
-                                                           <div className="col-md-4">
+                                                        </div>
+                                                        <div className="col-md-5">
                                                             <div className="form-group ">
-                                                                <label className="form_lbl">Telephone : </label>
+                                                                Drop Off Address
+                                                            </div>
+                                                        </div>
+
+                                                        {
+                                                            props.details.all_trips && props.details.all_trips.map((e,index) => (
+                                                                <>
+                                                                    <div className="col-md-2">
+                                                                        <div className="form-group ">
+                                                                            <Field
+                                                                                value={e.Triplog.telephone}
+                                                                                className="form-control text-center"
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="col-md-5">
+                                                                        <div className="callerIdSlider" tabIndex={index+1} onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
+                                                                            <h6 >{e.Triplog.pickup_address}</h6>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="col-md-5">
+                                                                        <div className="callerIdSlider" onClick={() => setDropOffDetails(e.Triplog.dropoff_address, e.Triplog.dropoff_lat, e.Triplog.dropoff_lng)}>
+                                                                            <h6>{e.Triplog.dropoff_address}</h6>
+                                                                        </div>
+                                                                    </div>
+                                                                </>
+
+                                                            ))
+                                                        }
+
+                                                        <div className="col-md-2">
+                                                            <div className="form-group ">
                                                                 <Field
-                                                                    placeholder="Please Enter Telephone Number"
-                                                                    name="telephone"
-                                                                    className="form-control"
-                                                                    autocomplete="off"
+                                                                    value={props.details.phone}
+                                                                    className="form-control text-center"
                                                                 />
                                                             </div>
                                                         </div>
 
-                                                        <div className="col-md-4">
+                                                        <div className="col-md-5">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Pick Up Address: </label>
                                                                 <Field
@@ -352,7 +386,7 @@ const CallerIdDetails = (props) => {
                                                             </div>
                                                         </div>
 
-                                                        <div className="col-md-4">
+                                                        <div className="col-md-5">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Drop off Address: </label>
                                                                 <Field
@@ -369,19 +403,16 @@ const CallerIdDetails = (props) => {
                                                             </div>
                                                         </div>
 
-                                                        <div className="col-md-4">
+                                                        <div className="col-md-2">
                                                             <div className="form-group ">
-                                                                <label className="form_lbl">Telephone : </label>
                                                                 <Field
-                                                                    placeholder="Please Enter Telephone Number"
-                                                                    name="telephone"
-                                                                    className="form-control"
-                                                                    autocomplete="off"
+                                                                    value={props.details.phone}
+                                                                    className="form-control text-center"
                                                                 />
                                                             </div>
                                                         </div>
 
-                                                        <div className="col-md-4">
+                                                        <div className="col-md-5">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Pickup Cross Street: </label>
                                                                 <Field
@@ -392,12 +423,12 @@ const CallerIdDetails = (props) => {
                                                                 />
                                                             </div>
                                                         </div>
-                                                        <div className="col-md-4">
+                                                        <div className="col-md-5">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Drop Cross Street: </label>
                                                                 <Field
                                                                     placeholder="Please Enter Drop Cross Street"
-                                                                    name="telephone"
+                                                                    name="drop_cross_street"
                                                                     className="form-control"
                                                                     autocomplete="off"
                                                                 />

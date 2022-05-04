@@ -13,20 +13,14 @@ import toast, { Toaster } from 'react-hot-toast';
 import TripDetails from "./TripDetails";
 import { loadTripListDataSuccess } from "../../store/actions/TripAction";
 import { store } from "../../store/store";
-import KeyboardEventHandler from 'react-keyboard-event-handler';
 import CallerIdInfo from "./CallerIdInfo";
 import { Loader, LoaderOptions } from 'google-maps';
 
 
 
 const TriplogWrap = () => {
-    // document.addEventListener("keydown", onKeyDown, false);
-    // function onKeyDown(e) {
-    //     var x = e.keyCode;
-    //     if (x == 112) {
-    //         console.log('Your pressed Fn+F1');
-    //     }
-    // } 
+
+ 
 
     const formikRef = useRef();
 
@@ -91,7 +85,6 @@ const TriplogWrap = () => {
 
     const loader = new Loader(`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`);
 
-
     const getDropOffAddress = async () => {
         let google = await loader.load()
         let autocomplete = new google.maps.places.Autocomplete((document.getElementById("dropofaddress")), {
@@ -99,9 +92,9 @@ const TriplogWrap = () => {
         });
         google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var placeorg = autocomplete.getPlace();
-            setDropofAddressLat(placeorg.geometry.location.lat())
-            setDropofAddressLng(placeorg.geometry.location.lng())
-            setDropofAddress(placeorg.formatted_address)
+            setDropofAddressLat(placeorg.geometry.location.lat());
+            setDropofAddressLng(placeorg.geometry.location.lng());
+            setDropofAddress(placeorg.formatted_address);
         });
 
     }
@@ -118,8 +111,6 @@ const TriplogWrap = () => {
             setPickupAddress(placeorg.formatted_address)
         });
     }
-
-
     useEffect(() => {
         getPickupAddress();
         getDropOffAddress();
@@ -416,9 +407,11 @@ const TriplogWrap = () => {
         initialize()
     }, []);
 
-    window.$('#timepicker').timepicker({
-        dynamic: false,
-    });
+   
+    window.$('#pickup_time').timepicker({
+         dynamic: true,
+     });
+    
 
     window.$('#notification').timepicker({
         timeFormat: 'H:mm',
@@ -429,29 +422,23 @@ const TriplogWrap = () => {
         startTime: '00:10',
         dynamic: false,
         dropdown: true,
-        scrollbar: true
-    });
+        scrollbar: true,
+    })
+
 
 
     return (
         <React.Fragment >
 
             <div >
-
                 <fieldset className="pendingentries" >
                     <legend>Pending Entries</legend>
-
                     <img src="/images/clear_button.png" alt="Clear" className="clearchatsidebar mb-1" />
-
                     <section className="chat-sidebar" id="chatsidebar">
-
-
                     </section>
                     <CallerIdInfo />
                 </fieldset>
-
                 <fieldset className="DispatchInfoDriver">
-
                     <legend>Dispatch info to Driver</legend>
                     <Formik
                         innerRef={formikRef}
@@ -469,7 +456,6 @@ const TriplogWrap = () => {
                                             name="TextCity"
                                             type="hidden"
                                             className="form-control"
-
                                         />
                                         <Field
                                             name="TextState"
@@ -499,7 +485,7 @@ const TriplogWrap = () => {
                                                 className={`form-control ${touched.pickup_address && errors.pickup_address
                                                     ? "is-invalid"
                                                     : ""
-                                                    }`}
+                                                }`}
 
                                             />
                                             <Field
@@ -523,7 +509,7 @@ const TriplogWrap = () => {
                                         <div className="col-1 pl-0">
                                             <Field
                                                 name="pickup_time"
-                                                id="timepicker"
+                                                id="pickup_time"
                                                 autocomplete="off"
                                                 className="form-control cur_time_log"
                                             />

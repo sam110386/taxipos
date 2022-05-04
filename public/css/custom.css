@@ -124,24 +124,34 @@ p {
 }
 
 .mymodal {
-  overflow-y: scroll;
-  max-height: 85%;
+  overflow-y: auto;
+  max-height: 95%;
   margin-top: 50px;
   margin-bottom: 50px;
-  /* z-index: inherit; */
   z-index: 9 !important;
+  border-radius: 10rem;
 }
+.detailsmodal{
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.50), 0 6px 20px 0 rgba(0, 0, 0, 0.50);
 
+}
 .callidmodal {
-
   overflow-y: scroll;
-  max-height: 60%;
-  margin-top: 10rem;
+  max-height: 75%;
+  margin-top: 8rem;
   margin-bottom: 50px;
   z-index: 9 !important;
+  
+}
+.callidmodal:hover{
 
 }
-
+.callerIdSlider{
+  background-color: rgba(167, 165, 165, 0.479);
+  padding: .4rem;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
 .callmodal{
   box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.50), 0 6px 20px 0 rgba(0, 0, 0, 0.50);
   border-radius: 15px;
@@ -151,6 +161,11 @@ p {
   cursor: pointer;
   height: 1.2rem;
   margin: .5rem;
+  transition: transform .2s;
+}
+
+.rmbtn:hover{
+  transform: scale(1.2);
 }
 
 .notrip {}
