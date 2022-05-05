@@ -10,7 +10,7 @@ import TripDetails from "./TripDetails";
 
 
 const CallerIdDetails = (props) => {
-    console.log(props.details.all_trips, "lskjdflsjflkd")
+ 
     const formikRef = useRef();
 
     const TriplogSchema = Yup.object().shape({
@@ -194,8 +194,7 @@ const CallerIdDetails = (props) => {
 
 
     const handleSubmit = (values) => {
-        console.log("submit")
-        console.log(values)
+      
     }
     const fareEstimate = () => {
 
@@ -282,8 +281,63 @@ const CallerIdDetails = (props) => {
         scrollbar: true
     });
 
-  
-   
+
+    const handleFocus = () =>{
+      
+        let modal = document.getElementsByClassName(".modal")
+        var myTable = document.getElementById('myslider');
+        
+        myTable.onkeydown = function (event) {
+            
+
+            var numberOfCells = document.getElementById('myslider').getElementsByClassName(".callerIdSlider").length;
+            console.log(numberOfCells, "numberofCells")
+            console.log(event.target,"event.targer")
+            console.log(event.target.id,"event.targer.id")
+
+            if (event.keyCode == 37) {
+                console.log('left');
+                document.getElementById(event.target.id).blur()
+                var currentfocus = event.target.id.split('');
+                console.log(currentfocus,"currentfocus")
+                currentfocus.splice(currentfocus.length - 1, 1, +currentfocus[currentfocus.length - 1] - 1);
+                var newfocus = currentfocus.join('');
+                document.getElementById(newfocus).focus()
+            }
+
+            // else if (event.keyCode == "39") {
+            //     console.log('right');
+            //     document.getElementById(event.target.id).blur()
+            //     var currentfocus = event.target.id.split('');
+            //     currentfocus.splice(currentfocus.length - 1, 1, +currentfocus[currentfocus.length - 1] + 1);
+            //     var newfocus = currentfocus.join('');
+            //     document.getElementById(newfocus).focus()
+            // }
+            // else if (event.keyCode == 38) {
+            //     console.log('up');
+            //     document.getElementById(event.target.id).blur()
+            //     var currentfocus = event.target.id.split('');
+            //     currentfocus.splice(2, 1, +currentfocus[2] - 1);
+            //     var newfocus = currentfocus.join('');
+            //     document.getElementById(newfocus).focus();
+            // }
+            // else if (event.keyCode == 40) {
+            //     console.log('down');
+            //     document.getElementById(event.target.id).blur()
+            //     var currentfocus = event.target.id.split('');
+            //     currentfocus.splice(2, 1, +currentfocus[2] + 1);
+            //     var newfocus = currentfocus.join('');
+            //     document.getElementById(newfocus).focus();
+            // }
+        };
+    }
+
+
+    useEffect(()=>{
+        handleFocus()
+    },[1])
+
+
 
     return (
         <React.Fragment>
@@ -308,7 +362,7 @@ const CallerIdDetails = (props) => {
                                         {({ errors, touched }) => (
                                             <Form>
                                                 <>
-                                                    <div className="row d-flex justify-content-left pl-0 pr-0 text-center">
+                                                    <div className="row  d-flex justify-content-left pl-0 pr-0 text-center" id="myslider">
                                                         <div className="col-md-2">
                                                             <div className="form-group ">
                                                                 Telephone Numaber
@@ -327,27 +381,29 @@ const CallerIdDetails = (props) => {
                                                         </div>
 
                                                         {
-                                                            props.details.all_trips && props.details.all_trips.map((e,index) => (
+                                                            props.details.all_trips && props.details.all_trips.map((e, index) => (
                                                                 <>
-                                                                    <div className="col-md-2">
-                                                                        <div className="form-group ">
-                                                                            <Field
-                                                                                value={e.Triplog.telephone}
-                                                                                className="form-control text-center"
-                                                                            />
+                                                                    
+                                                                        <div className="col-md-2">
+                                                                            <div className="form-group ">
+                                                                                <Field
+                                                                                    value={e.Triplog.telephone}
+                                                                                    className="form-control text-center"
+                                                                                />
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                    <div className="col-md-5">
-                                                                        <div className="callerIdSlider" tabIndex={index+1} onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
-                                                                            <h6 >{e.Triplog.pickup_address}</h6>
+                                                                        <div className="col-md-5">
+                                                                            <div className="callerIdSlider" id="l01" tabindex="1"  onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
+                                                                                <h6 >{e.Triplog.pickup_address}</h6>
 
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                    <div className="col-md-5">
-                                                                        <div className="callerIdSlider" onClick={() => setDropOffDetails(e.Triplog.dropoff_address, e.Triplog.dropoff_lat, e.Triplog.dropoff_lng)}>
-                                                                            <h6>{e.Triplog.dropoff_address}</h6>
+                                                                        <div className="col-md-5">
+                                                                            <div className="callerIdSlider" id="l02" tabindex="0" onClick={() => setDropOffDetails(e.Triplog.dropoff_address, e.Triplog.dropoff_lat, e.Triplog.dropoff_lng)}>
+                                                                                <h6>{e.Triplog.dropoff_address}</h6>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
+                                                                   
                                                                 </>
 
                                                             ))

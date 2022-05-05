@@ -85,10 +85,12 @@ const CallerIdInfo = () => {
                                                     if(ele3.UrlSend.Line == f_numb){
                                                         document.addEventListener("keydown", onKeyDown, false);
                                                         function onKeyDown(e) {
+                                                        
                                                             var x = e.keyCode;
                                                             var keyName = {F:111}
                                                             if (x == keyName.F+f_numb) {
-                                                                ShowModal(ele3.UrlSend.Phone,ele3.UrlSend.id)
+                                                                ShowModal(ele3.UrlSend.Phone,ele3.UrlSend.id);
+                                                                e.preventDefault(); 
                                                             }
                                                         }
                                                         return (

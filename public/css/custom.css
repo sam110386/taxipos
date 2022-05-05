@@ -108,6 +108,15 @@ p {
   padding: 20px 0 10px;
   background: #fff !important;
 }
+.react-time-picker__wrapper {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 0;
+  border: none !important;
+}
+.react-time-picker__inputGroup__input{
+  outline: none !important;
+}
 
 .header .navbar-brand {
   padding: 0;

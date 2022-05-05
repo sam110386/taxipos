@@ -42,6 +42,7 @@
     "react-scripts": "2.0.4",
     "react-seo": "^1.0.11",
     "react-share": "^2.4.0",
+    "react-time-picker": "^4.5.0",
     "redux": "^4.1.0",
     "redux-devtools-extension": "^2.13.9",
     "redux-persist": "^6.0.0",

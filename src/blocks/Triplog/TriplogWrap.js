@@ -15,6 +15,7 @@ import { loadTripListDataSuccess } from "../../store/actions/TripAction";
 import { store } from "../../store/store";
 import CallerIdInfo from "./CallerIdInfo";
 import { Loader, LoaderOptions } from 'google-maps';
+import TimePicker from "react-time-picker";
 
 
 
@@ -48,6 +49,7 @@ const TriplogWrap = () => {
     const [dropofAddressLat, setDropofAddressLat] = useState("");
     const [dropofAddressLng, setDropofAddressLng] = useState("");
     const [cabName, setCabName] = useState("Business Sedan");
+    const [fareInput,setFareInput] = useState("")
 
     const { user, trip, userDetails } = useSelector((state) => {
         return {
@@ -116,16 +118,16 @@ const TriplogWrap = () => {
         getDropOffAddress();
     }, [1])
 
-    useEffect(() => {
-        formikRef.current.setFieldValue(
-            "pickup_time",
-            CurrentPickupTime
-        );
-        formikRef.current.setFieldValue(
-            "pickup_date",
-            CurrentDate
-        );
-    }, [CurrentPickupTime, CurrentDate]);
+    // useEffect(() => {
+    //     formikRef.current.setFieldValue(
+    //         "pickup_time",
+    //         CurrentPickupTime
+    //     );
+    //     formikRef.current.setFieldValue(
+    //         "pickup_date",
+    //         CurrentDate
+    //     );
+    // }, [CurrentPickupTime, CurrentDate]);
 
 
     useEffect(() => {
@@ -233,6 +235,7 @@ const TriplogWrap = () => {
         }
     };
     const handleSubmit = async (values) => {
+        console.log("values",values);
         try {
             setSubmitting(true);
             const res = await TriplogServices.createTrip(values);
@@ -273,9 +276,9 @@ const TriplogWrap = () => {
     const getFate = async (value) => {
 
         if (!value.pickupAddress) {
-            return toast("Please Enter Pick-up-Address")
+            return toast.error("Please Enter Pick-up-Address")
         } else if (!value.dropofAddress) {
-            return toast("Please Enter Drop-of-Address")
+            return toast.error("Please Enter Drop-of-Address")
         }
         try {
             setSubmitting(true);
@@ -283,6 +286,7 @@ const TriplogWrap = () => {
             setSubmitting(false);
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
+                    setFareInput(res.data.result.fare)
                     // onSuccess(res.data);
                     return;
                 }
@@ -508,14 +512,21 @@ const TriplogWrap = () => {
 
                                         <div className="col-1 pl-0">
                                             <Field
+                                                component={TimePicker}
                                                 name="pickup_time"
                                                 id="pickup_time"
                                                 autocomplete="off"
                                                 className="form-control cur_time_log"
+                                                clearIcon={null}
+                                                clockIcon={null}
+                                                closeClock={false}
+                                                disableClock={true}
+                                                
+                                                                                             
                                             />
 
                                         </div>
-                                        <div className="col-2 pr-0 pl-0 ">
+                                        <div className="col-2 pr-0 pl-0">
                                             <Field
                                                 type="date"
                                                 name="pickup_date"
