@@ -110,7 +110,6 @@ const CallerIdInfo = () => {
                     }
                 })}
             </div>
-
             {showDetails && <CallerIdDetails SetShowCallerId={setShowDetails} details={tripData}/>}
         </>
     )

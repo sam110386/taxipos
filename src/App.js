@@ -15,7 +15,6 @@ import { store, persistor } from "./store/store";
 import { FullPageLoader } from "./blocks/Loaders";
 import { GlobalErrorDialog } from "./blocks/Dialogs";
 import { Toaster } from "react-hot-toast";
-import "../node_modules/jquery-timepicker/jquery.timepicker"
 
 //import PageNotFound from './pages/PageNotFound';
 

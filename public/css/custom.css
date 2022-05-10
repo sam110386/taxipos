@@ -103,6 +103,15 @@ p {
   -webkit-box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2);
   box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2);
 }
+#chatlog{
+    cursor: pointer;
+    margin-left: .7rem;
+    margin-top: .5rem;
+    background-color:rgba(197, 197, 197, 0.288) ;
+  }
+#chatlog:hover{
+  background-color: rgba(226, 225, 225, 0.288);
+}
 
 .header .navbar {
   padding: 20px 0 10px;
@@ -140,6 +149,7 @@ p {
   z-index: 9 !important;
   border-radius: 10rem;
 }
+
 .detailsmodal{
   box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.50), 0 6px 20px 0 rgba(0, 0, 0, 0.50);
 
@@ -3526,8 +3536,19 @@ svg {
   /* width: calc(533% + 1.3px); */
   height: 190px;
   transform: translateX(6%) rotateY(170deg);
-  left: -134px;
+  /* left: -134px; */
   position: relative;
+}
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+  padding:7px !important;
+}
+.css-1sn4lm3-MuiTypography-root{
+  margin: .8rem !important;
+}
+.input {
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
 }
 
 svg path.elementor-shape-fill {
@@ -3537,6 +3558,9 @@ svg path.elementor-shape-fill {
   transform-origin: center;
   -webkit-transform: rotateY(0deg);
   transform: rotateY(0deg);
+}
+.bc{
+  background-color: transparent;
 }
 
 .buycar_sec {

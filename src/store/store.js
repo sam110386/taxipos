@@ -12,7 +12,8 @@ import {
   carReducer,
   globalReducer,
   userReducer,
-  TripReducer
+  TripReducer,
+  SetNumberReducer
 } from "./reducers";
 
 const rootPersistConfig = {
@@ -25,7 +26,8 @@ const rootReducer = combineReducers({
   cars: carReducer,
   global: globalReducer,
   user: userReducer,
-  trip:TripReducer
+  trip:TripReducer,
+  number:SetNumberReducer
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

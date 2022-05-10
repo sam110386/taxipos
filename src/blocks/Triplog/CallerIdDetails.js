@@ -7,11 +7,18 @@ import { Button } from "@material-ui/core";
 import * as TriplogServices from '../../services/TriplogService';
 import moment from "moment";
 import TripDetails from "./TripDetails";
+import Chatsidebar from "./Chatsidebar";
+import { store } from "../../store/store";
+import {SetNumberAction} from "../../store/actions/SetNumberAction";
 
 
 const CallerIdDetails = (props) => {
- 
+
+    // console.log("calleridprops", props.details.all_trips[0].Triplog.telephone);
+
+
     const formikRef = useRef();
+
 
     const TriplogSchema = Yup.object().shape({
         pickup_address: Yup.string().required("Please enter Pickup-Address"),
@@ -130,13 +137,6 @@ const CallerIdDetails = (props) => {
         setDropofAddress(dropoff_address)
     }
 
-    //    document.addEventListener("keydown", onKeyDown, false);
-    //     function onKeyDown(e) {
-    //         var x = e.keyCode;
-    //         if (x == 40) {
-    //             setPickupDetails(pickup_address,pickup_lat,pickup_lng);
-    //         }
-    //     } 
     useEffect(() => {
         getPickupAddress()
         getDropOffAddress()
@@ -194,7 +194,7 @@ const CallerIdDetails = (props) => {
 
 
     const handleSubmit = (values) => {
-      
+
     }
     const fareEstimate = () => {
 
@@ -281,63 +281,10 @@ const CallerIdDetails = (props) => {
         scrollbar: true
     });
 
-
-    const handleFocus = () =>{
-      
-        let modal = document.getElementsByClassName(".modal")
-        var myTable = document.getElementById('myslider');
-        
-        myTable.onkeydown = function (event) {
-            
-
-            var numberOfCells = document.getElementById('myslider').getElementsByClassName(".callerIdSlider").length;
-            console.log(numberOfCells, "numberofCells")
-            console.log(event.target,"event.targer")
-            console.log(event.target.id,"event.targer.id")
-
-            if (event.keyCode == 37) {
-                console.log('left');
-                document.getElementById(event.target.id).blur()
-                var currentfocus = event.target.id.split('');
-                console.log(currentfocus,"currentfocus")
-                currentfocus.splice(currentfocus.length - 1, 1, +currentfocus[currentfocus.length - 1] - 1);
-                var newfocus = currentfocus.join('');
-                document.getElementById(newfocus).focus()
-            }
-
-            // else if (event.keyCode == "39") {
-            //     console.log('right');
-            //     document.getElementById(event.target.id).blur()
-            //     var currentfocus = event.target.id.split('');
-            //     currentfocus.splice(currentfocus.length - 1, 1, +currentfocus[currentfocus.length - 1] + 1);
-            //     var newfocus = currentfocus.join('');
-            //     document.getElementById(newfocus).focus()
-            // }
-            // else if (event.keyCode == 38) {
-            //     console.log('up');
-            //     document.getElementById(event.target.id).blur()
-            //     var currentfocus = event.target.id.split('');
-            //     currentfocus.splice(2, 1, +currentfocus[2] - 1);
-            //     var newfocus = currentfocus.join('');
-            //     document.getElementById(newfocus).focus();
-            // }
-            // else if (event.keyCode == 40) {
-            //     console.log('down');
-            //     document.getElementById(event.target.id).blur()
-            //     var currentfocus = event.target.id.split('');
-            //     currentfocus.splice(2, 1, +currentfocus[2] + 1);
-            //     var newfocus = currentfocus.join('');
-            //     document.getElementById(newfocus).focus();
-            // }
-        };
+    const Minimize = () => {
+        props.SetShowCallerId(false)
+        store.dispatch(SetNumberAction(props.details.all_trips))
     }
-
-
-    useEffect(()=>{
-        handleFocus()
-    },[1])
-
-
 
     return (
         <React.Fragment>
@@ -346,8 +293,8 @@ const CallerIdDetails = (props) => {
                     <div className="modal-content">
                         <div className="align-items-center justify-content-center position-relative">
                             <div className="modal-header">
+                                <button className="btn " onClick={Minimize}>Minimize</button>
                                 <h6 className="modal-title">No Previous Trip Details Found :</h6>
-
                                 <img src="/images/b_drop.png" onClick={() => { props.SetShowCallerId(false) }} className="rmbtn" alt="Cancel" />
                             </div>
                             <div className="modal-body py-3">
@@ -383,27 +330,27 @@ const CallerIdDetails = (props) => {
                                                         {
                                                             props.details.all_trips && props.details.all_trips.map((e, index) => (
                                                                 <>
-                                                                    
-                                                                        <div className="col-md-2">
-                                                                            <div className="form-group ">
-                                                                                <Field
-                                                                                    value={e.Triplog.telephone}
-                                                                                    className="form-control text-center"
-                                                                                />
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className="col-md-5">
-                                                                            <div className="callerIdSlider" id="l01" tabindex="1"  onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
-                                                                                <h6 >{e.Triplog.pickup_address}</h6>
 
-                                                                            </div>
+                                                                    <div className="col-md-2">
+                                                                        <div className="form-group ">
+                                                                            <Field
+                                                                                value={e.Triplog.telephone}
+                                                                                className="form-control text-center"
+                                                                            />
                                                                         </div>
-                                                                        <div className="col-md-5">
-                                                                            <div className="callerIdSlider" id="l02" tabindex="0" onClick={() => setDropOffDetails(e.Triplog.dropoff_address, e.Triplog.dropoff_lat, e.Triplog.dropoff_lng)}>
-                                                                                <h6>{e.Triplog.dropoff_address}</h6>
-                                                                            </div>
+                                                                    </div>
+                                                                    <div className="col-md-5">
+                                                                        <div className="callerIdSlider" id="l01" tabindex="1" onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
+                                                                            <h6 >{e.Triplog.pickup_address}</h6>
+
                                                                         </div>
-                                                                   
+                                                                    </div>
+                                                                    <div className="col-md-5">
+                                                                        <div className="callerIdSlider" id="l02" tabindex="0" onClick={() => setDropOffDetails(e.Triplog.dropoff_address, e.Triplog.dropoff_lat, e.Triplog.dropoff_lng)}>
+                                                                            <h6>{e.Triplog.dropoff_address}</h6>
+                                                                        </div>
+                                                                    </div>
+
                                                                 </>
 
                                                             ))
@@ -608,4 +555,5 @@ const CallerIdDetails = (props) => {
 };
 
 export default CallerIdDetails;
+
 

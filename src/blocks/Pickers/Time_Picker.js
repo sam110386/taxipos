@@ -1,0 +1,75 @@
+import * as React from 'react';
+import TextField from '@mui/material/TextField';
+import { useFormikContext } from "formik";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+
+export const Time_Picker = ({
+            required,
+            type,
+            label,
+            form,
+            field,
+            options,
+            fullWidth,
+            margin,
+            autocomplete,
+            readOnly,
+            ...props
+}) => {
+
+
+    const { name, value } = field;
+    const { setFieldValue, getFieldMeta } = useFormikContext();
+
+    const HandleTime = (second, manual) => {
+        if (second) {
+            setFieldValue(name, second)
+        }
+        if (manual) {
+            setFieldValue(name, manual)
+        }
+    }
+
+    return (
+        <>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <TimePicker
+                name={name}
+                value={value}
+                onChange={(second, manual) => HandleTime(second, manual)}
+                {...props}
+                renderInput={(params) => <TextField {...params} autoComplete="off"  className="form-control bc"  />}
+           /> 
+         </LocalizationProvider> 
+        </>
+    );
+}
+
+
+// <Field
+// component={Time_Picker}
+// name="pickup_time"
+// autocomplete="off"
+// className="form-control "
+// renderInput={({ inputRef, inputProps, InputProps }) => (
+//     <Box
+//         sx={{
+//             display: "flex",
+//             alignItems: "right",
+//             position: "relative",
+//         }}
+//     >
+//         <Input
+//             ref={inputRef}
+//             {...inputProps}
+//             readOnly
+//             placeholder="j" //{intl.formatMessage({
+//             // //     id: "table.startDate",
+//             // // })}
+//         />
+//         {/* <DateIcon Dir={dir}>{InputProps?.endAdornment}</DateIcon> */}
+//     </Box>
+// )}
+// />

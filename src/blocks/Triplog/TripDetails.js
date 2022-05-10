@@ -9,12 +9,13 @@ import moment from "moment";
 import { store } from "../../store/store";
 import { loadTripListDataSuccess } from "../../store/actions/TripAction";
 import toast, { Toaster } from 'react-hot-toast';
+import { Time_Picker } from "../Pickers/Time_Picker";
 
 
 const TripDetails = (props) => {
 
 
-    console.log("props",props)
+    console.log("props", props)
 
     const formikRef = useRef();
     const TriplogSchema = Yup.object().shape({
@@ -25,7 +26,7 @@ const TripDetails = (props) => {
         fare: Yup.number("Please Enter Currect Fare")
     });
 
-  
+
     const [CurrentPickupTime, setCurrentPickupTime] = useState(0);
     const [submiting, setSubmitting] = useState(false);
     const [CurrentDate, setCurrentDate] = useState(0);
@@ -189,9 +190,9 @@ const TripDetails = (props) => {
 
 
 
-    const handleSubmit = async(values,{resetForm}) => {
-        console.log("submit",values)
-    
+    const handleSubmit = async (values, { resetForm }) => {
+        console.log("submit", values)
+
         try {
             setSubmitting(true);
             const res = await TriplogServices.createTrip(values);
@@ -199,7 +200,7 @@ const TripDetails = (props) => {
             setSubmitting(false);
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-                 
+
                     store.dispatch(loadTripListDataSuccess(res.data.result))
                     toast.success(res.data.message)
                     // onSuccess(res.data);
@@ -211,7 +212,7 @@ const TripDetails = (props) => {
             setSubmitting(false);
             onError();
         }
-       
+
     }
     const fareEstimate = () => {
 
@@ -269,7 +270,7 @@ const TripDetails = (props) => {
             onError();
         }
     }
-  
+
 
     useEffect(() => {
         initialize();
@@ -318,22 +319,22 @@ const TripDetails = (props) => {
     // useEffect(() => {
     //     initall()
     // }, []);
-    window.$('#timepicker').timepicker({
-        dynamic: false,
-        dropdown: true,
-    });
+    // window.$('#timepicker').timepicker({
+    //     dynamic: false,
+    //     dropdown: true,
+    // });
 
-   window.$('#direct_notification_time').timepicker({
-        timeFormat: 'H:mm',
-        interval: 10,
-        minTime: '00:10',
-        maxTime: '11:59pm',
-        defaultTime: '11',
-        startTime: '00:10',
-        dynamic: false,
-        dropdown: true,
-        scrollbar: true
-    });
+    // window.$('#direct_notification_time').timepicker({
+    //     timeFormat: 'H:mm',
+    //     interval: 10,
+    //     minTime: '00:10',
+    //     maxTime: '11:59pm',
+    //     defaultTime: '11',
+    //     startTime: '00:10',
+    //     dynamic: false,
+    //     dropdown: true,
+    //     scrollbar: true
+    // });
 
     return (
         <React.Fragment>
@@ -343,8 +344,8 @@ const TripDetails = (props) => {
                         <div className="align-items-center justify-content-center position-relative">
                             <div className="modal-header">
                                 <h5 className="modal-title">Enter Trip Details</h5>
-                               
-                                <img src="/images/b_drop.png" onClick={() =>  { props.SetShowTrip(false) }} className="rmbtn" alt="Cancel" />
+
+                                <img src="/images/b_drop.png" onClick={() => { props.SetShowTrip(false) }} className="rmbtn" alt="Cancel" />
                             </div>
                             <div className="modal-body py-3">
                                 <div className="col-12">
@@ -353,9 +354,9 @@ const TripDetails = (props) => {
                                         initialValues={initiaal_Values}
                                         validationSchema={TriplogSchema}
                                         onSubmit={(values) => {
-                                            
+
                                             handleSubmit(values);
-                            
+
                                         }}>
                                         {({ errors, touched }) => (
                                             <Form>
@@ -391,7 +392,7 @@ const TripDetails = (props) => {
                                                                     name="pickup_date"
                                                                     type="date"
                                                                     className="form-control"
-                                                                     autocomplete="off"
+                                                                    autocomplete="off"
 
                                                                 />
                                                             </div>
@@ -400,11 +401,17 @@ const TripDetails = (props) => {
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Pick Up Time: </label>
                                                                 <Field
+                                                                component={Time_Picker}
                                                                     name="pickup_time"
                                                                     id="timepicker"
-                                                                    className="form-control cur_time_log"
-                                                                    autocomplete="off"
                                                                 />
+                                                                {/* <Field
+                                                                    
+                                                                    name="pickup_time"
+                                                                    id="timepicker"
+                                                                    autocomplete="off"
+                                                                    className="form-control"
+                                                                /> */}
                                                             </div>
                                                         </div>
 
@@ -715,7 +722,7 @@ const TripDetails = (props) => {
                                                                 <Field
                                                                     type="date"
                                                                     name="multidayrange[multildaystart]"
-                                                                    
+
                                                                     className="form-control"
                                                                 />
                                                             </div>
@@ -723,7 +730,7 @@ const TripDetails = (props) => {
                                                         <div className="col-md-3  mt-4">
                                                             <Field
                                                                 type="date"
-                                                                name= "multidayrange[multildayend]"
+                                                                name="multidayrange[multildayend]"
                                                                 className="form-control"
                                                             />
                                                         </div>

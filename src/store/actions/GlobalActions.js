@@ -9,6 +9,7 @@ export const HIDE_CREDIT_CARD_MODAL = "HIDE_CREDIT_CARD_MODAL";
 export const SHOW_DRIVING_LICENSE_MODAL = "SHOW_DRIVING_LICENSE_MODAL";
 export const HIDE_DRIVING_LICENSE_MODAL = "HIDE_DRIVING_LICENSE_MODAL";
 
+
 export const startPageLoader = () => ({
   type: "START_PAGE_LOADER",
 });
@@ -57,4 +58,6 @@ export const hideDrivingLicenseModal = () => ({
   type: HIDE_DRIVING_LICENSE_MODAL,
   show: false,
 });
+
+
 

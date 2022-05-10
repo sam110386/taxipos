@@ -15,16 +15,15 @@ import { loadTripListDataSuccess } from "../../store/actions/TripAction";
 import { store } from "../../store/store";
 import CallerIdInfo from "./CallerIdInfo";
 import { Loader, LoaderOptions } from 'google-maps';
-import TimePicker from "react-time-picker";
+import Chatsidebar from "./Chatsidebar";
+import { Box } from "@mui/system";
+import { Time_Picker } from "../Pickers/Time_Picker";
+import { Input } from "@mui/material";
 
 
-
-const TriplogWrap = () => {
-
- 
+const TriplogWrap = (props) => {
 
     const formikRef = useRef();
-
     const TriplogSchema = Yup.object().shape({
         pickup_address: Yup.string().required("Please enter Pickup-Address"),
         dropoff_address: Yup.string().required("Please enter Drop-Off-Address"),
@@ -33,7 +32,6 @@ const TriplogWrap = () => {
         fare: Yup.number("Please Enter Currect Fare")
 
     });
-
 
     const [submiting, setSubmitting] = useState(false);
     const [CurrentPickupTime, setCurrentPickupTime] = useState(0);
@@ -49,7 +47,7 @@ const TriplogWrap = () => {
     const [dropofAddressLat, setDropofAddressLat] = useState("");
     const [dropofAddressLng, setDropofAddressLng] = useState("");
     const [cabName, setCabName] = useState("Business Sedan");
-    const [fareInput,setFareInput] = useState("")
+    const [fareInput, setFareInput] = useState("")
 
     const { user, trip, userDetails } = useSelector((state) => {
         return {
@@ -101,7 +99,7 @@ const TriplogWrap = () => {
 
     }
 
-    const getPickupAddress = async() => {
+    const getPickupAddress = async () => {
         var google = await loader.load()
         let autocomplete = new google.maps.places.Autocomplete((document.getElementById("pickupaddress")), {
             types: ['geocode']
@@ -127,7 +125,7 @@ const TriplogWrap = () => {
     //         "pickup_date",
     //         CurrentDate
     //     );
-    // }, [CurrentPickupTime, CurrentDate]);
+    // }, []);
 
 
     useEffect(() => {
@@ -235,7 +233,10 @@ const TriplogWrap = () => {
         }
     };
     const handleSubmit = async (values) => {
-        console.log("values",values);
+        console.log("values", values);
+        let time = moment(values.pickup_time).format("hh:mm A")
+        values.pickup_time = time
+
         try {
             setSubmitting(true);
             const res = await TriplogServices.createTrip(values);
@@ -407,29 +408,32 @@ const TriplogWrap = () => {
         }
     };
 
-    useEffect(() => {
-        initialize()
-    }, []);
-
-   
-    window.$('#pickup_time').timepicker({
-         dynamic: true,
-     });
-    
-
-    window.$('#notification').timepicker({
-        timeFormat: 'H:mm',
-        interval: 10,
-        minTime: '00:10',
-        maxTime: '11:59pm',
-        defaultTime: '11',
-        startTime: '00:10',
-        dynamic: false,
-        dropdown: true,
-        scrollbar: true,
-    })
+    // useEffect(() => {
+    //     initialize()
+    // }, []);
 
 
+    // window.$('#pickup_time').timepicker({
+    //      dynamic: true,
+    //  });
+
+
+
+
+    // const MyNotification = ({ field, form, ...props }) => {
+    //     window.$('#direct_notification_time').timepicker({
+    //         timeFormat: 'H:mm',
+    //         interval: 10,
+    //         minTime: '00:10',
+    //         maxTime: '11:59pm',
+    //         defaultTime: '11',
+    //         startTime: '00:10',
+    //         dynamic: false,
+    //         dropdown: true,
+    //         scrollbar: true,
+    //     })
+    //     return <input type="text" {...field} {...props}  />;
+    //   };
 
     return (
         <React.Fragment >
@@ -439,6 +443,7 @@ const TriplogWrap = () => {
                     <legend>Pending Entries</legend>
                     <img src="/images/clear_button.png" alt="Clear" className="clearchatsidebar mb-1" />
                     <section className="chat-sidebar" id="chatsidebar">
+                        <Chatsidebar />
                     </section>
                     <CallerIdInfo />
                 </fieldset>
@@ -489,8 +494,7 @@ const TriplogWrap = () => {
                                                 className={`form-control ${touched.pickup_address && errors.pickup_address
                                                     ? "is-invalid"
                                                     : ""
-                                                }`}
-
+                                                    }`}
                                             />
                                             <Field
                                                 name="pickup_lat"
@@ -510,21 +514,12 @@ const TriplogWrap = () => {
                                         </div>
                                         <br />
 
-                                        <div className="col-1 pl-0">
+                                        <div className="col-2 pl-0">
                                             <Field
-                                                component={TimePicker}
+                                                component={Time_Picker}
                                                 name="pickup_time"
-                                                id="pickup_time"
-                                                autocomplete="off"
-                                                className="form-control cur_time_log"
-                                                clearIcon={null}
-                                                clockIcon={null}
-                                                closeClock={false}
-                                                disableClock={true}
-                                                
-                                                                                             
-                                            />
-
+                                                className="form-control"
+                                              />
                                         </div>
                                         <div className="col-2 pr-0 pl-0">
                                             <Field
@@ -538,9 +533,9 @@ const TriplogWrap = () => {
                                             <Field
                                                 name="direct_notification_time"
                                                 placeholder="Notification"
-                                                id="notification"
+                                                id="direct_notification_time"
                                                 className="form-control"
-                                                autocomplete="off"
+                                            // component={MyNotification}
                                             />
                                         </div>
                                         <div className="col-1 pl-0">
@@ -578,7 +573,7 @@ const TriplogWrap = () => {
                                                 </div>
                                             ) : null}
                                         </div>
-                                        <div className="col-2 pr-0">
+                                        <div className="col-1 pr-0">
                                             <div role="group" aria-labelledby="checkbox-group">
                                                 <label>
                                                     <Field
