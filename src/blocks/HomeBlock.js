@@ -50,7 +50,7 @@ const HomeBlock = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="container-fluid">
+                    <div className="container">
                         <div className="row bg_carsby">
                             <div className="col-md-6">
                                 <img src="/images/car_bg.jpg" className="img-car" />

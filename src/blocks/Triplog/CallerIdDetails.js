@@ -264,22 +264,22 @@ const CallerIdDetails = (props) => {
     }, [])
 
 
-    window.$('#timepicker').timepicker({
-        dynamic: false,
-        dropdown: true,
-    });
+    // window.$('#timepicker').timepicker({
+    //     dynamic: false,
+    //     dropdown: true,
+    // });
 
-    window.$('#notifi').timepicker({
-        timeFormat: 'H:mm',
-        interval: 10,
-        minTime: '00:10',
-        maxTime: '11:59pm',
-        defaultTime: '11',
-        startTime: '00:10',
-        dynamic: false,
-        dropdown: true,
-        scrollbar: true
-    });
+    // window.$('#notifi').timepicker({
+    //     timeFormat: 'H:mm',
+    //     interval: 10,
+    //     minTime: '00:10',
+    //     maxTime: '11:59pm',
+    //     defaultTime: '11',
+    //     startTime: '00:10',
+    //     dynamic: false,
+    //     dropdown: true,
+    //     scrollbar: true
+    // });
 
     const Minimize = () => {
         props.SetShowCallerId(false)

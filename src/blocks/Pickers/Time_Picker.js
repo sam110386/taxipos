@@ -18,8 +18,6 @@ export const Time_Picker = ({
             readOnly,
             ...props
 }) => {
-
-
     const { name, value } = field;
     const { setFieldValue, getFieldMeta } = useFormikContext();
 
@@ -31,7 +29,6 @@ export const Time_Picker = ({
             setFieldValue(name, manual)
         }
     }
-
     return (
         <>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -40,36 +37,9 @@ export const Time_Picker = ({
                 value={value}
                 onChange={(second, manual) => HandleTime(second, manual)}
                 {...props}
-                renderInput={(params) => <TextField {...params} autoComplete="off"  className="form-control bc"  />}
+                renderInput={(params) => <TextField {...params} autoComplete="off"  className="form-control bc"/>}
            /> 
          </LocalizationProvider> 
         </>
     );
 }
-
-
-// <Field
-// component={Time_Picker}
-// name="pickup_time"
-// autocomplete="off"
-// className="form-control "
-// renderInput={({ inputRef, inputProps, InputProps }) => (
-//     <Box
-//         sx={{
-//             display: "flex",
-//             alignItems: "right",
-//             position: "relative",
-//         }}
-//     >
-//         <Input
-//             ref={inputRef}
-//             {...inputProps}
-//             readOnly
-//             placeholder="j" //{intl.formatMessage({
-//             // //     id: "table.startDate",
-//             // // })}
-//         />
-//         {/* <DateIcon Dir={dir}>{InputProps?.endAdornment}</DateIcon> */}
-//     </Box>
-// )}
-// />

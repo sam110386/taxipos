@@ -3541,6 +3541,10 @@ svg {
 }
 .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
   padding:7px !important;
+  background: white !important;
+}
+.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root{
+  background-color: white !important;
 }
 .css-1sn4lm3-MuiTypography-root{
   margin: .8rem !important;
@@ -3562,7 +3566,12 @@ svg path.elementor-shape-fill {
 .bc{
   background-color: transparent;
 }
-
+#tripLogTable{
+  background-color:  rgba(240, 166, 215, 0.667) !important;
+}
+#dashboardcs{
+background-color: #fdeada;
+}
 .buycar_sec {
   background-color: #FAFCFF;
   position: relative;

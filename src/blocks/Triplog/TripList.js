@@ -373,7 +373,7 @@ const TripList = (props) => {
     }
     return (
         <React.Fragment>
-            <table cellPadding="0" cellSpacing="0" border='.5' id="tripLogTable" width="100%" className="text-center">
+            <table cellPadding="0" cellSpacing="0" border='.5' id="tripLogTable" width="100%" className="text-center text-black ">
 
                 <thead className="text-primary">
                     <tr>

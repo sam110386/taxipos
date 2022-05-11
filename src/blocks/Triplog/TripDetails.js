@@ -393,7 +393,6 @@ const TripDetails = (props) => {
                                                                     type="date"
                                                                     className="form-control"
                                                                     autocomplete="off"
-
                                                                 />
                                                             </div>
                                                         </div>
@@ -401,17 +400,11 @@ const TripDetails = (props) => {
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Pick Up Time: </label>
                                                                 <Field
-                                                                component={Time_Picker}
+                                                                    component={Time_Picker}
                                                                     name="pickup_time"
                                                                     id="timepicker"
                                                                 />
-                                                                {/* <Field
-                                                                    
-                                                                    name="pickup_time"
-                                                                    id="timepicker"
-                                                                    autocomplete="off"
-                                                                    className="form-control"
-                                                                /> */}
+
                                                             </div>
                                                         </div>
 
@@ -475,7 +468,7 @@ const TripDetails = (props) => {
                                                                     className={`form-control ${touched.dropoff_address && errors.dropoff_address
                                                                         ? "is-invalid"
                                                                         : ""
-                                                                        }`}
+                                                                    }`}
 
                                                                 />
                                                             </div>

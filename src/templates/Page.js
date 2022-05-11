@@ -61,7 +61,8 @@ function Page(props) {
   return (
     <div>
       {getHead()}
-      <div ref={headerRef} className="container-fluid">
+      
+      <div ref={headerRef} className={props.page==="triplog" ? "container-fluid text-black":"container-fluid"}  id={props.page==="triplog" ? "dashboardcs":null}>
         {getPage()}
       </div>
       {/* <Footer /> */}
