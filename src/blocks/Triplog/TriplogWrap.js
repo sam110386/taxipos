@@ -125,7 +125,7 @@ const TriplogWrap = (props) => {
     //         "pickup_date",
     //         CurrentDate
     //     );
-    // }, []);
+    // }, [CurrentPickupTime,CurrentDate]);
 
 
     useEffect(() => {
@@ -172,6 +172,7 @@ const TriplogWrap = (props) => {
         updateCurrentTime();
         loadTripList();
     }
+    console.log(CurrentPickupTime,"CurrentPickupTime")
     const updateCurrentTime = async () => {
         try {
             const res = await TriplogServices.getCurrentDateTime();
@@ -234,8 +235,8 @@ const TriplogWrap = (props) => {
     };
     const handleSubmit = async (values) => {
         console.log("values", values);
-        let time = moment(values.pickup_time).format("hh:mm A")
-        values.pickup_time = time
+        // let time = moment(values.pickup_time).format("hh:mm A")
+        // values.pickup_time = time
 
         try {
             setSubmitting(true);
@@ -387,6 +388,22 @@ const TriplogWrap = (props) => {
         }
     };
 
+    const btnstyle = {
+        border: "1px solid #4679B7",
+        borderRadius: 5,
+        boxShadow: "0 0 1px #ffffff inset",
+        color: "#FFFFFF",
+        cursor: "pointer",
+        display: "inline",
+        fontSize: "14px",
+        fontWeight: "bold",
+        height: "30px",
+        backgroundColor:"rgba(12, 12, 12, 0.667)",
+        margin: "12px 10px 0 0",
+        overflow: "visible",
+        padding: "0 15px",
+        textTransform: "uppercase"
+    }
 
 
 
@@ -471,8 +488,6 @@ const TriplogWrap = (props) => {
                                             type="hidden"
                                             className="form-control"
                                         />
-
-
                                         <Field
                                             name="TextPickupCrossStreet"
                                             type="hidden"
@@ -494,7 +509,7 @@ const TriplogWrap = (props) => {
                                                 className={`form-control ${touched.pickup_address && errors.pickup_address
                                                     ? "is-invalid"
                                                     : ""
-                                                    }`}
+                                                }`}
                                             />
                                             <Field
                                                 name="pickup_lat"
@@ -519,6 +534,7 @@ const TriplogWrap = (props) => {
                                                 component={Time_Picker}
                                                 name="pickup_time"
                                                 className="form-control"
+                                                id="pickup_time"
                                               />
                                         </div>
                                         <div className="col-2 pr-0 pl-0">
@@ -645,6 +661,15 @@ const TriplogWrap = (props) => {
                                                 className="border btn btn-success text-capitalize"
                                                 onClick={() => fareEstimate()}
                                                 to={``}
+                                                style={{
+                                                    borderRadius: 8,
+                                                    backgroundColor: "#1c7be0d7",
+                                                    padding: "7px 14px",
+                                                    color:"white",
+                                                    fontSize: "12px"
+                                                }}
+                                                variant="contained"
+                                            
                                             >
                                                 Fare Estimate
                                             </Button>
@@ -653,6 +678,14 @@ const TriplogWrap = (props) => {
                                                 className="border btn btn-success text-capitalize ml-1"
                                                 onClick={() => getFate({ pickupAddress, pickupAddressLat, pickupAddressLng, dropofAddress, dropofAddressLat, dropofAddressLng, cabName })}
                                                 to={``}
+                                                style={{
+                                                    borderRadius: 8,
+                                                    backgroundColor: "#1c7be0d7",
+                                                    padding: "7px 14px",
+                                                    color:"white",
+                                                    fontSize: "12px"
+                                                }}
+                                                variant="contained"
                                             >
                                                 Get Fare
                                             </Button>
@@ -661,6 +694,14 @@ const TriplogWrap = (props) => {
                                                 className="border btn btn-success text-capitalize ml-1"
                                                 onClick={() => openDetails()}
                                                 to={``}
+                                                style={{
+                                                    borderRadius: 8,
+                                                    backgroundColor: "#1c7be0d7",
+                                                    padding: "7px 14px",
+                                                    color:"white",
+                                                    fontSize: "12px"
+                                                }}
+                                                variant="contained"
                                             >
                                                 Details
                                             </Button>
@@ -668,6 +709,14 @@ const TriplogWrap = (props) => {
                                             <Button
                                                 className="border btn btn-success text-capitalize ml-1"
                                                 type="submit"
+                                                style={{
+                                                    borderRadius: 8,
+                                                    backgroundColor: "#1c7be0d7",
+                                                    color:"white",
+                                                    padding: "7px 14px",
+                                                    fontSize: "12px"
+                                                }}
+                                                variant="contained"
                                             >
                                                 Send
                                             </Button>
@@ -685,13 +734,17 @@ const TriplogWrap = (props) => {
                             className="border link-success text-capitalize ml-1"
                             onClick={() => otherTrips()}
                             to={``}
+                            style={btnstyle}
+                            variant="contained"
                         >
                             Other Trips
                         </Button>
                         <Button
-                            className="border link-success text-capitalize ml-1"
+                            className="border link-success text-capitalize ml-1 mynewbtn"
                             onClick={() => otherTrips()}
                             to={``}
+                            style={btnstyle}
+                            variant="contained"
                         >
                             Full View Map
                         </Button>
@@ -699,6 +752,8 @@ const TriplogWrap = (props) => {
                             className="border link-success text-capitalize ml-1"
                             onClick={() => otherTrips()}
                             to={``}
+                            style={btnstyle}
+                            variant="contained"
                         >
                             Today History
                         </Button>
@@ -706,6 +761,8 @@ const TriplogWrap = (props) => {
                             className="border link-success text-capitalize ml-1"
                             onClick={() => otherTrips()}
                             to={``}
+                            style={btnstyle}
+                            variant="contained"
                         >
                             Sort Trips
                         </Button>
