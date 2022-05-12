@@ -15,6 +15,9 @@ const CallerIdInfo = () => {
 
     }
 
+    
+
+    console.log("tripData.all_trips",tripData.all_trips)
     const LoadCallorInfoTripLog = async () => {
         try {
             const res = await TriplogServices.loadCallerInfoTriplog();
@@ -30,11 +33,11 @@ const CallerIdInfo = () => {
     }
 
     const ShowModal = async(phone,id) =>{
-        console.log(id)
         try {
             const res = await TriplogServices.openTripsTriplog({id:id});
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
+                    console.log(res.data.result,"skdjflsjflkjf")
                     setTripData(res.data.result)
                 }
                 onError(res.data.message);

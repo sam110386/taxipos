@@ -34,7 +34,7 @@ const TriplogWrap = (props) => {
     });
 
     const [submiting, setSubmitting] = useState(false);
-    const [CurrentPickupTime, setCurrentPickupTime] = useState(0);
+    const [CurrentPickupTime, setCurrentPickupTime] = useState(null);
     const [CurrentDate, setCurrentDate] = useState(0);
     const [Triplist, setTriplist] = useState([]);
     const [showEditTrip, SetShowEditTrip] = useState(false);
@@ -96,7 +96,6 @@ const TriplogWrap = (props) => {
             setDropofAddressLng(placeorg.geometry.location.lng());
             setDropofAddress(placeorg.formatted_address);
         });
-
     }
 
     const getPickupAddress = async () => {
@@ -116,16 +115,16 @@ const TriplogWrap = (props) => {
         getDropOffAddress();
     }, [1])
 
-    // useEffect(() => {
-    //     formikRef.current.setFieldValue(
-    //         "pickup_time",
-    //         CurrentPickupTime
-    //     );
-    //     formikRef.current.setFieldValue(
-    //         "pickup_date",
-    //         CurrentDate
-    //     );
-    // }, [CurrentPickupTime,CurrentDate]);
+    useEffect(() => {
+        // formikRef.current.setFieldValue(
+        //     "pickup_time",
+        //     CurrentPickupTime
+        // );
+        formikRef.current.setFieldValue(
+            "pickup_date",
+            CurrentDate
+        );
+    }, [ CurrentDate]);
 
 
     useEffect(() => {
@@ -172,9 +171,10 @@ const TriplogWrap = (props) => {
         updateCurrentTime();
         loadTripList();
     }
-    console.log(CurrentPickupTime,"CurrentPickupTime")
+
     const updateCurrentTime = async () => {
         try {
+
             const res = await TriplogServices.getCurrentDateTime();
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
@@ -234,12 +234,17 @@ const TriplogWrap = (props) => {
         }
     };
     const handleSubmit = async (values) => {
-        console.log("values", values);
-        // let time = moment(values.pickup_time).format("hh:mm A")
-        // values.pickup_time = time
+
+        console.log("values", values)
 
         try {
             setSubmitting(true);
+            if (values.pickup_time.toString().length > 7) {
+                let time = moment(values.pickup_time).format("hh:mm A")
+                values.pickup_time = time
+            } else {
+                values.pickup_time = values.pickup_time
+            }
             const res = await TriplogServices.createTrip(values);
             setSubmitting(false);
             if (res && res.status === 200) {
@@ -398,7 +403,7 @@ const TriplogWrap = (props) => {
         fontSize: "14px",
         fontWeight: "bold",
         height: "30px",
-        backgroundColor:"rgba(12, 12, 12, 0.667)",
+        backgroundColor: "rgba(12, 12, 12, 0.667)",
         margin: "12px 10px 0 0",
         overflow: "visible",
         padding: "0 15px",
@@ -509,7 +514,7 @@ const TriplogWrap = (props) => {
                                                 className={`form-control ${touched.pickup_address && errors.pickup_address
                                                     ? "is-invalid"
                                                     : ""
-                                                }`}
+                                                    }`}
                                             />
                                             <Field
                                                 name="pickup_lat"
@@ -528,14 +533,12 @@ const TriplogWrap = (props) => {
 
                                         </div>
                                         <br />
-
                                         <div className="col-2 pl-0">
                                             <Field
                                                 component={Time_Picker}
                                                 name="pickup_time"
                                                 className="form-control"
-                                                id="pickup_time"
-                                              />
+                                            />
                                         </div>
                                         <div className="col-2 pr-0 pl-0">
                                             <Field
@@ -665,11 +668,11 @@ const TriplogWrap = (props) => {
                                                     borderRadius: 8,
                                                     backgroundColor: "#1c7be0d7",
                                                     padding: "7px 14px",
-                                                    color:"white",
+                                                    color: "white",
                                                     fontSize: "12px"
                                                 }}
                                                 variant="contained"
-                                            
+
                                             >
                                                 Fare Estimate
                                             </Button>
@@ -682,7 +685,7 @@ const TriplogWrap = (props) => {
                                                     borderRadius: 8,
                                                     backgroundColor: "#1c7be0d7",
                                                     padding: "7px 14px",
-                                                    color:"white",
+                                                    color: "white",
                                                     fontSize: "12px"
                                                 }}
                                                 variant="contained"
@@ -698,7 +701,7 @@ const TriplogWrap = (props) => {
                                                     borderRadius: 8,
                                                     backgroundColor: "#1c7be0d7",
                                                     padding: "7px 14px",
-                                                    color:"white",
+                                                    color: "white",
                                                     fontSize: "12px"
                                                 }}
                                                 variant="contained"
@@ -712,7 +715,7 @@ const TriplogWrap = (props) => {
                                                 style={{
                                                     borderRadius: 8,
                                                     backgroundColor: "#1c7be0d7",
-                                                    color:"white",
+                                                    color: "white",
                                                     padding: "7px 14px",
                                                     fontSize: "12px"
                                                 }}
