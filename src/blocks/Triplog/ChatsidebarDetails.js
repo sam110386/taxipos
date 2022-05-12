@@ -10,25 +10,14 @@ import TripDetails from "./TripDetails";
 import Chatsidebar from "./Chatsidebar";
 import { store } from "../../store/store";
 import { SetNumberAction } from "../../store/actions/SetNumberAction";
+import {TriplogSchema} from './ValidationSchema/TriplogSchema'
 
 
 const ChatsidebarDetails = (props) => {
 
     // console.log("calleridprops", props.details.all_trips[0].Triplog.telephone);
 
-
     const formikRef = useRef();
-
-
-    const TriplogSchema = Yup.object().shape({
-        pickup_address: Yup.string().required("Please enter Pickup-Address"),
-        dropoff_address: Yup.string().required("Please enter Drop-Off-Address"),
-        account_no: Yup.number().min(4),
-        telephone: Yup.string().matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, 'Telephone number is not valid'),
-        fare: Yup.number("Please Enter Currect Fare")
-    });
-
-
     const [CurrentPickupTime, setCurrentPickupTime] = useState(0);
     const [CurrentDate, setCurrentDate] = useState(0);
     const [Triplist, setTriplist] = useState([]);
@@ -41,7 +30,6 @@ const ChatsidebarDetails = (props) => {
     const [dropofAddressLng, setDropofAddressLng] = useState("");
     const [dropofAddress2, setDropofAddress2] = useState("");
     const [showDetails, setShowDetails] = useState(false)
-
 
     const { user, userDetails } = useSelector((state) => {
         return {

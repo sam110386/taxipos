@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
 import { useSelector, useDispatch } from "react-redux";
-import * as Yup from "yup";
 import * as TriplogServices from '../../services/TriplogService';
 import { FullPageLoader } from "../Loaders";
 import { Button } from "@material-ui/core";
@@ -19,19 +18,13 @@ import Chatsidebar from "./Chatsidebar";
 import { Box } from "@mui/system";
 import { Time_Picker } from "../Pickers/Time_Picker";
 import { Input } from "@mui/material";
+// import Address_Picker from "../Pickers/Address_Picker";
+import {TriplogSchema,initial_Values} from './ValidationSchema/TriplogSchema'
 
 
 const TriplogWrap = (props) => {
 
     const formikRef = useRef();
-    const TriplogSchema = Yup.object().shape({
-        pickup_address: Yup.string().required("Please enter Pickup-Address"),
-        dropoff_address: Yup.string().required("Please enter Drop-Off-Address"),
-        account_no: Yup.number().min(4),
-        telephone: Yup.string().matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, 'Telephone number is not valid'),
-        fare: Yup.number("Please Enter Currect Fare")
-
-    });
 
     const [submiting, setSubmitting] = useState(false);
     const [CurrentPickupTime, setCurrentPickupTime] = useState(null);
@@ -58,30 +51,7 @@ const TriplogWrap = (props) => {
     });
 
 
-    const initiaal_Values = {
-        pickup_lat: "",
-        pickup_lng: "",
-        pickup_address: "",
-        device_id: "",
-        pickup_date: "",
-        pickup_time: "",
-        dropoff_lat: "",
-        dropoff_lng: "",
-        dropoff_address: "",
-        car_no: "",
-        cab_name: "",
-        telephone: "",
-        telephone_line: "",
-        amt_of_passengers: "",
-        fare: "",
-        details: "",
-        direct_notification_time: "",
-        pickdrop_fare: "",
-        account_no: "",
-        share: "",
-        pickup_cross_street: "",
-        dropoff_cross_street: "",
-    }
+   
 
     const loader = new Loader(`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`);
 
@@ -116,15 +86,15 @@ const TriplogWrap = (props) => {
     }, [1])
 
     useEffect(() => {
-        // formikRef.current.setFieldValue(
-        //     "pickup_time",
-        //     CurrentPickupTime
-        // );
+        formikRef.current.setFieldValue(
+            "pickup_time",
+            CurrentPickupTime
+        );
         formikRef.current.setFieldValue(
             "pickup_date",
             CurrentDate
         );
-    }, [ CurrentDate]);
+    }, [ CurrentDate,CurrentPickupTime]);
 
 
     useEffect(() => {
@@ -473,7 +443,7 @@ const TriplogWrap = (props) => {
                     <legend>Dispatch info to Driver</legend>
                     <Formik
                         innerRef={formikRef}
-                        initialValues={initiaal_Values}
+                        initialValues={initial_Values}
                         validationSchema={TriplogSchema}
                         onSubmit={(values) => {
                             handleSubmit(values);

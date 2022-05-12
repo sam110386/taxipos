@@ -15,9 +15,6 @@ const CallerIdInfo = () => {
 
     }
 
-    
-
-    console.log("tripData.all_trips",tripData.all_trips)
     const LoadCallorInfoTripLog = async () => {
         try {
             const res = await TriplogServices.loadCallerInfoTriplog();

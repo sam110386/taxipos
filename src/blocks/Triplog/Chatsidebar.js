@@ -2,13 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ChatsidebarDetails from "./ChatsidebarDetails";
+import Address_Picker from "../Pickers/Address_Picker";
 
 const Chatsidebar = (props) => {
 
     const [showDetails, setShowDetails] = useState(false);
-
-
-
+   
     const { number } = useSelector((state) => {
         return {
             number: state.number,

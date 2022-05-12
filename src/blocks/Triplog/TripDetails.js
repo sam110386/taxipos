@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Formik, Field, Form } from "formik";
 import { useSelector, useDispatch } from "react-redux";
-import * as Yup from "yup";
-import { FullPageLoader } from "../Loaders";
 import { Button } from "@material-ui/core";
 import * as TriplogServices from '../../services/TriplogService';
 import moment from "moment";
@@ -10,7 +8,7 @@ import { store } from "../../store/store";
 import { loadTripListDataSuccess } from "../../store/actions/TripAction";
 import toast, { Toaster } from 'react-hot-toast';
 import { Time_Picker } from "../Pickers/Time_Picker";
-
+import { TriplogSchema, TripDetails_initial_Values } from "./ValidationSchema/TriplogSchema";
 
 const TripDetails = (props) => {
 
@@ -18,15 +16,6 @@ const TripDetails = (props) => {
     console.log("props", props)
 
     const formikRef = useRef();
-    const TriplogSchema = Yup.object().shape({
-        pickup_address: Yup.string().required("Please enter Pickup-Address"),
-        dropoff_address: Yup.string().required("Please enter Drop-Off-Address"),
-        account_no: Yup.number().min(4),
-        telephone: Yup.string().matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, 'Telephone number is not valid'),
-        fare: Yup.number("Please Enter Currect Fare")
-    });
-
-
     const [CurrentPickupTime, setCurrentPickupTime] = useState(0);
     const [submiting, setSubmitting] = useState(false);
     const [CurrentDate, setCurrentDate] = useState(0);
@@ -47,45 +36,6 @@ const TripDetails = (props) => {
             userDetails: state.auth.userDetails
         };
     });
-
-
-    const initiaal_Values = {
-        isNew: "",
-        dropoff_cross_street: "",
-        pickup_cross_street: "",
-        dispatchTime: "",
-        share: "",
-        // multidayrange: [],
-        multidays: [],
-        device_id: "",
-        pickup_date: "",
-        pickup_time: "",
-        pickup_address: "",
-        pickup_address2: "",
-        dropoff_address: "",
-        dropoff_address2: "",
-        car_no: "",
-        cab_name: "",
-        telephone: "",
-        amt_of_passengers: "",
-        passenger_name: "",
-        fare: "",
-        tip: "",
-        toll: "",
-        stops: "",
-        misc: "",
-        wait_time: "",
-        details: "",
-        account_no: "",
-        voucher_no: "",
-        direct_notification_time: "",
-        pickup_lat: "",
-        pickup_lng: "",
-        dropoff_lat: "",
-        dropoff_lng: "",
-        roundtrip: "",
-    }
-
     const getDropOffAddress = () => {
         var autocomplete1 = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddressid")), {
             types: ['geocode']
@@ -276,49 +226,6 @@ const TripDetails = (props) => {
         initialize();
     }, [])
 
-    // const initall = () => {
-    //     setAccountNo(props.currentBooking.account_setting);
-    //     setTripLog(props.currentBooking.Triplog);
-
-    //     if (tripLog.send_order == 'all') {
-    //         if ((tripLog.device_id).length > 0) {
-    //             setDeviceId(tripLog.device_id);
-    //         } else {
-    //             setDeviceId("all");
-    //         }
-    //     } else {
-    //         if ((tripLog.device_id).length > 0) {
-    //             setDeviceId(tripLog.device_id);
-    //         } else {
-    //             setDeviceId("");
-    //         }
-    //     }
-    //     if (tripLog.status == 0 || tripLog.status == 1 || tripLog.status == 3) {
-    //         setEditable(false);
-    //     } else {
-    //         setEditable(true);
-    //     }
-    //     if (tripLog.status == 0) {
-    //         setEditable(false);
-    //     } else {
-    //         setEditable(true);
-    //     }
-
-    //     if (tripLog.is_uber == 1) {
-    //         setSelectedOption('uber');
-    //     } else if (tripLog.is_uber == 0 && (tripLog.car_no).length > 0 && tripLog.car_no != "Car #") {
-    //         setSelectedOption(tripLog.device_id);
-    //     } else if (tripLog.send_order == 'all' && tripLog.call_type != 'NET') {
-    //         setSelectedOption('all');
-    //     } else if (tripLog.call_type == 'NET') {
-    //         setSelectedOption('net');
-    //     }
-    //     setShareallowed(tripLog.share)
-    // }
-
-    // useEffect(() => {
-    //     initall()
-    // }, []);
     // window.$('#timepicker').timepicker({
     //     dynamic: false,
     //     dropdown: true,
@@ -351,12 +258,10 @@ const TripDetails = (props) => {
                                 <div className="col-12">
                                     <Formik
                                         innerRef={formikRef}
-                                        initialValues={initiaal_Values}
+                                        initialValues={TripDetails_initial_Values}
                                         validationSchema={TriplogSchema}
                                         onSubmit={(values) => {
-
                                             handleSubmit(values);
-
                                         }}>
                                         {({ errors, touched }) => (
                                             <Form>
@@ -468,7 +373,7 @@ const TripDetails = (props) => {
                                                                     className={`form-control ${touched.dropoff_address && errors.dropoff_address
                                                                         ? "is-invalid"
                                                                         : ""
-                                                                    }`}
+                                                                        }`}
 
                                                                 />
                                                             </div>

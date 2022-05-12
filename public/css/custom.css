@@ -296,6 +296,11 @@ colored {
   line-height: 63px;
   border-radius: 4px;
 }
+.callmodal2 {
+ 
+  width: 50rem;
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.50), 0 6px 20px 0 rgba(0, 0, 0, 0.50);
+}
 
 .location_form {
   position: relative;

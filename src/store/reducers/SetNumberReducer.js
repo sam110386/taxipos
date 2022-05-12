@@ -7,7 +7,7 @@ const initialState = {
 };
 
 const SetNumberReducer = (state = initialState, action) => {
-    console.log(action.data,"action data")
+
     switch (action.type) {
         case LOADING_NUMBER:
             return {
@@ -17,7 +17,7 @@ const SetNumberReducer = (state = initialState, action) => {
         case SET_NUMBER:
             return {
                 ...state,
-                number:action.payload
+                number:action.data
             };
 
         case REMOVE_NUMBER:
