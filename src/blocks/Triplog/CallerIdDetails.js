@@ -8,9 +8,11 @@ import TripDetails from "./TripDetails";
 import { store } from "../../store/store";
 import {SetNumberAction} from "../../store/actions/SetNumberAction";
 import {TriplogSchema} from './ValidationSchema/TriplogSchema';
+import { CreateTrip } from "./CommonTriplog/CreateTrip";
 
 const CallerIdDetails = (props) => {
 
+    console.log(props,"clalll")
     //console.log("calleridprops", props.details.all_trips[0].Triplog.telephone);
     const formikRef = useRef();
     const [CurrentPickupTime, setCurrentPickupTime] = useState(0);
@@ -52,7 +54,7 @@ const CallerIdDetails = (props) => {
         dropoff_address2: "",
         car_no: "",
         cab_name: "",
-        telephone: "",
+        telephone: props.details.phone,
         amt_of_passengers: "",
         passenger_name: "",
         fare: "",
@@ -178,6 +180,10 @@ const CallerIdDetails = (props) => {
 
 
     const handleSubmit = (values) => {
+        let status = CreateTrip(values)
+        if(status){
+            props.SetShowCallerId(false)
+        }
 
     }
     const fareEstimate = () => {
@@ -266,18 +272,29 @@ const CallerIdDetails = (props) => {
     // });
 
     const Minimize = () => {
-        props.SetShowCallerId(false)
         store.dispatch(SetNumberAction(props.details.all_trips))
+        props.SetShowCallerId(false)
+      
     }
 
     return (
         <React.Fragment>
             <div className="modal d-block callidmodal tripModal" tabIndex="-1" role="dialog">
-                <div className="modal-dialog callmodal" role="document">
+                <div className="modal-dialog calleridmodal callmodal" role="document">
                     <div className="modal-content">
                         <div className="align-items-center justify-content-center position-relative">
                             <div className="modal-header">
-                                <button className="btn " onClick={Minimize}>Minimize</button>
+                                <Button 
+                                onClick={Minimize}
+                                 style={{
+                                    borderRadius: 3,
+                                    backgroundColor: "#1c7be0d7",
+                                    padding: "4px 10px",
+                                    color: "white",
+                                    fontSize: "10px"
+                                }}
+                                variant="contained"
+                                >Minimize</Button>
                                 <h6 className="modal-title">No Previous Trip Details Found :</h6>
                                 <img src="/images/b_drop.png" onClick={() => { props.SetShowCallerId(false) }} className="rmbtn" alt="Cancel" />
                             </div>
@@ -494,29 +511,56 @@ const CallerIdDetails = (props) => {
                                                             <Button
                                                                 className="border btn btn-success text-capitalize ml-1"
                                                                 type="submit"
+                                                                style={{
+                                                                    borderRadius: 8,
+                                                                    backgroundColor: "#1c7be0d7",
+                                                                    padding: "7px 14px",
+                                                                    color: "white",
+                                                                    fontSize: "12px"
+                                                                }}
+                                                                variant="contained"
                                                             > Enter
                                                             </Button>
                                                             <Button
                                                                 className="border btn btn-success text-capitalize ml-1"
                                                                 onClick={showTripDetails}
+                                                                style={{
+                                                                    borderRadius: 8,
+                                                                    backgroundColor: "#1c7be0d7",
+                                                                    padding: "7px 14px",
+                                                                    color: "white",
+                                                                    fontSize: "12px"
+                                                                }}
+                                                                variant="contained"
                                                             > Details
                                                             </Button>
-                                                            {/* <Button
-                                                                className="border btn btn-success text-capitalize ml-1"
-                                                                onClick={() => { props.SetShowTrip(false) }}
-                                                                to={``}
-                                                            > Close
-                                                            </Button> */}
+    
                                                             <Button
                                                                 className="border btn btn-success text-capitalize ml-1"
                                                                 onClick={() => { props.SetShowTrip(false) }}
                                                                 to={``}
+                                                                style={{
+                                                                    borderRadius: 8,
+                                                                    backgroundColor: "#1c7be0d7",
+                                                                    padding: "7px 14px",
+                                                                    color: "white",
+                                                                    fontSize: "12px"
+                                                                }}
+                                                                variant="contained"
                                                             > Fare Estimate
                                                             </Button>
                                                             <Button
                                                                 className="border btn btn-success text-capitalize ml-1"
                                                                 onClick={() => { props.SetShowTrip(false) }}
                                                                 to={``}
+                                                                style={{
+                                                                    borderRadius: 8,
+                                                                    backgroundColor: "#1c7be0d7",
+                                                                    padding: "7px 14px",
+                                                                    color: "white",
+                                                                    fontSize: "12px"
+                                                                }}
+                                                                variant="contained"
                                                             > Get Fare
                                                             </Button>
 

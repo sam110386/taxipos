@@ -32,9 +32,9 @@ const CallerIdInfo = () => {
     const ShowModal = async(phone,id) =>{
         try {
             const res = await TriplogServices.openTripsTriplog({id:id});
+            console.log("resdata>>>>>>>..",res.data)
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-                    console.log(res.data.result,"skdjflsjflkjf")
                     setTripData(res.data.result)
                 }
                 onError(res.data.message);

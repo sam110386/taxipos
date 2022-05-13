@@ -1,26 +1,21 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Formik, Field, Form } from "formik";
-import { useSelector, useDispatch } from "react-redux";
-import * as Yup from "yup";
-import { FullPageLoader } from "../Loaders";
+import { useSelector } from "react-redux";
 import { Button } from "@material-ui/core";
 import * as TriplogServices from '../../services/TriplogService';
 import moment from "moment";
 import TripDetails from "./TripDetails";
-import Chatsidebar from "./Chatsidebar";
 import { store } from "../../store/store";
-import { SetNumberAction } from "../../store/actions/SetNumberAction";
-import {TriplogSchema} from './ValidationSchema/TriplogSchema'
+import { RemoveNumberAction } from "../../store/actions/SetNumberAction";
+import { TriplogSchema } from './ValidationSchema/TriplogSchema'
+import { CreateTrip } from "./CommonTriplog/CreateTrip";
 
 
 const ChatsidebarDetails = (props) => {
 
-    // console.log("calleridprops", props.details.all_trips[0].Triplog.telephone);
-
     const formikRef = useRef();
     const [CurrentPickupTime, setCurrentPickupTime] = useState(0);
     const [CurrentDate, setCurrentDate] = useState(0);
-    const [Triplist, setTriplist] = useState([]);
     const [pickupAddress, setPickupAddress] = useState("");
     const [pickupAddressLat, setPickupAddressLat] = useState("");
     const [pickupAddressLng, setPickupAddressLng] = useState("");
@@ -29,12 +24,14 @@ const ChatsidebarDetails = (props) => {
     const [dropofAddressLat, setDropofAddressLat] = useState("");
     const [dropofAddressLng, setDropofAddressLng] = useState("");
     const [dropofAddress2, setDropofAddress2] = useState("");
-    const [showDetails, setShowDetails] = useState(false)
+    const [showDetails, setShowDetails] = useState(false);
+    const [previosHistory, setPreviousHistory] = useState([]);
 
-    const { user, userDetails } = useSelector((state) => {
+    const { user, userDetails, number } = useSelector((state) => {
         return {
             user: state.auth,
-            userDetails: state.auth.userDetails
+            userDetails: state.auth.userDetails,
+            number: state.number.number
         };
     });
 
@@ -45,7 +42,7 @@ const ChatsidebarDetails = (props) => {
         pickup_cross_street: "",
         dispatchTime: "",
         share: "",
-        // multidayrange: [],
+        multidayrange: [],
         multidays: [],
         device_id: "",
         pickup_date: "",
@@ -56,7 +53,7 @@ const ChatsidebarDetails = (props) => {
         dropoff_address2: "",
         car_no: "",
         cab_name: "",
-        telephone: "",
+        telephone: props.curretPhone,
         amt_of_passengers: "",
         passenger_name: "",
         fare: "",
@@ -179,10 +176,12 @@ const ChatsidebarDetails = (props) => {
     }, [pickupAddress, dropofAddress, dropofAddress2, pickupAddress2])
 
 
-
-
     const handleSubmit = (values) => {
-
+        const status = CreateTrip(values)
+        if (status) {
+            props.SetShowCallerId(false)
+            store.dispatch(RemoveNumberAction(props.curretPhone))
+        }
     }
     const fareEstimate = () => {
 
@@ -197,14 +196,10 @@ const ChatsidebarDetails = (props) => {
 
     const showTripDetails = () => {
         setShowDetails(true)
-
     }
-
-
 
     const initialize = () => {
         updateCurrentTime();
-        loadTripList();
     }
     const updateCurrentTime = async () => {
         try {
@@ -230,46 +225,22 @@ const ChatsidebarDetails = (props) => {
             onError();
         }
     }
-    const loadTripList = async () => {
-        try {
-            const res = await TriplogServices.getTriplist();
-            if (res && res.status === 200) {
-                if (res.data && res.data.status === 1) {
-
-                    setTriplist(res.data.result);
-                    return;
-                }
-                onError(res.data.message);
-            }
-        } catch (err) {
-            onError();
-        }
-    }
 
 
     useEffect(() => {
         initialize();
     }, [])
 
-
-    // window.$('#timepicker').timepicker({
-    //     dynamic: false,
-    //     dropdown: true,
-    // });
-
-    // window.$('#notifi').timepicker({
-    //     timeFormat: 'H:mm',
-    //     interval: 10,
-    //     minTime: '00:10',
-    //     maxTime: '11:59pm',
-    //     defaultTime: '11',
-    //     startTime: '00:10',
-    //     dynamic: false,
-    //     dropdown: true,
-    //     scrollbar: true
-    // });
-
-
+    const dropPopup = () => {
+        props.SetShowCallerId(false)
+        store.dispatch(RemoveNumberAction(props.curretPhone))
+    }
+    useEffect(() => {
+        let a = number.filter((e) => {
+            return e.Triplog.telephone === props.curretPhone;
+        });
+        setPreviousHistory(a);
+    }, [])
 
     return (
         <React.Fragment>
@@ -279,10 +250,13 @@ const ChatsidebarDetails = (props) => {
                         <div className="align-items-center justify-content-center position-relative">
                             <div className="modal-header">
                                 <h1></h1>
-                                <img src="/images/b_drop.png" onClick={() => { props.SetShowCallerId(false) }} className="rmbtn" alt="Cancel" />
+                                <div className="form-group ">
+                                    <h6>{props.curretPhone}</h6>
+                                </div>
+                                <img src="/images/b_drop.png" onClick={dropPopup} className="rmbtn" alt="Cancel" />
                             </div>
                             <div className="modal-body py-2">
-                                
+
                                 <div className="col-12">
                                     <Formik
                                         innerRef={formikRef}
@@ -295,7 +269,6 @@ const ChatsidebarDetails = (props) => {
                                             <Form>
                                                 <>
                                                     <div className="row  d-flex justify-content-left pl-0 pr-0 text-center" id="myslider">
-                                                      
                                                         <div className="col-md-6">
                                                             <div className="form-group ">
 
@@ -307,38 +280,24 @@ const ChatsidebarDetails = (props) => {
                                                                 Drop Off Address
                                                             </div>
                                                         </div>
-                                                        {/* {
-                                                            props.details.all_trips && props.details.all_trips.map((e, index) => (
+                                                        {
+                                                            previosHistory && previosHistory.map((e, index) => (
                                                                 <>
-
-                                                                    <div className="col-md-2">
-                                                                        <div className="form-group ">
-                                                                            <Field
-                                                                                value={e.Triplog.telephone}
-                                                                                className="form-control text-center"
-                                                                            />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="col-md-5">
-                                                                        <div className="callerIdSlider" id="l01" tabindex="1" onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
-                                                                            <h6 >{e.Triplog.pickup_address}</h6>
+                                                                    <div className="col-md-6">
+                                                                        <div className="" id="l01" tabindex="1" onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
+                                                                            <h6 className="callerIdSlider">{e.Triplog.pickup_address}</h6>
 
                                                                         </div>
                                                                     </div>
-                                                                    <div className="col-md-5">
-                                                                        <div className="callerIdSlider" id="l02" tabindex="0" onClick={() => setDropOffDetails(e.Triplog.dropoff_address, e.Triplog.dropoff_lat, e.Triplog.dropoff_lng)}>
-                                                                            <h6>{e.Triplog.dropoff_address}</h6>
+                                                                    <div className="col-md-6">
+                                                                        <div id="l02" tabindex="0" onClick={() => setDropOffDetails(e.Triplog.dropoff_address, e.Triplog.dropoff_lat, e.Triplog.dropoff_lng)}>
+                                                                            <h6 className="callerIdSlider">{e.Triplog.dropoff_address}</h6>
                                                                         </div>
                                                                     </div>
-
                                                                 </>
-
                                                             ))
-                                                        } */}
-
-
-                                                      
-                                                        <div className="col-md-6">
+                                                        }
+                                                        <div className="col-md-6 mt-1">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Pick Up Address: </label>
                                                                 <Field
@@ -356,13 +315,22 @@ const ChatsidebarDetails = (props) => {
                                                                     type="hidden"
                                                                 />
                                                                 <Field
+                                                                    type="hidden"
+                                                                    name="telephone"
+                                                                    placeholder="Telephone"
+                                                                    className="form-control"
+                                                                    autocomplete="off"
+                                                                    
+                                                                />
+
+                                                                <Field
                                                                     name="pickup_lng"
                                                                     type="hidden"
                                                                 />
                                                             </div>
                                                         </div>
 
-                                                        <div className="col-md-6">
+                                                        <div className="col-md-6 mt-1">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Drop off Address: </label>
                                                                 <Field
@@ -378,7 +346,7 @@ const ChatsidebarDetails = (props) => {
                                                                 />
                                                             </div>
                                                         </div>
-                                                       
+
                                                         <div className="col-md-6">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Pickup Cross Street: </label>
@@ -390,8 +358,8 @@ const ChatsidebarDetails = (props) => {
                                                                 />
                                                             </div>
                                                         </div>
-                                                      
-                                                        
+
+
                                                         <div className="col-md-6">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Drop Cross Street: </label>
@@ -403,8 +371,8 @@ const ChatsidebarDetails = (props) => {
                                                                 />
                                                             </div>
                                                         </div>
-                                                      
-                                                    
+
+
                                                         <div className="col-md-3">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Pick Up Date: </label>
@@ -442,9 +410,6 @@ const ChatsidebarDetails = (props) => {
                                                             </div>
                                                         </div>
 
-
-
-
                                                         <div className="col-md-2">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Fare : </label>
@@ -470,7 +435,7 @@ const ChatsidebarDetails = (props) => {
                                                                 />
                                                             </div>
                                                         </div>
-                                                       
+
 
                                                         <div className="form-group col-md-12 mt-4">
                                                             <label className="form_lbl">&nbsp; </label>

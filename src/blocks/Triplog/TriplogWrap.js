@@ -1,31 +1,24 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import * as TriplogServices from '../../services/TriplogService';
-import { FullPageLoader } from "../Loaders";
 import { Button } from "@material-ui/core";
 import moment from "moment";
 import Trips from "./TripList";
 import EditTripDetails from "./EditTripDetails";
 import toast, { Toaster } from 'react-hot-toast';
 import TripDetails from "./TripDetails";
-import { loadTripListDataSuccess } from "../../store/actions/TripAction";
-import { store } from "../../store/store";
 import CallerIdInfo from "./CallerIdInfo";
-import { Loader, LoaderOptions } from 'google-maps';
+import { Loader } from 'google-maps';
 import Chatsidebar from "./Chatsidebar";
-import { Box } from "@mui/system";
 import { Time_Picker } from "../Pickers/Time_Picker";
-import { Input } from "@mui/material";
-// import Address_Picker from "../Pickers/Address_Picker";
 import {TriplogSchema,initial_Values} from './ValidationSchema/TriplogSchema'
+import { CreateTrip } from "./CommonTriplog/CreateTrip";
 
 
 const TriplogWrap = (props) => {
 
     const formikRef = useRef();
-
     const [submiting, setSubmitting] = useState(false);
     const [CurrentPickupTime, setCurrentPickupTime] = useState(null);
     const [CurrentDate, setCurrentDate] = useState(0);
@@ -40,7 +33,7 @@ const TriplogWrap = (props) => {
     const [dropofAddressLat, setDropofAddressLat] = useState("");
     const [dropofAddressLng, setDropofAddressLng] = useState("");
     const [cabName, setCabName] = useState("Business Sedan");
-    const [fareInput, setFareInput] = useState("")
+    const [fareInput, setFareInput] = useState("");
 
     const { user, trip, userDetails } = useSelector((state) => {
         return {
@@ -49,9 +42,6 @@ const TriplogWrap = (props) => {
             trip: state.trip
         };
     });
-
-
-   
 
     const loader = new Loader(`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`);
 
@@ -144,7 +134,6 @@ const TriplogWrap = (props) => {
 
     const updateCurrentTime = async () => {
         try {
-
             const res = await TriplogServices.getCurrentDateTime();
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
@@ -186,51 +175,9 @@ const TriplogWrap = (props) => {
         initialize();
     }, [submiting])
 
-    const createTrip = async (values) => {
-        try {
-            setSubmitting(true);
-            const res = await TriplogServices.getTriplist({});
-            setSubmitting(false);
-            if (res && res.status === 200) {
-                if (res.data && res.data.status === 1) {
-                    // onSuccess(res.data);
-                    return;
-                }
-                onError(res.data.message);
-            }
-        } catch (err) {
-            setSubmitting(false);
-            onError();
-        }
-    };
-    const handleSubmit = async (values) => {
-
-        console.log("values", values)
-
-        try {
-            setSubmitting(true);
-            if (values.pickup_time.toString().length > 7) {
-                let time = moment(values.pickup_time).format("hh:mm A")
-                values.pickup_time = time
-            } else {
-                values.pickup_time = values.pickup_time
-            }
-            const res = await TriplogServices.createTrip(values);
-            setSubmitting(false);
-            if (res && res.status === 200) {
-                if (res.data && res.data.status === 1) {
-
-                    store.dispatch(loadTripListDataSuccess(res.data.result))
-                    toast.success(res.data.message)
-                    // onSuccess(res.data);
-                    return;
-                }
-                onError(res.data.message);
-            }
-        } catch (err) {
-            setSubmitting(false);
-            onError();
-        }
+    
+    const handleSubmit = (values) => {
+        CreateTrip(values);
     };
 
     const fareEstimate = async (values) => {
@@ -410,8 +357,6 @@ const TriplogWrap = (props) => {
     //  });
 
 
-
-
     // const MyNotification = ({ field, form, ...props }) => {
     //     window.$('#direct_notification_time').timepicker({
     //         timeFormat: 'H:mm',
@@ -534,6 +479,7 @@ const TriplogWrap = (props) => {
                                                 className="form-control"
                                                 autocomplete="off"
                                             />
+                                           
                                             <br />
 
                                             {errors.telephone && touched.telephone ? (
@@ -609,11 +555,9 @@ const TriplogWrap = (props) => {
                                                 className={`form-control ${touched.fare && errors.fare
                                                     ? "is-invalid"
                                                     : ""
-                                                    }`}
+                                                }`}
                                             />
-
                                         </div>
-
                                         <div className="col-1 pr-0">
                                             <Field as="select" className="form-control w-100" name="car_no">
                                                 {userDetails.FleetDevices && userDetails.FleetDevices.map(el => (

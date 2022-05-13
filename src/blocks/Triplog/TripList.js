@@ -17,19 +17,22 @@ const TripList = (props) => {
     const [submiting, setSubmitting] = useState(false);
     const [tripAllList, setTripAllList] = useState([])
 
-    useEffect(() => {
-        setTripAllList(props.trips)
-    }, [props.trips])
-
-    const { user, userDetails, TriplogSetting, TriplogSettingFields, DispatcherId } = useSelector((state) => {
+   
+    const { user, userDetails, TriplogSetting, TriplogSettingFields, DispatcherId,trip } = useSelector((state) => {
         return {
             user: state.auth,
             userDetails: state.auth.userDetails,
             TriplogSetting: state.auth.userDetails.TriplogSetting,
             TriplogSettingFields: state.auth.userDetails.TriplogSettingFields,
             DispatcherId: state.auth.userDetails.DispatcherId,
+            trip:state.trip.tripList
         };
     });
+
+    useEffect(() => {
+        setTripAllList(trip)
+    }, [trip])
+
 
 
     const openTripDetails = async (trip, dispacher, el) => {

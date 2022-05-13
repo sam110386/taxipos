@@ -5,3 +5,7 @@ export const SetNumberAction = (data) => ({
     type: SET_NUMBER,
     data:data
 });
+export const RemoveNumberAction = (data) => ({
+    type: REMOVE_NUMBER,
+    data:data
+});

@@ -7,7 +7,6 @@ const initialState = {
 };
 
 const SetNumberReducer = (state = initialState, action) => {
-
     switch (action.type) {
         case LOADING_NUMBER:
             return {
@@ -17,13 +16,13 @@ const SetNumberReducer = (state = initialState, action) => {
         case SET_NUMBER:
             return {
                 ...state,
-                number:action.data
+                number:state.number.concat(action.data)
             };
 
         case REMOVE_NUMBER:
             return {
                 ...state,
-                number: action.data
+                number:state.number.filter((number,i)=>number.Triplog.telephone !== action.data) 
             };
         default:
             return state;
