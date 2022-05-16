@@ -22,10 +22,10 @@ export const Time_Picker = ({
     ...props
 }) => {
 
- 
+
 
     const { name, value } = field;
-    console.log("field",value)
+    console.log("field", value)
     const { setFieldValue, getFieldMeta } = useFormikContext();
 
     const HandleTime = (second, manual) => {
@@ -36,7 +36,7 @@ export const Time_Picker = ({
             setFieldValue(name, manual)
         }
     }
-    
+
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -45,7 +45,10 @@ export const Time_Picker = ({
                     value={value}
                     onChange={(second, manual) => HandleTime(second, manual)}
                     {...props}
-                    renderInput={(params) =>  <TextField   {...params} autoComplete="off"  defaultValue={moment('13:30:56', 'HH:mm:ss')} className="form-control bc" />}
+                    renderInput={(params) => <TextField   
+                        {...params} autoComplete="off"
+
+                    />}
                 />
             </LocalizationProvider>
         </>

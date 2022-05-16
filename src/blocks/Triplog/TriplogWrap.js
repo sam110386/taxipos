@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Formik, Field, Form } from "formik";
 import { useSelector } from "react-redux";
 import * as TriplogServices from '../../services/TriplogService';
@@ -12,7 +12,7 @@ import CallerIdInfo from "./CallerIdInfo";
 import { Loader } from 'google-maps';
 import Chatsidebar from "./Chatsidebar";
 import { Time_Picker } from "../Pickers/Time_Picker";
-import {TriplogSchema,initial_Values} from './ValidationSchema/TriplogSchema'
+import { TriplogSchema } from './ValidationSchema/TriplogSchema'
 import { CreateTrip } from "./CommonTriplog/CreateTrip";
 
 
@@ -34,6 +34,85 @@ const TriplogWrap = (props) => {
     const [dropofAddressLng, setDropofAddressLng] = useState("");
     const [cabName, setCabName] = useState("Business Sedan");
     const [fareInput, setFareInput] = useState("");
+
+    let initial_Values = {
+        pickup_lat: "",
+        pickup_lng: "",
+        pickup_address: "",
+        device_id: "",
+        pickup_date: "",
+        pickup_time: CurrentPickupTime,
+        dropoff_lat: "",
+        dropoff_lng: "",
+        dropoff_address: "",
+        car_no: "",
+        cab_name: "",
+        telephone: "",
+        telephone_line: "",
+        amt_of_passengers: "",
+        fare: "",
+        details: "",
+        direct_notification_time: "",
+        pickdrop_fare: "",
+        account_no: "",
+        share: "",
+        pickup_cross_street: "",
+        dropoff_cross_street: "",
+    }
+
+    //   let  initial_Values = useMemo(()=>{
+    //       if(CurrentPickupTime){
+    //           return {
+    //             pickup_lat: "",
+    //             pickup_lng: "",
+    //             pickup_address: "KJN ",
+    //             device_id: "",
+    //             pickup_date: "",
+    //             pickup_time: CurrentPickupTime,
+    //             dropoff_lat: "",
+    //             dropoff_lng: "",
+    //             dropoff_address: "nb",
+    //             car_no: "",
+    //             cab_name: "",
+    //             telephone: "",
+    //             telephone_line: "",
+    //             amt_of_passengers: "",
+    //             fare: "",
+    //             details: "",
+    //             direct_notification_time: "",
+    //             pickdrop_fare: "",
+    //             account_no: "",
+    //             share: "",
+    //             pickup_cross_street: "",
+    //             dropoff_cross_street: "",
+    //           }
+    //       }
+    //       return {
+    //         pickup_lat: "",
+    //         pickup_lng: "",
+    //         pickup_address: "KJK J Ls",
+    //         device_id: "",
+    //         pickup_date: "",
+    //         pickup_time: CurrentPickupTime,
+    //         dropoff_lat: "",
+    //         dropoff_lng: "",
+    //         dropoff_address: "",
+    //         car_no: "",
+    //         cab_name: "",
+    //         telephone: "",
+    //         telephone_line: "",
+    //         amt_of_passengers: "",
+    //         fare: "",
+    //         details: "",
+    //         direct_notification_time: "",
+    //         pickdrop_fare: "",
+    //         account_no: "",
+    //         share: "",
+    //         pickup_cross_street: "",
+    //         dropoff_cross_street: "",
+    //       }
+
+    //   },[CurrentPickupTime])
 
     const { user, trip, userDetails } = useSelector((state) => {
         return {
@@ -84,7 +163,7 @@ const TriplogWrap = (props) => {
             "pickup_date",
             CurrentDate
         );
-    }, [ CurrentDate,CurrentPickupTime]);
+    }, [CurrentDate, CurrentPickupTime]);
 
 
     useEffect(() => {
@@ -173,9 +252,9 @@ const TriplogWrap = (props) => {
 
     useEffect(() => {
         initialize();
-    }, [submiting])
+    }, [])
 
-    
+
     const handleSubmit = (values) => {
         CreateTrip(values);
     };
@@ -356,6 +435,18 @@ const TriplogWrap = (props) => {
     //      dynamic: true,
     //  });
 
+    // window.$('#direct_notification_time').timepicker({
+    //     timeFormat: 'H:mm',
+    //     interval: 10,
+    //     minTime: '00:10',
+    //     maxTime: '11:59pm',
+    //     defaultTime: '11',
+    //     startTime: '00:10',
+    //     dynamic: false,
+    //     dropdown: true,
+    //     scrollbar: true,
+    // })
+
 
     // const MyNotification = ({ field, form, ...props }) => {
     //     window.$('#direct_notification_time').timepicker({
@@ -413,7 +504,6 @@ const TriplogWrap = (props) => {
                                             type="hidden"
                                             className="form-control"
                                         />
-
                                         <Field
                                             name="TextDropoffCrossStreet"
                                             type="hidden"
@@ -450,9 +540,9 @@ const TriplogWrap = (props) => {
                                         <br />
                                         <div className="col-2 pl-0">
                                             <Field
-                                                component={Time_Picker}
                                                 name="pickup_time"
                                                 className="form-control"
+                                                component={Time_Picker}
                                             />
                                         </div>
                                         <div className="col-2 pr-0 pl-0">
@@ -479,7 +569,7 @@ const TriplogWrap = (props) => {
                                                 className="form-control"
                                                 autocomplete="off"
                                             />
-                                           
+
                                             <br />
 
                                             {errors.telephone && touched.telephone ? (
@@ -555,7 +645,7 @@ const TriplogWrap = (props) => {
                                                 className={`form-control ${touched.fare && errors.fare
                                                     ? "is-invalid"
                                                     : ""
-                                                }`}
+                                                    }`}
                                             />
                                         </div>
                                         <div className="col-1 pr-0">

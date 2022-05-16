@@ -5,19 +5,17 @@ import { store } from "../../../store/store"
 import { loadTripListDataSuccess } from "../../../store/actions/TripAction";
 
 export const CreateTrip = async (values) => {
-    console.log("createTrip",values)
     const onError = (message) => {
         toast.error(message)
         //setError(true);
     };
 
     try {
-        // if (values.pickup_time.toString().length > 7) {
-        //     let time = moment(values.pickup_time).format("hh:mm A")
-        //     values.pickup_time = time
-        // } else {
-        //     values.pickup_time = values.pickup_time
-        // }
+        if (typeof(values.pickup_time)=="object") {
+            let time = moment(values.pickup_time).format("hh:mm A")
+            values.pickup_time = time
+        }
+
         const res = await TriplogServices.createTrip(values);
         if (res && res.status === 200) {
             if (res.data && res.data.status === 1) {

@@ -6,7 +6,7 @@ import * as TriplogServices from '../../services/TriplogService';
 import moment from "moment";
 import TripDetails from "./TripDetails";
 import { store } from "../../store/store";
-import { RemoveNumberAction } from "../../store/actions/SetNumberAction";
+import { setCallerIdAction, removeCallerIdAction } from "../../store/actions/SetCallerIdAction";
 import { TriplogSchema } from './ValidationSchema/TriplogSchema'
 import { CreateTrip } from "./CommonTriplog/CreateTrip";
 
@@ -27,13 +27,15 @@ const ChatsidebarDetails = (props) => {
     const [showDetails, setShowDetails] = useState(false);
     const [previosHistory, setPreviousHistory] = useState([]);
 
-    const { user, userDetails, number } = useSelector((state) => {
+    const { user, userDetails, callerid } = useSelector((state) => {
         return {
             user: state.auth,
             userDetails: state.auth.userDetails,
-            number: state.number.number
+            callerid: state.callerid.callerid
         };
     });
+
+    console.log("callerid", callerid)
 
 
     const initiaal_Values = {
@@ -180,7 +182,7 @@ const ChatsidebarDetails = (props) => {
         const status = CreateTrip(values)
         if (status) {
             props.SetShowCallerId(false)
-            store.dispatch(RemoveNumberAction(props.curretPhone))
+            store.dispatch(removeCallerIdAction(props.urlSendId))
         }
     }
     const fareEstimate = () => {
@@ -233,14 +235,16 @@ const ChatsidebarDetails = (props) => {
 
     const dropPopup = () => {
         props.SetShowCallerId(false)
-        store.dispatch(RemoveNumberAction(props.curretPhone))
+        store.dispatch(removeCallerIdAction(props.urlSendId))
     }
     useEffect(() => {
-        let a = number.filter((e) => {
-            return e.Triplog.telephone === props.curretPhone;
+        let a = callerid.filter((e) => {
+            return e.url_send_id === props.urlSendId;
         });
         setPreviousHistory(a);
     }, [])
+
+    console.log("here>>>>>>>", previosHistory)
 
     return (
         <React.Fragment>
@@ -251,7 +255,7 @@ const ChatsidebarDetails = (props) => {
                             <div className="modal-header">
                                 <h1></h1>
                                 <div className="form-group ">
-                                    <h6>{props.curretPhone}</h6>
+                                    {/* <h6>{props.curretPhone}</h6> */}
                                 </div>
                                 <img src="/images/b_drop.png" onClick={dropPopup} className="rmbtn" alt="Cancel" />
                             </div>
@@ -281,10 +285,14 @@ const ChatsidebarDetails = (props) => {
                                                             </div>
                                                         </div>
                                                         {
-                                                            previosHistory && previosHistory.map((e, index) => (
-                                                                <>
+                                                            previosHistory && previosHistory.map((ele, index) => {
+                                                                return (
+                                                                    <>
+                                                                    {ele.all_trips  && ele.all_trips.map((e, index) => 
+                                                                        <>
+                                                                                                       
                                                                     <div className="col-md-6">
-                                                                        <div className="" id="l01" tabindex="1" onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
+                                                                       <div className="" id="l01" tabindex="1" onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
                                                                             <h6 className="callerIdSlider">{e.Triplog.pickup_address}</h6>
 
                                                                         </div>
@@ -292,10 +300,28 @@ const ChatsidebarDetails = (props) => {
                                                                     <div className="col-md-6">
                                                                         <div id="l02" tabindex="0" onClick={() => setDropOffDetails(e.Triplog.dropoff_address, e.Triplog.dropoff_lat, e.Triplog.dropoff_lng)}>
                                                                             <h6 className="callerIdSlider">{e.Triplog.dropoff_address}</h6>
-                                                                        </div>
+                                                                         </div>
                                                                     </div>
-                                                                </>
-                                                            ))
+                                                                        
+                                                                        </>
+                                                                    )}
+                                                                    </>
+                                                                )
+                                                                // <>
+                                                                //   {console.log("alltrip********",e)}
+                                                                //     <div className="col-md-6">
+                                                                //         <div className="" id="l01" tabindex="1" onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
+                                                                //             <h6 className="callerIdSlider">{e.Triplog.pickup_address}</h6>
+
+                                                                //         </div>
+                                                                //     </div>
+                                                                //     <div className="col-md-6">
+                                                                //         <div id="l02" tabindex="0" onClick={() => setDropOffDetails(e.Triplog.dropoff_address, e.Triplog.dropoff_lat, e.Triplog.dropoff_lng)}>
+                                                                //             <h6 className="callerIdSlider">{e.Triplog.dropoff_address}</h6>
+                                                                //         </div>
+                                                                //     </div>
+                                                                // </>
+                                                            })
                                                         }
                                                         <div className="col-md-6 mt-1">
                                                             <div className="form-group ">
@@ -320,7 +346,7 @@ const ChatsidebarDetails = (props) => {
                                                                     placeholder="Telephone"
                                                                     className="form-control"
                                                                     autocomplete="off"
-                                                                    
+
                                                                 />
 
                                                                 <Field

@@ -13,7 +13,7 @@ import {
   globalReducer,
   userReducer,
   TripReducer,
-  SetNumberReducer
+  SetCallerIdReducer
 } from "./reducers";
 
 const rootPersistConfig = {
@@ -27,7 +27,7 @@ const rootReducer = combineReducers({
   global: globalReducer,
   user: userReducer,
   trip:TripReducer,
-  number:SetNumberReducer
+  callerid:SetCallerIdReducer
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

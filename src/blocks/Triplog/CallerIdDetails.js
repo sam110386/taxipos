@@ -6,7 +6,7 @@ import * as TriplogServices from '../../services/TriplogService';
 import moment from "moment";
 import TripDetails from "./TripDetails";
 import { store } from "../../store/store";
-import {SetNumberAction} from "../../store/actions/SetNumberAction";
+import {setCallerIdAction} from "../../store/actions/SetCallerIdAction";
 import {TriplogSchema} from './ValidationSchema/TriplogSchema';
 import { CreateTrip } from "./CommonTriplog/CreateTrip";
 
@@ -272,7 +272,7 @@ const CallerIdDetails = (props) => {
     // });
 
     const Minimize = () => {
-        store.dispatch(SetNumberAction(props.details.all_trips))
+        store.dispatch(setCallerIdAction(props.details))
         props.SetShowCallerId(false)
       
     }

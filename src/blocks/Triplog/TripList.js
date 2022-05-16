@@ -17,7 +17,7 @@ const TripList = (props) => {
     const [submiting, setSubmitting] = useState(false);
     const [tripAllList, setTripAllList] = useState([])
 
-   
+
     const { user, userDetails, TriplogSetting, TriplogSettingFields, DispatcherId,trip } = useSelector((state) => {
         return {
             user: state.auth,

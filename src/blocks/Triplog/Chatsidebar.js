@@ -8,21 +8,21 @@ const Chatsidebar = (props) => {
 
     const [showDetails, setShowDetails] = useState(false);
     const [uniqueArray,setUniqueArray] = useState(null);
-    const [curretPhone,setCurrentPhone] = useState(null)
+    const [urlSendId,setUrlSendId] = useState(null)
    
-    const { number } = useSelector((state) => {
+    const { callerid } = useSelector((state) => {
         return {
-            number: state.number,
+            callerid: state.callerid,
         };
     });
 
     useEffect(()=>{
-        var uniqueNumArray = [...new Map(number.number.map((item) => [item["Triplog"]["telephone"], item])).values()];
+        var uniqueNumArray = [...new Map(callerid.callerid.map((item) => [item["url_send_id"], item])).values()];
         setUniqueArray(uniqueNumArray)
-    },[number])
+    },[callerid])
 
-    const openModal = (telephone) =>{
-        setCurrentPhone(telephone)
+    const openModal = (url_send_id) =>{
+        setUrlSendId(url_send_id)
         setShowDetails(true)
     }
  
@@ -32,12 +32,12 @@ const Chatsidebar = (props) => {
                 {uniqueArray && uniqueArray.map((e,ind)=>{
                         return (
                             <>
-                              <span id="chatlog" onClick={()=>openModal(e.Triplog.telephone)}>{e.Triplog.telephone}</span> <br/>
+                              <span id="chatlog" onClick={()=>openModal(e.url_send_id)}>{e.phone_no}</span> <br/>
                             </>
                         )
             })}
             </div>
-           {showDetails && <ChatsidebarDetails SetShowCallerId={setShowDetails} curretPhone={curretPhone}/>}
+           {showDetails && <ChatsidebarDetails SetShowCallerId={setShowDetails} urlSendId={urlSendId}/>}
         </>
     )
 }

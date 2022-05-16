@@ -7,7 +7,8 @@ const CallerIdInfo = () => {
 
     const [callerTripInfo, setCallerTripInfo] = useState([])
     const [showDetails, setShowDetails] = useState(false);
-    const [tripData,setTripData] = useState({});
+    const [callerIdData,setCallerIdData] = useState({});
+    // const [currentPhone,setCurrentPhone] = useState(null);
     let ar = [1,2,3,4]
  
 
@@ -35,7 +36,7 @@ const CallerIdInfo = () => {
             console.log("resdata>>>>>>>..",res.data)
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-                    setTripData(res.data.result)
+                    setCallerIdData(res.data.result)
                 }
                 onError(res.data.message);
             }
@@ -110,7 +111,7 @@ const CallerIdInfo = () => {
                     }
                 })}
             </div>
-            {showDetails && <CallerIdDetails SetShowCallerId={setShowDetails} details={tripData}/>}
+            {showDetails && <CallerIdDetails SetShowCallerId={setShowDetails} details={callerIdData}/>}
         </>
     )
 }
