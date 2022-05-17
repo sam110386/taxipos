@@ -5,13 +5,14 @@ import { store } from "../../../store/store"
 import { loadTripListDataSuccess } from "../../../store/actions/TripAction";
 
 export const CreateTrip = async (values) => {
+    console.log("values===>", values)
     const onError = (message) => {
         toast.error(message)
         //setError(true);
     };
 
     try {
-        if (typeof(values.pickup_time)=="object") {
+        if (typeof (values.pickup_time) == "object") {
             let time = moment(values.pickup_time).format("hh:mm A")
             values.pickup_time = time
         }

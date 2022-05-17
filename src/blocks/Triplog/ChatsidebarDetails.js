@@ -35,8 +35,6 @@ const ChatsidebarDetails = (props) => {
         };
     });
 
-    console.log("callerid", callerid)
-
 
     const initiaal_Values = {
         isNew: "",
@@ -244,8 +242,6 @@ const ChatsidebarDetails = (props) => {
         setPreviousHistory(a);
     }, [])
 
-    console.log("here>>>>>>>", previosHistory)
-
     return (
         <React.Fragment>
             <div className="modal d-block callidmodal gitmodal tripModal" tabIndex="-1" role="dialog">
@@ -288,23 +284,23 @@ const ChatsidebarDetails = (props) => {
                                                             previosHistory && previosHistory.map((ele, index) => {
                                                                 return (
                                                                     <>
-                                                                    {ele.all_trips  && ele.all_trips.map((e, index) => 
-                                                                        <>
-                                                                                                       
-                                                                    <div className="col-md-6">
-                                                                       <div className="" id="l01" tabindex="1" onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
-                                                                            <h6 className="callerIdSlider">{e.Triplog.pickup_address}</h6>
+                                                                        {ele.all_trips && ele.all_trips.map((e, index) =>
+                                                                            <>
 
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="col-md-6">
-                                                                        <div id="l02" tabindex="0" onClick={() => setDropOffDetails(e.Triplog.dropoff_address, e.Triplog.dropoff_lat, e.Triplog.dropoff_lng)}>
-                                                                            <h6 className="callerIdSlider">{e.Triplog.dropoff_address}</h6>
-                                                                         </div>
-                                                                    </div>
-                                                                        
-                                                                        </>
-                                                                    )}
+                                                                                <div className="col-md-6">
+                                                                                    <div className="" id="l01" tabindex="1" onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
+                                                                                        <h6 className="callerIdSlider">{e.Triplog.pickup_address}</h6>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="col-md-6">
+                                                                                    <div id="l02" tabindex="0" onClick={() => setDropOffDetails(e.Triplog.dropoff_address, e.Triplog.dropoff_lat, e.Triplog.dropoff_lng)}>
+                                                                                        <h6 className="callerIdSlider">{e.Triplog.dropoff_address}</h6>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </>
+                                                                        )}
                                                                     </>
                                                                 )
                                                                 // <>

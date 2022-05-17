@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ChatsidebarDetails from "./ChatsidebarDetails";
-import Address_Picker from "../Pickers/Address_Picker";
+// import Address_Picker from "../Pickers/AddressPicker";
 
 const Chatsidebar = (props) => {
 

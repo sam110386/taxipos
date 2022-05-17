@@ -25,7 +25,6 @@ export const Time_Picker = ({
 
 
     const { name, value } = field;
-    console.log("field", value)
     const { setFieldValue, getFieldMeta } = useFormikContext();
 
     const HandleTime = (second, manual) => {

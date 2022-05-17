@@ -11,7 +11,6 @@ const CallerIdInfo = () => {
     // const [currentPhone,setCurrentPhone] = useState(null);
     let ar = [1,2,3,4]
  
-
     const onError = () => {
 
     }
@@ -33,7 +32,6 @@ const CallerIdInfo = () => {
     const ShowModal = async(phone,id) =>{
         try {
             const res = await TriplogServices.openTripsTriplog({id:id});
-            console.log("resdata>>>>>>>..",res.data)
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
                     setCallerIdData(res.data.result)

@@ -14,6 +14,12 @@ import Chatsidebar from "./Chatsidebar";
 import { Time_Picker } from "../Pickers/Time_Picker";
 import { TriplogSchema } from './ValidationSchema/TriplogSchema'
 import { CreateTrip } from "./CommonTriplog/CreateTrip";
+import { FullPageLoader } from "../Loaders";
+import { date } from "yup";
+import PickupAddress from "../Pickers/PickupAddress";
+import DropoffAddress from "../Pickers/DropoffAddress";
+import MaskedInput from "react-text-mask";
+
 
 
 const TriplogWrap = (props) => {
@@ -26,175 +32,87 @@ const TriplogWrap = (props) => {
     const [showEditTrip, SetShowEditTrip] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
     const [currentBooking, SetCurrentBooking] = useState([]);
-    const [pickupAddress, setPickupAddress] = useState("");
-    const [dropofAddress, setDropofAddress] = useState("");
-    const [pickupAddressLat, setPickupAddressLat] = useState("");
-    const [pickupAddressLng, setPickupAddressLng] = useState("");
-    const [dropofAddressLat, setDropofAddressLat] = useState("");
-    const [dropofAddressLng, setDropofAddressLng] = useState("");
     const [cabName, setCabName] = useState("Business Sedan");
     const [fareInput, setFareInput] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [pickupLat, setPickupLat] = useState("")
+    const [pickupLng, setPickupLng] = useState("")
+    const [dropoffLat, setDropoffLat] = useState("")
+    const [dropoffLng, setDropoffLng] = useState("")
 
-    let initial_Values = {
-        pickup_lat: "",
-        pickup_lng: "",
-        pickup_address: "",
-        device_id: "",
-        pickup_date: "",
-        pickup_time: CurrentPickupTime,
-        dropoff_lat: "",
-        dropoff_lng: "",
-        dropoff_address: "",
-        car_no: "",
-        cab_name: "",
-        telephone: "",
-        telephone_line: "",
-        amt_of_passengers: "",
-        fare: "",
-        details: "",
-        direct_notification_time: "",
-        pickdrop_fare: "",
-        account_no: "",
-        share: "",
-        pickup_cross_street: "",
-        dropoff_cross_street: "",
-    }
-
-    //   let  initial_Values = useMemo(()=>{
-    //       if(CurrentPickupTime){
-    //           return {
-    //             pickup_lat: "",
-    //             pickup_lng: "",
-    //             pickup_address: "KJN ",
-    //             device_id: "",
-    //             pickup_date: "",
-    //             pickup_time: CurrentPickupTime,
-    //             dropoff_lat: "",
-    //             dropoff_lng: "",
-    //             dropoff_address: "nb",
-    //             car_no: "",
-    //             cab_name: "",
-    //             telephone: "",
-    //             telephone_line: "",
-    //             amt_of_passengers: "",
-    //             fare: "",
-    //             details: "",
-    //             direct_notification_time: "",
-    //             pickdrop_fare: "",
-    //             account_no: "",
-    //             share: "",
-    //             pickup_cross_street: "",
-    //             dropoff_cross_street: "",
-    //           }
-    //       }
-    //       return {
-    //         pickup_lat: "",
-    //         pickup_lng: "",
-    //         pickup_address: "KJK J Ls",
-    //         device_id: "",
-    //         pickup_date: "",
-    //         pickup_time: CurrentPickupTime,
-    //         dropoff_lat: "",
-    //         dropoff_lng: "",
-    //         dropoff_address: "",
-    //         car_no: "",
-    //         cab_name: "",
-    //         telephone: "",
-    //         telephone_line: "",
-    //         amt_of_passengers: "",
-    //         fare: "",
-    //         details: "",
-    //         direct_notification_time: "",
-    //         pickdrop_fare: "",
-    //         account_no: "",
-    //         share: "",
-    //         pickup_cross_street: "",
-    //         dropoff_cross_street: "",
-    //       }
-
-    //   },[CurrentPickupTime])
-
-    const { user, trip, userDetails } = useSelector((state) => {
+    const { userDetails } = useSelector((state) => {
         return {
-            user: state.auth,
             userDetails: state.auth.userDetails,
-            trip: state.trip
         };
     });
 
-    const loader = new Loader(`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`);
 
-    const getDropOffAddress = async () => {
-        let google = await loader.load()
-        let autocomplete = new google.maps.places.Autocomplete((document.getElementById("dropofaddress")), {
-            types: ['geocode']
-        });
-        google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            var placeorg = autocomplete.getPlace();
-            setDropofAddressLat(placeorg.geometry.location.lat());
-            setDropofAddressLng(placeorg.geometry.location.lng());
-            setDropofAddress(placeorg.formatted_address);
-        });
+    let initial_Values = useMemo(() => {
+        if (CurrentPickupTime !== null) {
+            return {
+                pickup_lat: "",
+                pickup_lng: "",
+                pickup_address: "",
+                device_id: "",
+                pickup_date: CurrentDate,
+                pickup_time: CurrentPickupTime,
+                dropoff_lat: "",
+                dropoff_lng: "",
+                dropoff_address: "",
+                car_no: "",
+                cab_name: "",
+                telephone: "",
+                telephone_line: "",
+                amt_of_passengers: "",
+                fare: "",
+                details: "",
+                direct_notification_time: "",
+                pickdrop_fare: "",
+                account_no: "",
+                share: "",
+                pickup_cross_street: "",
+                dropoff_cross_street: "",
+            }
+        }
+
+    }, [CurrentPickupTime, CurrentDate])
+
+
+
+    const getPickupLatLng = (pickupAddressLat, pickupAddressLng) => {
+        setPickupLat(pickupAddressLat);
+        setPickupLng(pickupAddressLng);
     }
-
-    const getPickupAddress = async () => {
-        var google = await loader.load()
-        let autocomplete = new google.maps.places.Autocomplete((document.getElementById("pickupaddress")), {
-            types: ['geocode']
-        });
-        google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            var placeorg = autocomplete.getPlace();
-            setPickupAddressLat(placeorg.geometry.location.lat())
-            setPickupAddressLng(placeorg.geometry.location.lng())
-            setPickupAddress(placeorg.formatted_address)
-        });
+    const getDropoffLatLng = (dropofAddressLat, dropofAddressLng) => {
+        setDropoffLat(dropofAddressLat);
+        setDropoffLng(dropofAddressLng);
     }
-    useEffect(() => {
-        getPickupAddress();
-        getDropOffAddress();
-    }, [1])
-
-    useEffect(() => {
-        formikRef.current.setFieldValue(
-            "pickup_time",
-            CurrentPickupTime
-        );
-        formikRef.current.setFieldValue(
-            "pickup_date",
-            CurrentDate
-        );
-    }, [CurrentDate, CurrentPickupTime]);
-
 
     useEffect(() => {
         if (formikRef.current) {
             formikRef.current.setFieldValue(
-                "pickup_address",
-                pickupAddress,
+                "pickup_lat",
+                pickupLat
             );
             formikRef.current.setFieldValue(
-                "pickup_lat",
-                pickupAddressLat
+                "pickup_date",
+                CurrentDate
             );
             formikRef.current.setFieldValue(
                 "pickup_lng",
-                pickupAddressLng
-            );
-            formikRef.current.setFieldValue(
-                "dropoff_address",
-                dropofAddress
+                pickupLng
             );
             formikRef.current.setFieldValue(
                 "dropoff_lat",
-                dropofAddressLat
+                dropoffLat
             );
             formikRef.current.setFieldValue(
                 "dropoff_lng",
-                dropofAddressLng
+                dropoffLng
             );
         }
-    }, [pickupAddress, dropofAddress])
 
+    }, [pickupLat, pickupLng, dropoffLat, dropoffLng, CurrentDate]);
 
     const onError = (message) => {
         toast.error(message)
@@ -218,6 +136,7 @@ const TriplogWrap = (props) => {
                 if (res.data && res.data.status === 1) {
                     setCurrentPickupTime(res.data.time);
                     setCurrentDate(res.data.date);
+                    setLoading(false)
                     let currentTime = moment(res.data.date + " " + res.data.time);
                     if (!refreshIntervalId) {
                         clearInterval(refreshIntervalId);
@@ -232,6 +151,7 @@ const TriplogWrap = (props) => {
                 onError(res.data.message);
             }
         } catch (err) {
+            setLoading(false)
             onError();
         }
     }
@@ -462,6 +382,15 @@ const TriplogWrap = (props) => {
     //     })
     //     return <input type="text" {...field} {...props}  />;
     //   };
+    if (loading) {
+        return (
+            <div className="text-center">Loading...</div>
+        )
+    }
+    const handleb = () => {
+
+    }
+    const TIME_MASK = [/^([0-1])/, /([0 - 2])/, ":", /[0-5]/, /[0-9]/, " ", /([AaPp])/, /([Mm])/]
 
     return (
         <React.Fragment >
@@ -512,9 +441,10 @@ const TriplogWrap = (props) => {
 
                                         <div className="col-4">
                                             <Field
-                                                id="pickupaddress"
-                                                placeholder="Pick-up-Address"
+                                                component={PickupAddress}
+                                                getPickupLatLng={getPickupLatLng}
                                                 name="pickup_address"
+                                                id="pickupaddress"
                                                 autocomplete="off"
                                                 className={`form-control ${touched.pickup_address && errors.pickup_address
                                                     ? "is-invalid"
@@ -528,6 +458,7 @@ const TriplogWrap = (props) => {
                                             <Field
                                                 name="pickup_lng"
                                                 type="hidden"
+
                                             />
                                             <br />
                                             {errors.pickup_address && touched.pickup_address ? (
@@ -542,7 +473,15 @@ const TriplogWrap = (props) => {
                                             <Field
                                                 name="pickup_time"
                                                 className="form-control"
-                                                component={Time_Picker}
+                                                render={({ field }) => (
+                                                    <MaskedInput
+                                                        {...field}
+                                                        mask={[/^([0-2])/, /([0-9])/, ":", /[0-5]/, /[0-9]/, " ", /([AaPp])/, /([Mm])/]}
+                                                        type="text"
+                                                        className="form-control"
+                                                    />
+                                                )}
+                                            //component={Time_Picker}
                                             />
                                         </div>
                                         <div className="col-2 pr-0 pl-0">
@@ -559,7 +498,7 @@ const TriplogWrap = (props) => {
                                                 placeholder="Notification"
                                                 id="direct_notification_time"
                                                 className="form-control"
-                                            // component={MyNotification}
+                                            //component={MyNotification}
                                             />
                                         </div>
                                         <div className="col-1 pl-0">
@@ -613,6 +552,8 @@ const TriplogWrap = (props) => {
                                     <div className="row d-flex justify-content-left pl-0 pr-0 mt-3 ">
                                         <div className="col-4">
                                             <Field
+                                                component={DropoffAddress}
+                                                getDropoffLatLng={getDropoffLatLng}
                                                 name="dropoff_address"
                                                 id="dropofaddress"
                                                 autocomplete="off"
@@ -683,7 +624,7 @@ const TriplogWrap = (props) => {
 
                                             <Button
                                                 className="border btn btn-success text-capitalize ml-1"
-                                                onClick={() => getFate({ pickupAddress, pickupAddressLat, pickupAddressLng, dropofAddress, dropofAddressLat, dropofAddressLng, cabName })}
+                                                // onClick={() => getFate({ pickupAddress, pickupAddressLat, pickupAddressLng, dropofAddress, dropofAddressLat, dropofAddressLng, cabName })}
                                                 to={``}
                                                 style={{
                                                     borderRadius: 8,
@@ -775,7 +716,7 @@ const TriplogWrap = (props) => {
                         </Button>
                     </div>
                 </div>
-
+                {loading && <Loader />}
                 {Triplist && <Trips trips={Triplist} openTripDetails={openTripDetails} />}
                 {showEditTrip && <EditTripDetails currentBooking={currentBooking} SetShowEditTrip={SetShowEditTrip} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
                 {showDetails && <TripDetails SetShowTrip={setShowDetails} />}

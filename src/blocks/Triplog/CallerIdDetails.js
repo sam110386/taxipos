@@ -6,36 +6,30 @@ import * as TriplogServices from '../../services/TriplogService';
 import moment from "moment";
 import TripDetails from "./TripDetails";
 import { store } from "../../store/store";
-import {setCallerIdAction} from "../../store/actions/SetCallerIdAction";
-import {TriplogSchema} from './ValidationSchema/TriplogSchema';
+import { setCallerIdAction } from "../../store/actions/SetCallerIdAction";
+import { TriplogSchema } from './ValidationSchema/TriplogSchema';
 import { CreateTrip } from "./CommonTriplog/CreateTrip";
+import PickupAddress from "../Pickers/PickupAddress";
+import DropoffAddress from "../Pickers/DropoffAddress";
 
 const CallerIdDetails = (props) => {
 
-    console.log(props,"clalll")
-    //console.log("calleridprops", props.details.all_trips[0].Triplog.telephone);
+
     const formikRef = useRef();
     const [CurrentPickupTime, setCurrentPickupTime] = useState(0);
     const [CurrentDate, setCurrentDate] = useState(0);
     const [Triplist, setTriplist] = useState([]);
-    const [pickupAddress, setPickupAddress] = useState("");
-    const [pickupAddressLat, setPickupAddressLat] = useState("");
-    const [pickupAddressLng, setPickupAddressLng] = useState("");
-    const [pickupAddress2, setPickupAddress2] = useState("");
+    const [showDetails, setShowDetails] = useState(false)
     const [dropofAddress, setDropofAddress] = useState("");
     const [dropofAddressLat, setDropofAddressLat] = useState("");
     const [dropofAddressLng, setDropofAddressLng] = useState("");
-    const [dropofAddress2, setDropofAddress2] = useState("");
-    const [showDetails, setShowDetails] = useState(false)
-
-
-    const { user, userDetails } = useSelector((state) => {
-        return {
-            user: state.auth,
-            userDetails: state.auth.userDetails
-        };
-    });
-
+    const [pickupAddress, setPickupAddress] = useState("");
+    const [pickupAddressLat, setPickupAddressLat] = useState("");
+    const [pickupAddressLng, setPickupAddressLng] = useState("");
+    const [pickupLat, setPickupLat] = useState("")
+    const [pickupLng, setPickupLng] = useState("")
+    const [dropoffLat, setDropoffLat] = useState("")
+    const [dropoffLng, setDropoffLng] = useState("")
 
     const initiaal_Values = {
         isNew: "",
@@ -74,44 +68,6 @@ const CallerIdDetails = (props) => {
         roundtrip: "",
     }
 
-    const getDropOffAddress = () => {
-        var autocomplete1 = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddressid")), {
-            types: ['geocode']
-        });
-        window.google.maps.event.addListener(autocomplete1, 'place_changed', function () {
-            var placeorg = autocomplete1.getPlace();
-            setDropofAddressLat(placeorg.geometry.location.lat())
-            setDropofAddressLng(placeorg.geometry.location.lng())
-            setDropofAddress(placeorg.formatted_address)
-        });
-        var autocomplete2 = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddressid2")), {
-            types: ['geocode']
-        });
-        window.google.maps.event.addListener(autocomplete2, 'place_changed', function () {
-            var placeorg = autocomplete2.getPlace();
-            setDropofAddress2(placeorg.formatted_address)
-        });
-    }
-
-    const getPickupAddress = () => {
-        var autocomplete1 = new window.google.maps.places.Autocomplete((document.getElementById("pickupaddressid")), {
-            types: ['geocode']
-        });
-        window.google.maps.event.addListener(autocomplete1, 'place_changed', function () {
-            var placeorg = autocomplete1.getPlace();
-            setPickupAddressLat(placeorg.geometry.location.lat())
-            setPickupAddressLng(placeorg.geometry.location.lng())
-            setPickupAddress(placeorg.formatted_address)
-        });
-        var autocomplete2 = new window.google.maps.places.Autocomplete((document.getElementById("pickupaddressid2")), {
-            types: ['geocode']
-        });
-        window.google.maps.event.addListener(autocomplete2, 'place_changed', function () {
-            var placeorg = autocomplete2.getPlace();
-            setPickupAddress2(placeorg.formatted_address)
-        });
-    }
-
     const setPickupDetails = (pickup_address, pickup_lat, pickup_lng) => {
         setPickupAddressLat(pickup_lat)
         setPickupAddressLng(pickup_lng)
@@ -124,11 +80,6 @@ const CallerIdDetails = (props) => {
     }
 
     useEffect(() => {
-        getPickupAddress()
-        getDropOffAddress()
-    }, [])
-
-    useEffect(() => {
         formikRef.current.setFieldValue(
             "pickup_time",
             CurrentPickupTime
@@ -139,49 +90,46 @@ const CallerIdDetails = (props) => {
         );
     }, [CurrentPickupTime, CurrentDate]);
 
+    const getPickupLatLng = (pickupAddressLat, pickupAddressLng) => {
+        setPickupLat(pickupAddressLat);
+        setPickupLng(pickupAddressLng);
+    }
+    const getDropoffLatLng = (dropofAddressLat, dropofAddressLng) => {
+        setDropoffLat(dropofAddressLat);
+        setDropoffLng(dropofAddressLng);
+    }
+
     useEffect(() => {
         if (formikRef.current) {
             formikRef.current.setFieldValue(
-                "pickup_address",
-                pickupAddress,
-            );
-            formikRef.current.setFieldValue(
-                "pickup_address2",
-                pickupAddress2
-            );
-            formikRef.current.setFieldValue(
                 "pickup_lat",
-                pickupAddressLat
+                pickupLat
+            );
+            formikRef.current.setFieldValue(
+                "pickup_date",
+                CurrentDate
             );
             formikRef.current.setFieldValue(
                 "pickup_lng",
-                pickupAddressLng
-            );
-            formikRef.current.setFieldValue(
-                "dropoff_address",
-                dropofAddress
+                pickupLng
             );
             formikRef.current.setFieldValue(
                 "dropoff_lat",
-                dropofAddressLat
+                dropoffLat
             );
             formikRef.current.setFieldValue(
                 "dropoff_lng",
-                dropofAddressLng
-            );
-            formikRef.current.setFieldValue(
-                "dropoff_address2",
-                dropofAddress2
+                dropoffLng
             );
         }
-    }, [pickupAddress, dropofAddress, dropofAddress2, pickupAddress2])
 
+    }, [pickupLat, pickupLng, dropoffLat, dropoffLng, CurrentDate]);
 
 
 
     const handleSubmit = (values) => {
         let status = CreateTrip(values)
-        if(status){
+        if (status) {
             props.SetShowCallerId(false)
         }
 
@@ -274,7 +222,7 @@ const CallerIdDetails = (props) => {
     const Minimize = () => {
         store.dispatch(setCallerIdAction(props.details))
         props.SetShowCallerId(false)
-      
+
     }
 
     return (
@@ -284,16 +232,16 @@ const CallerIdDetails = (props) => {
                     <div className="modal-content">
                         <div className="align-items-center justify-content-center position-relative">
                             <div className="modal-header">
-                                <Button 
-                                onClick={Minimize}
-                                 style={{
-                                    borderRadius: 3,
-                                    backgroundColor: "#1c7be0d7",
-                                    padding: "4px 10px",
-                                    color: "white",
-                                    fontSize: "10px"
-                                }}
-                                variant="contained"
+                                <Button
+                                    onClick={Minimize}
+                                    style={{
+                                        borderRadius: 3,
+                                        backgroundColor: "#1c7be0d7",
+                                        padding: "4px 10px",
+                                        color: "white",
+                                        fontSize: "10px"
+                                    }}
+                                    variant="contained"
                                 >Minimize</Button>
                                 <h6 className="modal-title">No Previous Trip Details Found :</h6>
                                 <img src="/images/b_drop.png" onClick={() => { props.SetShowCallerId(false) }} className="rmbtn" alt="Cancel" />
@@ -370,6 +318,8 @@ const CallerIdDetails = (props) => {
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Pick Up Address: </label>
                                                                 <Field
+                                                                    component={PickupAddress}
+                                                                    getPickupLatLng={getPickupLatLng}
                                                                     name="pickup_address"
                                                                     id="pickupaddressid"
                                                                     placeholder="Pick-up-Address"
@@ -394,6 +344,8 @@ const CallerIdDetails = (props) => {
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Drop off Address: </label>
                                                                 <Field
+                                                                    component={DropoffAddress}
+                                                                    getDropoffLatLng={getDropoffLatLng}
                                                                     name="dropoff_address"
                                                                     id="dropofaddressid"
                                                                     placeholder="drop-off-Address"
@@ -534,7 +486,7 @@ const CallerIdDetails = (props) => {
                                                                 variant="contained"
                                                             > Details
                                                             </Button>
-    
+
                                                             <Button
                                                                 className="border btn btn-success text-capitalize ml-1"
                                                                 onClick={() => { props.SetShowTrip(false) }}
