@@ -11,14 +11,13 @@ import TripDetails from "./TripDetails";
 import CallerIdInfo from "./CallerIdInfo";
 import { Loader } from 'google-maps';
 import Chatsidebar from "./Chatsidebar";
-import { Time_Picker } from "../Pickers/Time_Picker";
 import { TriplogSchema } from './ValidationSchema/TriplogSchema'
 import { CreateTrip } from "./CommonTriplog/CreateTrip";
-import { FullPageLoader } from "../Loaders";
-import { date } from "yup";
 import PickupAddress from "../Pickers/PickupAddress";
 import DropoffAddress from "../Pickers/DropoffAddress";
 import MaskedInput from "react-text-mask";
+import { NotificationPicker } from '../Pickers/NotificationPicker'
+import { CarNumberPicker } from "../Pickers/CarNumberPicker";
 
 
 
@@ -26,26 +25,25 @@ const TriplogWrap = (props) => {
 
     const formikRef = useRef();
     const [submiting, setSubmitting] = useState(false);
+    const [btndisable, setBtnDisable] = useState(false);
     const [CurrentPickupTime, setCurrentPickupTime] = useState(null);
     const [CurrentDate, setCurrentDate] = useState(0);
     const [Triplist, setTriplist] = useState([]);
     const [showEditTrip, SetShowEditTrip] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
     const [currentBooking, SetCurrentBooking] = useState([]);
-    const [cabName, setCabName] = useState("Business Sedan");
     const [fareInput, setFareInput] = useState("");
     const [loading, setLoading] = useState(true);
-    const [pickupLat, setPickupLat] = useState("")
-    const [pickupLng, setPickupLng] = useState("")
-    const [dropoffLat, setDropoffLat] = useState("")
-    const [dropoffLng, setDropoffLng] = useState("")
+    const [pickupLat, setPickupLat] = useState("");
+    const [pickupLng, setPickupLng] = useState("");
+    const [dropoffLat, setDropoffLat] = useState("");
+    const [dropoffLng, setDropoffLng] = useState("");
+    const [deviceId, setDeviceId] = useState("");
+    const [carNumber, setCarNumber] = useState("");
 
     const { userDetails } = useSelector((state) => {
-        return {
-            userDetails: state.auth.userDetails,
-        };
+        return { userDetails: state.auth.userDetails }
     });
-
 
     let initial_Values = useMemo(() => {
         if (CurrentPickupTime !== null) {
@@ -74,10 +72,7 @@ const TriplogWrap = (props) => {
                 dropoff_cross_street: "",
             }
         }
-
     }, [CurrentPickupTime, CurrentDate])
-
-
 
     const getPickupLatLng = (pickupAddressLat, pickupAddressLng) => {
         setPickupLat(pickupAddressLat);
@@ -90,29 +85,26 @@ const TriplogWrap = (props) => {
 
     useEffect(() => {
         if (formikRef.current) {
-            formikRef.current.setFieldValue(
-                "pickup_lat",
-                pickupLat
-            );
-            formikRef.current.setFieldValue(
-                "pickup_date",
-                CurrentDate
-            );
-            formikRef.current.setFieldValue(
-                "pickup_lng",
-                pickupLng
-            );
-            formikRef.current.setFieldValue(
-                "dropoff_lat",
-                dropoffLat
-            );
-            formikRef.current.setFieldValue(
-                "dropoff_lng",
-                dropoffLng
-            );
+            formikRef.current.setFieldValue("pickup_lat", pickupLat);
+            formikRef.current.setFieldValue("pickup_date", CurrentDate);
+            formikRef.current.setFieldValue("pickup_lng", pickupLng);
+            formikRef.current.setFieldValue("dropoff_lat", dropoffLat);
+            formikRef.current.setFieldValue("dropoff_lng", dropoffLng);
         }
-
     }, [pickupLat, pickupLng, dropoffLat, dropoffLng, CurrentDate]);
+
+
+    const getDeviceId = (deviceid) => {
+        setDeviceId(deviceid.value)
+        setCarNumber(deviceid.label)
+    }
+
+    useEffect(() => {
+        if (formikRef.current) {
+            formikRef.current.setFieldValue("car_no", carNumber);
+            formikRef.current.setFieldValue("device_id", deviceId);
+        }
+    }, [deviceId,carNumber]);
 
     const onError = (message) => {
         toast.error(message)
@@ -176,7 +168,12 @@ const TriplogWrap = (props) => {
 
 
     const handleSubmit = (values) => {
-        CreateTrip(values);
+        setBtnDisable(true)
+        CreateTrip(values).then((e) => {
+            if (e === 1) {
+                setBtnDisable(false)
+            }
+        })
     };
 
     const fareEstimate = async (values) => {
@@ -221,23 +218,9 @@ const TriplogWrap = (props) => {
         }
     };
     const openDetails = async (values) => {
-        try {
-            setSubmitting(true);
-            const res = await TriplogServices.getTriplist({});
-            setSubmitting(false);
-            if (res && res.status === 200) {
-                if (res.data && res.data.status === 1) {
-                    setShowDetails(true)
-                    // onSuccess(res.data);
-                    return;
-                }
-                onError(res.data.message);
-            }
-        } catch (err) {
-            setSubmitting(false);
-            onError();
-        }
+        setShowDetails(true)
     };
+
     const openTripDetails = async (trip, dispacher, el) => {
         try {
             setSubmitting(true);
@@ -351,46 +334,15 @@ const TriplogWrap = (props) => {
     // }, []);
 
 
-    // window.$('#pickup_time').timepicker({
-    //      dynamic: true,
-    //  });
-
-    // window.$('#direct_notification_time').timepicker({
-    //     timeFormat: 'H:mm',
-    //     interval: 10,
-    //     minTime: '00:10',
-    //     maxTime: '11:59pm',
-    //     defaultTime: '11',
-    //     startTime: '00:10',
-    //     dynamic: false,
-    //     dropdown: true,
-    //     scrollbar: true,
-    // })
-
-
-    // const MyNotification = ({ field, form, ...props }) => {
-    //     window.$('#direct_notification_time').timepicker({
-    //         timeFormat: 'H:mm',
-    //         interval: 10,
-    //         minTime: '00:10',
-    //         maxTime: '11:59pm',
-    //         defaultTime: '11',
-    //         startTime: '00:10',
-    //         dynamic: false,
-    //         dropdown: true,
-    //         scrollbar: true,
-    //     })
-    //     return <input type="text" {...field} {...props}  />;
-    //   };
     if (loading) {
         return (
-            <div className="text-center">Loading...</div>
+            <div className="text-center bg-white tripload">
+
+                <div class="lds-facebook text-center"><div></div><div></div><div></div></div>
+
+            </div>
         )
     }
-    const handleb = () => {
-
-    }
-    const TIME_MASK = [/^([0-1])/, /([0 - 2])/, ":", /[0-5]/, /[0-9]/, " ", /([AaPp])/, /([Mm])/]
 
     return (
         <React.Fragment >
@@ -417,7 +369,6 @@ const TriplogWrap = (props) => {
                             <Form>
                                 <>
                                     <div className="row d-flex justify-content-left pl-0 pr-0">
-
                                         <Field
                                             name="TextCity"
                                             type="hidden"
@@ -438,7 +389,6 @@ const TriplogWrap = (props) => {
                                             type="hidden"
                                             className="form-control"
                                         />
-
                                         <div className="col-4">
                                             <Field
                                                 component={PickupAddress}
@@ -458,7 +408,6 @@ const TriplogWrap = (props) => {
                                             <Field
                                                 name="pickup_lng"
                                                 type="hidden"
-
                                             />
                                             <br />
                                             {errors.pickup_address && touched.pickup_address ? (
@@ -469,7 +418,7 @@ const TriplogWrap = (props) => {
 
                                         </div>
                                         <br />
-                                        <div className="col-2 pl-0">
+                                        <div className="col-1 pl-0">
                                             <Field
                                                 name="pickup_time"
                                                 className="form-control"
@@ -481,7 +430,6 @@ const TriplogWrap = (props) => {
                                                         className="form-control"
                                                     />
                                                 )}
-                                            //component={Time_Picker}
                                             />
                                         </div>
                                         <div className="col-2 pr-0 pl-0">
@@ -492,13 +440,13 @@ const TriplogWrap = (props) => {
                                                 className="form-control unstyled"
                                             />
                                         </div>
-                                        <div className="col-1">
+                                        <div className="col-2">
                                             <Field
+                                                component={NotificationPicker}
                                                 name="direct_notification_time"
                                                 placeholder="Notification"
                                                 id="direct_notification_time"
                                                 className="form-control"
-                                            //component={MyNotification}
                                             />
                                         </div>
                                         <div className="col-1 pl-0">
@@ -508,9 +456,7 @@ const TriplogWrap = (props) => {
                                                 className="form-control"
                                                 autocomplete="off"
                                             />
-
                                             <br />
-
                                             {errors.telephone && touched.telephone ? (
                                                 <div className="d-block invalid-feedback mt-n4 ml-3">
                                                     {errors.telephone}
@@ -590,15 +536,21 @@ const TriplogWrap = (props) => {
                                             />
                                         </div>
                                         <div className="col-1 pr-0">
-                                            <Field as="select" className="form-control w-100" name="car_no">
-                                                {userDetails.FleetDevices && userDetails.FleetDevices.map(el => (
-                                                    <option value={el.label}>{el.label}</option>
-                                                ))}
+                                            <Field
+                                                as="select"
+                                                className="form-control w-100"
+                                                name="car_no"
+                                                component={CarNumberPicker}
+                                                getDeviceId={getDeviceId}>
                                             </Field>
                                         </div>
+                                        <Field
+                                            name="device_id"
+                                            type="hidden"
+                                        />
                                         <div className="col-2 pr-0">
 
-                                            <Field as="select" className="form-control w-100" name="cab_name" onChange={(e) => { setCabName(e.target.value) }}>
+                                            <Field as="select" className="form-control w-100" name="cab_name" >
                                                 {userDetails.CarType && userDetails.CarType.map(el => (
                                                     <option value={el.label} >{el.label}</option>
                                                 ))}
@@ -665,6 +617,7 @@ const TriplogWrap = (props) => {
                                                     fontSize: "12px"
                                                 }}
                                                 variant="contained"
+                                                disabled={btndisable && true}
                                             >
                                                 Send
                                             </Button>
@@ -716,7 +669,6 @@ const TriplogWrap = (props) => {
                         </Button>
                     </div>
                 </div>
-                {loading && <Loader />}
                 {Triplist && <Trips trips={Triplist} openTripDetails={openTripDetails} />}
                 {showEditTrip && <EditTripDetails currentBooking={currentBooking} SetShowEditTrip={SetShowEditTrip} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
                 {showDetails && <TripDetails SetShowTrip={setShowDetails} />}

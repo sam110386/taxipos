@@ -67,7 +67,7 @@ const TripList = (props) => {
                         let allowreassign = ([1, 5].indexOf(trip['Triplog']['status']) > -1) ? ' allowreassign' : '';
                         return (
                             <td className={`cntr_algn ${back_class} ${allowreassign}`} rel-tripid={trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} on-hold={`NO`}>
-                                <input type="text" value={unaccepted_car_value} id={+trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} rel-call_type={trip['Triplog']['call_type']} className="textfield carAutoComplete" readOnly={flag} />
+                                <input type="text" value={unaccepted_car_value} id={+trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} rel-call_type={trip['Triplog']['call_type']} className="textfield carAutoComplete" readOnly={flag} /> 
                             </td>
                         )
                     } else {

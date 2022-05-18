@@ -226,7 +226,6 @@ const ChatsidebarDetails = (props) => {
         }
     }
 
-
     useEffect(() => {
         initialize();
     }, [])
@@ -271,7 +270,6 @@ const ChatsidebarDetails = (props) => {
                                                     <div className="row  d-flex justify-content-left pl-0 pr-0 text-center" id="myslider">
                                                         <div className="col-md-6">
                                                             <div className="form-group ">
-
                                                                 Pick Up Address
                                                             </div>
                                                         </div>
@@ -303,20 +301,6 @@ const ChatsidebarDetails = (props) => {
                                                                         )}
                                                                     </>
                                                                 )
-                                                                // <>
-                                                                //   {console.log("alltrip********",e)}
-                                                                //     <div className="col-md-6">
-                                                                //         <div className="" id="l01" tabindex="1" onClick={() => setPickupDetails(e.Triplog.pickup_address, e.Triplog.pickup_lat, e.Triplog.pickup_lng)}>
-                                                                //             <h6 className="callerIdSlider">{e.Triplog.pickup_address}</h6>
-
-                                                                //         </div>
-                                                                //     </div>
-                                                                //     <div className="col-md-6">
-                                                                //         <div id="l02" tabindex="0" onClick={() => setDropOffDetails(e.Triplog.dropoff_address, e.Triplog.dropoff_lat, e.Triplog.dropoff_lng)}>
-                                                                //             <h6 className="callerIdSlider">{e.Triplog.dropoff_address}</h6>
-                                                                //         </div>
-                                                                //     </div>
-                                                                // </>
                                                             })
                                                         }
                                                         <div className="col-md-6 mt-1">

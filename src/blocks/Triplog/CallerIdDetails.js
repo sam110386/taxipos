@@ -11,6 +11,8 @@ import { TriplogSchema } from './ValidationSchema/TriplogSchema';
 import { CreateTrip } from "./CommonTriplog/CreateTrip";
 import PickupAddress from "../Pickers/PickupAddress";
 import DropoffAddress from "../Pickers/DropoffAddress";
+import { NotificationPicker } from "../Pickers/NotificationPicker";
+import MaskedInput from "react-text-mask"
 
 const CallerIdDetails = (props) => {
 
@@ -48,7 +50,7 @@ const CallerIdDetails = (props) => {
         dropoff_address2: "",
         car_no: "",
         cab_name: "",
-        telephone: props.details.phone,
+        telephone: props.details.phone_no,
         amt_of_passengers: "",
         passenger_name: "",
         fare: "",
@@ -80,14 +82,8 @@ const CallerIdDetails = (props) => {
     }
 
     useEffect(() => {
-        formikRef.current.setFieldValue(
-            "pickup_time",
-            CurrentPickupTime
-        );
-        formikRef.current.setFieldValue(
-            "pickup_date",
-            CurrentDate
-        );
+        formikRef.current.setFieldValue("pickup_time",CurrentPickupTime);
+        formikRef.current.setFieldValue("pickup_date",CurrentDate);
     }, [CurrentPickupTime, CurrentDate]);
 
     const getPickupLatLng = (pickupAddressLat, pickupAddressLng) => {
@@ -101,29 +97,24 @@ const CallerIdDetails = (props) => {
 
     useEffect(() => {
         if (formikRef.current) {
-            formikRef.current.setFieldValue(
-                "pickup_lat",
-                pickupLat
-            );
-            formikRef.current.setFieldValue(
-                "pickup_date",
-                CurrentDate
-            );
-            formikRef.current.setFieldValue(
-                "pickup_lng",
-                pickupLng
-            );
-            formikRef.current.setFieldValue(
-                "dropoff_lat",
-                dropoffLat
-            );
-            formikRef.current.setFieldValue(
-                "dropoff_lng",
-                dropoffLng
-            );
+            formikRef.current.setFieldValue("pickup_lat",pickupLat);
+            formikRef.current.setFieldValue("pickup_date",CurrentDate);
+            formikRef.current.setFieldValue("pickup_lng",pickupLng);
+            formikRef.current.setFieldValue("dropoff_lat",dropoffLat);
+            formikRef.current.setFieldValue("dropoff_lng",dropoffLng);
         }
-
     }, [pickupLat, pickupLng, dropoffLat, dropoffLng, CurrentDate]);
+
+    useEffect(() => {
+        if (formikRef.current) {
+            formikRef.current.setFieldValue("pickup_address",pickupAddress);
+            formikRef.current.setFieldValue("pickup_lat",pickupAddressLat);
+            formikRef.current.setFieldValue("pickup_lng",pickupAddressLng);
+            formikRef.current.setFieldValue("dropoff_address",dropofAddress);
+            formikRef.current.setFieldValue("dropoff_lat",dropofAddressLat);
+            formikRef.current.setFieldValue("dropoff_lng",dropofAddressLng);
+        }
+    }, [dropofAddress,pickupAddress]);
 
 
 
@@ -200,24 +191,6 @@ const CallerIdDetails = (props) => {
     useEffect(() => {
         initialize();
     }, [])
-
-
-    // window.$('#timepicker').timepicker({
-    //     dynamic: false,
-    //     dropdown: true,
-    // });
-
-    // window.$('#notifi').timepicker({
-    //     timeFormat: 'H:mm',
-    //     interval: 10,
-    //     minTime: '00:10',
-    //     maxTime: '11:59pm',
-    //     defaultTime: '11',
-    //     startTime: '00:10',
-    //     dynamic: false,
-    //     dropdown: true,
-    //     scrollbar: true
-    // });
 
     const Minimize = () => {
         store.dispatch(setCallerIdAction(props.details))
@@ -410,6 +383,14 @@ const CallerIdDetails = (props) => {
                                                                     id="timepicker"
                                                                     className="form-control cur_time_log"
                                                                     autocomplete="off"
+                                                                    render={({ field }) => (
+                                                                        <MaskedInput
+                                                                            {...field}
+                                                                            mask={[/^([0-2])/, /([0-9])/, ":", /[0-5]/, /[0-9]/, " ", /([AaPp])/, /([Mm])/]}
+                                                                            type="text"
+                                                                            className="form-control"
+                                                                        />
+                                                                    )}
                                                                 />
                                                             </div>
                                                         </div>
@@ -418,6 +399,7 @@ const CallerIdDetails = (props) => {
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Notification: </label>
                                                                 <Field
+                                                                    component={NotificationPicker}
                                                                     name="direct_notification_time"
                                                                     id="notifi"
                                                                     placeholder="Notification"
@@ -426,10 +408,6 @@ const CallerIdDetails = (props) => {
                                                                 />
                                                             </div>
                                                         </div>
-
-
-
-
                                                         <div className="col-md-2">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Fare : </label>

@@ -103,13 +103,59 @@ p {
   -webkit-box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2);
   box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2);
 }
-#chatlog{
-    cursor: pointer;
-    margin-left: .7rem;
-    margin-top: .5rem;
-    background-color:rgba(197, 197, 197, 0.288) ;
+
+.lds-facebook {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-facebook div {
+  display: inline-block;
+  position: absolute;
+  left: 8px;
+  width: 16px;
+  background: rgb(59, 207, 83);
+  animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+}
+
+.lds-facebook div:nth-child(1) {
+  left: 8px;
+  animation-delay: -0.24s;
+}
+
+.lds-facebook div:nth-child(2) {
+  left: 32px;
+  animation-delay: -0.12s;
+}
+
+.lds-facebook div:nth-child(3) {
+  left: 56px;
+  animation-delay: 0;
+}
+
+@keyframes lds-facebook {
+  0% {
+    top: 8px;
+    height: 64px;
   }
-#chatlog:hover{
+
+  50%,
+  100% {
+    top: 24px;
+    height: 32px;
+  }
+}
+
+#chatlog {
+  cursor: pointer;
+  margin-left: .7rem;
+  margin-top: .5rem;
+  background-color: rgba(197, 197, 197, 0.288);
+}
+
+#chatlog:hover {
   background-color: rgba(226, 225, 225, 0.288);
 }
 
@@ -117,13 +163,15 @@ p {
   padding: 20px 0 10px;
   background: #fff !important;
 }
+
 .react-time-picker__wrapper {
   display: flex;
   flex-grow: 1;
   flex-shrink: 0;
   border: none !important;
 }
-.react-time-picker__inputGroup__input{
+
+.react-time-picker__inputGroup__input {
   outline: none !important;
 }
 
@@ -150,28 +198,30 @@ p {
   border-radius: 10rem;
 }
 
-.detailsmodal{
+.detailsmodal {
   box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.50), 0 6px 20px 0 rgba(0, 0, 0, 0.50);
 
 }
+
 .callidmodal {
   overflow-y: scroll;
   max-height: 75%;
   margin-top: 8rem;
   margin-bottom: 50px;
   z-index: 9 !important;
-  
-}
-.callidmodal:hover{
 
 }
-.callerIdSlider{
+
+.callidmodal:hover {}
+
+.callerIdSlider {
   background-color: rgba(167, 165, 165, 0.479);
   padding: .4rem;
   margin-bottom: 5px;
   cursor: pointer;
 }
-.callmodal{
+
+.callmodal {
   box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.50), 0 6px 20px 0 rgba(0, 0, 0, 0.50);
   border-radius: 15px;
 }
@@ -183,7 +233,7 @@ p {
   transition: transform .2s;
 }
 
-.rmbtn:hover{
+.rmbtn:hover {
   transform: scale(1.2);
 }
 
@@ -296,8 +346,9 @@ colored {
   line-height: 63px;
   border-radius: 4px;
 }
+
 .callmodal2 {
- 
+
   width: 50rem;
   box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.50), 0 6px 20px 0 rgba(0, 0, 0, 0.50);
 }
@@ -1579,6 +1630,9 @@ colored {
   border: 1px solid #ebebeb;
   border-radius: 5px;
   padding: 40px 30px;
+}
+.tripload{
+  margin-top: 14rem;
 }
 
 /* Account page css start here ====*/
@@ -3544,16 +3598,20 @@ svg {
   /* left: -134px; */
   position: relative;
 }
+
 .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
-  padding:7px !important;
+  padding: 7px !important;
   background: white !important;
 }
-.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root{
+
+.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
   background-color: white !important;
 }
-.css-1sn4lm3-MuiTypography-root{
+
+.css-1sn4lm3-MuiTypography-root {
   margin: .8rem !important;
 }
+
 .input {
   overflow: hidden !important;
   overflow-x: hidden !important;
@@ -3568,15 +3626,19 @@ svg path.elementor-shape-fill {
   -webkit-transform: rotateY(0deg);
   transform: rotateY(0deg);
 }
-.bc{
+
+.bc {
   background-color: transparent;
 }
-#tripLogTable{
-  background-color:  rgba(240, 166, 215, 0.667) !important;
+
+#tripLogTable {
+  background-color: rgba(240, 166, 215, 0.667) !important;
 }
-#dashboardcs{
-background-color: #fdeada;
+
+#dashboardcs {
+  background-color: #fdeada;
 }
+
 .buycar_sec {
   background-color: #FAFCFF;
   position: relative;
