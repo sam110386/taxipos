@@ -11,6 +11,9 @@ const path = {
   BOOK_VEHICLE: "book",
   ADD_VEHICLE_TO_FAVOURITE: "addVehicleToWishlist",
   REMOVE_VEHICLE_TO_FAVOURITE: "removeWishlistVehicle",
+  RE_ASSIGN_CAR : "dispatchertriplogs/opentripsroute",
+  CAR_AUTOCOMPLETE : "car_autocomplete"
+  
 };
 
 export const getPreAuthCarDetails = async (data) => {
@@ -66,6 +69,24 @@ export const bookVehicle = async (data) => {
     return null;
   }
 };
+
+export const reassignCar = async (data) => {
+  try {
+    const res = await API.post(path.RE_ASSIGN_CAR, data, getHeader());
+    return res;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const autoCompleteCar = async (data)=>{
+  try {
+    const res = await API.post(path.CAR_AUTOCOMPLETE, data, getHeader());
+    return res;
+  } catch (err) {
+    return null;
+  }
+}
 
 export const addVehicleToFavourite = async (data) => {
   try {

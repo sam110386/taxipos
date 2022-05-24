@@ -36,10 +36,12 @@ const TriplogWrap = (props) => {
     const [loading, setLoading] = useState(true);
     const [pickupLat, setPickupLat] = useState("");
     const [pickupLng, setPickupLng] = useState("");
+    const [dropoffaddress,setDropoffAddress] = useState("");
     const [dropoffLat, setDropoffLat] = useState("");
     const [dropoffLng, setDropoffLng] = useState("");
     const [deviceId, setDeviceId] = useState("");
     const [carNumber, setCarNumber] = useState("");
+    const [pickupAddress,setPickupAddress] = useState("");
 
     const { userDetails } = useSelector((state) => {
         return { userDetails: state.auth.userDetails }
@@ -74,11 +76,13 @@ const TriplogWrap = (props) => {
         }
     }, [CurrentPickupTime, CurrentDate])
 
-    const getPickupLatLng = (pickupAddressLat, pickupAddressLng) => {
+    const getPickupLatLng = (pickupAddress,pickupAddressLat, pickupAddressLng) => {
         setPickupLat(pickupAddressLat);
         setPickupLng(pickupAddressLng);
+        setPickupAddress(pickupAddress);
     }
-    const getDropoffLatLng = (dropofAddressLat, dropofAddressLng) => {
+    const getDropoffLatLng = (dropoffAddress,dropofAddressLat, dropofAddressLng) => {
+        setDropoffAddress(dropoffAddress);
         setDropoffLat(dropofAddressLat);
         setDropoffLng(dropofAddressLng);
     }
@@ -100,7 +104,7 @@ const TriplogWrap = (props) => {
     }
 
     useEffect(() => {
-        if (formikRef.current) {
+        if (formikRef.current){
             formikRef.current.setFieldValue("car_no", carNumber);
             formikRef.current.setFieldValue("device_id", deviceId);
         }
@@ -576,7 +580,7 @@ const TriplogWrap = (props) => {
 
                                             <Button
                                                 className="border btn btn-success text-capitalize ml-1"
-                                                // onClick={() => getFate({ pickupAddress, pickupAddressLat, pickupAddressLng, dropofAddress, dropofAddressLat, dropofAddressLng, cabName })}
+                                                // onClick={() => getFate({ pickupAddress, pickupLat, pickupLng, dropoffaddress, pickupLat, pickupLng, cabName })}
                                                 to={``}
                                                 style={{
                                                     borderRadius: 8,

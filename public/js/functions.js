@@ -1,3 +1,151 @@
+function initChangeCar(){
+  window.getData()
+  alert("here=>>>>>>>>>>>>.")
+  $("table#tripLogTable").on('focus', '.carAutoComplete',function() {
+    $(this).addClass('stop_loadTripLog');
+    var id = $(this).attr('id');
+    $(this).on('keyup', function(e) {
+        // alert("me too listioning");
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 13 && $(this).val() != "") {
+            var term = $(this).val();
+            var callType = $(this).attr('rel-call_type');
+            var currentDispacher = $(this).attr('rel-current-dispacher');
+            var loggedInDispacher="<?php echo $dispacherId; ?>";
+            var ParentDispacher = $(this).attr('rel-parent-dispacher');
+            /**New Route Assign method Start here**/
+             if (term == "r" || term == "R") {
+                    $.post("/dispatchertriplogs/opentripsroute", {'id':id,'currentDispacher':currentDispacher,'ParentDispacher':ParentDispacher}, function(data) {
+                        jQuery.colorbox({
+                            width: "300px",
+                            height: "300px",
+                            speed: 0,
+                            html: data,
+                            onComplete: function() {
+                                indicate_popup_open = 'open';
+                                //save the new assigned dispacher
+                                $("#DispatcherTriplogDeviceId").change(function(){
+                                if($(this).val()){
+                                    var tripid=$(this).attr('rel-data');
+                                    var assignedDeviceid=$(this).val();
+                                    var car_no = jQuery('#DispatcherTriplogDeviceId option[value="' + assignedDeviceid + '"]').text();
+                                    var confrm=confirm("Are you sure to reassign this car to selected trip route ?");
+                                    if(confrm){
+                                        $.ajax({
+                                            url:'/dispatchertriplogs/routecarassignaSave',
+                                            data:{'tripid':tripid,'assignedDeviceid':assignedDeviceid,'car_no':car_no,"loggedInDispacher":loggedInDispacher,"ParentDispacher":ParentDispacher},
+                                            type:'post',
+                                            dataType:'json',
+                                            success:function(msg){
+                                                $("#DispatcherTriplogDispacherIdWrapper").html(msg.msg);
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                            },
+                            onClosed: function() {
+                                indicate_popup_open = '';
+                                loadTripLog();
+                            }
+                        });
+                    });
+                    return false;
+                }
+            /**Route Assign method end here**/
+            if ((loggedInDispacher == currentDispacher && currentDispacher != ParentDispacher)||(loggedInDispacher==ParentDispacher)) {
+                if (term == "a" || term == "A") {
+                    $.post("/dispatchertriplogs/opentripsparentchild", {'id': id,'currentDispacher':currentDispacher,'ParentDispacher':ParentDispacher}, function(data) {
+                        jQuery.colorbox({
+                            width: "300px",
+                            height: "300px",
+                            speed: 0,
+                            html: data,
+                            onComplete: function() {
+                                indicate_popup_open = 'open';
+                                //save the new assigned dispacher
+                                $("#DispatcherTriplogDispacherId").change(function(){
+                                    if($(this).val()){
+                                        var tripid=$(this).attr('rel-data');
+                                        var assignedDispacherid=$(this).val();
+                                        var confrm=confirm("Are you sure to reassign this call to selected company ?");
+                                        if(confrm){
+                                            $.ajax({
+                                              url:'/dispatchertriplogs/reassignaffiliateSave',
+                                              data:{'tripid':tripid,'assignedDispacherid':assignedDispacherid},
+                                              type:'post',
+                                              dataType:'json',
+                                              success:function(msg){
+                                                  /*if(msg.status=='error'){
+                                                      alert(msg.msg);
+                                                  }*/
+                                                  $("#DispatcherTriplogDispacherIdWrapper").html(msg.msg);
+                                            }
+                                        });
+                                      }
+                                  }
+                              });
+
+                            },
+                            onClosed: function() {
+                                indicate_popup_open = '';
+                                loadTripLog();
+                            }
+                        });
+                    });
+                    return false;
+                }
+                //validate to CHILD dispacher to dispatch the NET type trip again as NET
+                if (term == "N" || term == "n") {
+                    alert("Sorry, you don't have permission for this action.");
+                    $(this).val('Send To NET');
+                    return false;
+                }
+
+                $.post("/dispachers/car_autocomplete/", {'term': term}, function(data) {
+                    var jsonObj = jQuery.parseJSON(data);
+                    var car_no = jsonObj.value;
+                    var device_id = jsonObj.id;
+                    var call_type_line = jsonObj.call_type_line;
+                    var status = jsonObj.status;
+                    sendInfoToAffiliatetriplogFlag=true;
+                    sendInfoToAffiliatetriplog(car_no, device_id, id, status, call_type_line);
+                });
+
+            } else {
+
+                $.post("/dispachers/car_autocomplete/", {'term': term}, function(data) {
+                    var jsonObj = jQuery.parseJSON(data);
+                    var car_no = jsonObj.value;
+                    var device_id = jsonObj.id;
+                    var call_type_line = jsonObj.call_type_line;
+                    var status = jsonObj.status;
+                    sendInfoToCar_triplog(car_no, device_id, id, status, call_type_line);
+                });
+            }
+        }
+        else {
+            if ($(this).val() == "c" || $(this).val() == "C") {
+                $(this).val("Car #");
+            }
+            if ($(this).val() == "s" || $(this).val() == "S") {
+                $(this).val("Send To All");
+            }
+            if ($(this).val() == "l" || $(this).val() == "L") {
+                $(this).val("Line");
+            }
+            if ($(this).val() == "n" || $(this).val() == "N") {
+                $(this).val("Send To NET");
+            }
+            if ($(this).val() == "d" || $(this).val() == "D") {
+                $(this).val("Auto-Dispatch");
+            }
+        }
+
+    });
+});
+}
+
 /*
  * Custom Select Script
  */
