@@ -2,18 +2,24 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import * as CarService from "../../services/CarService"
 
+
 const CarAutoComplete = (props) => {
 
     const [selectedOpt, setSelectedOpt] = useState('Car #')
     const [UnacceptedCarValue, setUnacceptedCarValue] = useState('')
-    const [carValue, setCarValue] = useState('')
+    const [carValue, setCarValue] = useState('');
 
     let trip = props.trip
     let dispacherId = props.dispacherId;
     let back_class = props.back_class;
 
+    const reloadTripDetails = async(id,type) =>{
+        let res = await CarService.reloadTripDetails(id)
+        // console.log("reload trip details",res)
+    }
 
-    let sendInfoToAffiliatetriplog = (car_no, device_id, id, status, call_type_line) => {
+
+    let sendInfoToAffiliatetriplog = async (car_no, device_id, id, status, call_type_line) => {
         // if(!sendInfoToAffiliatetriplogFlag){
         //     return;
         // }
@@ -39,9 +45,19 @@ const CarAutoComplete = (props) => {
         if (status == "net_activated") {
             call_type = 'NET';
         }
-        var params = {id, device_id, car_no,call_type}
-        window.$("#" + id + "").removeClass('focused');
-        window.$("#" + id + "").blur();
+        var params = { id, device_id, car_no, call_type }
+        let res = await CarService.reassignAffiliate(params)
+        if (res && res.status === 200) {
+            if (res.data && res.data.status === 1) {
+                reloadTripDetails(id,"update")
+
+                //sendInfoToAffiliatetriplogFlag=false;//will avaoid the call to resend
+            }
+        }
+    
+
+        // window.$("#" + id + "").removeClass('focused');
+        // window.$("#" + id + "").blur();
         // window.$.ajax({
         //     // url: SITE_URL+"affiliate_partners/reassign_affiliate_dispatch",
         //     type: "post",
@@ -52,7 +68,65 @@ const CarAutoComplete = (props) => {
         //         sendInfoToAffiliatetriplogFlag=false;//will avaoid the call to resend
         //     }
         // });
+    }
 
+    let sendInfoToCar_triplog = async(car_no, device_id, id, status, call_type_line)=> {
+
+        var call_type = '';
+        if (status == "deactivated") {
+            setSelectedOpt('')
+            // $("#" + id + "").focus();
+            alert("Car # " + car_no + " is Deactivated. Speak to Management.");
+            return false;
+        }
+        if (status == "not_found") {
+            setSelectedOpt('')
+            // $("#" + id + "").focus();
+            alert("Car # " + car_no + " does not exist.");
+            return false;
+        }
+        if (status == "not_booked") {
+            setSelectedOpt('')
+            // $("#" + id + "").focus();
+            alert("Car # " + car_no + " is not booked in.");
+            return false;
+        }
+        if (status == "no_lined_device") {
+            setSelectedOpt('')
+            // $("#" + id + "").focus();
+            alert("No lined device found.");
+            return false;
+        } else if (status == "lined_device") {
+            setSelectedOpt('')
+            call_type = call_type_line;
+        }
+        if (status == "net_activated") {
+            setSelectedOpt('')
+            // $("#" + id + "").focus();
+            call_type = 'NET';
+
+        }
+        if (status == "auto_activated") {
+            setSelectedOpt('')
+            // $("#" + id + "").focus();
+            call_type = '';
+
+        }
+
+        var params = { id, device_id, car_no,call_type }
+        // $("#" + id + "").removeClass('focused');
+        // $("#" + id + "").blur();
+        let res = await CarService.carAssignment(params)
+        // console.log(res,"myres")
+        // $.ajax({
+        //     url: SITE_URL + "dispachers/send_push_notification_direct",
+        //     type: "post",
+        //     data: params,
+        //     async: false,
+        //     success: function (data) {
+
+        //     }
+        // });
     }
 
 
@@ -86,27 +160,25 @@ const CarAutoComplete = (props) => {
 
                 let res = await CarService.autoCompleteCar({ term });
                 if (res && res.status === 200) {
-                    if (res.data && res.data.status === 1) {
-                        let car_no = res.data.result.status;
-                        let device_id = res.data.result;
-                        let call_type_line = res.data.result.call_type_line;
-                        let status = res.data.result.status;
-                        // sendInfoToAffiliatetriplogFlag=true;
-                        sendInfoToAffiliatetriplog(car_no, device_id, id, status, call_type_line);
-                    }
+                    let car_no = res.data.result.value;
+                    let device_id = res.data.result.id;
+                    let call_type_line = res.data.result.call_type_line;
+                    let status = res.data.result.status;
+                    // sendInfoToAffiliatetriplogFlag=true;
+                    sendInfoToAffiliatetriplog(car_no, device_id, id, status, call_type_line);
+
                 }
 
             } else {
                 let res = await CarService.autoCompleteCar({ term });
                 if (res && res.status === 200) {
-                    if (res.data && res.data.status === 1) {
-                        let car_no = res.data.result.status;
-                        let device_id = res.data.result;
-                        let call_type_line = res.data.result.call_type_line;
-                        let status = res.data.result.status;
-                        // sendInfoToAffiliatetriplogFlag=true;
-                        sendInfoToAffiliatetriplog(car_no, device_id, id, status, call_type_line);
-                    }
+                    let car_no = res.data.result.value;
+                    let device_id = res.data.result.id;
+                    let call_type_line = res.data.result.call_type_line;
+                    let status = res.data.result.status;
+                    // sendInfoToAffiliatetriplogFlag=true;
+                    sendInfoToCar_triplog(car_no, device_id, id, status, call_type_line);
+
                 }
             }
         }

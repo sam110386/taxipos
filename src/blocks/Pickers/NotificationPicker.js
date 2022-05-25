@@ -21,9 +21,9 @@ export const NotificationPicker = ({ field, form, id, ...props }) => {
         CreateNotification()
     },[])
     return <select name={name} id={id} {...field} {...props}>
-        {Notification && Notification.map((ele, index) => (
+        {Notification && Notification.map((ele, ind) => (
             <>
-                <option value={ele}>{ele}</option>
+                <option key={ind.toString()} value={ele}>{ele}</option>
             </>
         ))}
     </select>

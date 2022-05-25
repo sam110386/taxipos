@@ -64,7 +64,7 @@ const CallerIdInfo = () => {
                 {ar.length > 0 && ar.map((el, index, caller) => {
                     if (index < 4) {
                         return (
-                            <table class="blank_ul">
+                            <table className="blank_ul" key={index.toString()}>
                                 {ar.map((el2, index2,arr) => {
                                     if (index2 < 3) {
                                         let f_numb;
@@ -78,8 +78,9 @@ const CallerIdInfo = () => {
                                             f_numb = index2 + 10;
                                         }
                                         return (
-                                            <tr class="inner_div">
-                                               <th class="mid_th comtab" >F{f_numb}</th>
+                                            <tbody key={index2.toString()}>
+                                            <tr className="inner_div" >
+                                               <th className="mid_th comtab" >F{f_numb}</th>
                                                 {callerTripInfo.map((ele3)=>{
                                                     if(ele3.UrlSend.Line == f_numb){
                                                         document.addEventListener("keydown", onKeyDown, false);
@@ -94,12 +95,13 @@ const CallerIdInfo = () => {
                                                         }
                                                         return (
                                                             <>  
-                                                            <th class="mid_th text-center" width="100" onClick={()=>ShowModal(ele3.UrlSend.Phone,ele3.UrlSend.id)}  >{ele3.UrlSend.Phone}</th>
-                                                            <th class="mid_th"> ...  </th>
+                                                            <th className="mid_th text-center" width="100" onClick={()=>ShowModal(ele3.UrlSend.Phone,ele3.UrlSend.id)}  >{ele3.UrlSend.Phone}</th>
+                                                            <th className="mid_th"> ...  </th>
                                                             </>
                                                     )}
                                                 })}
                                             </tr>
+                                            </tbody>
                                         )
                                     }
                                 }

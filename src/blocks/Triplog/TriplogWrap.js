@@ -18,11 +18,12 @@ import DropoffAddress from "../Pickers/DropoffAddress";
 import MaskedInput from "react-text-mask";
 import { NotificationPicker } from '../Pickers/NotificationPicker'
 import { CarNumberPicker } from "../Pickers/CarNumberPicker";
+import { store } from "../../store/store";
+import { loadTripListDataSuccess } from "../../store/actions/TripAction";
 
 
 
 const TriplogWrap = (props) => {
-
     const formikRef = useRef();
     const [submiting, setSubmitting] = useState(false);
     const [btndisable, setBtnDisable] = useState(false);
@@ -33,69 +34,70 @@ const TriplogWrap = (props) => {
     const [showDetails, setShowDetails] = useState(false);
     const [currentBooking, SetCurrentBooking] = useState([]);
     const [fareInput, setFareInput] = useState("");
-    const [loading, setLoading] = useState(true);
     const [pickupLat, setPickupLat] = useState("");
     const [pickupLng, setPickupLng] = useState("");
-    const [dropoffaddress,setDropoffAddress] = useState("");
+    const [dropoffaddress, setDropoffAddress] = useState("");
     const [dropoffLat, setDropoffLat] = useState("");
     const [dropoffLng, setDropoffLng] = useState("");
     const [deviceId, setDeviceId] = useState("");
     const [carNumber, setCarNumber] = useState("");
-    const [pickupAddress,setPickupAddress] = useState("");
+    const [pickupAddress, setPickupAddress] = useState("");
 
     const { userDetails } = useSelector((state) => {
         return { userDetails: state.auth.userDetails }
     });
 
-    let initial_Values = useMemo(() => {
-        if (CurrentPickupTime !== null) {
-            return {
-                pickup_lat: "",
-                pickup_lng: "",
-                pickup_address: "",
-                device_id: "",
-                pickup_date: CurrentDate,
-                pickup_time: CurrentPickupTime,
-                dropoff_lat: "",
-                dropoff_lng: "",
-                dropoff_address: "",
-                car_no: "",
-                cab_name: "",
-                telephone: "",
-                telephone_line: "",
-                amt_of_passengers: "",
-                fare: "",
-                details: "",
-                direct_notification_time: "",
-                pickdrop_fare: "",
-                account_no: "",
-                share: "",
-                pickup_cross_street: "",
-                dropoff_cross_street: "",
-            }
-        }
-    }, [CurrentPickupTime, CurrentDate])
+    let initial_Values = {
+        pickup_lat: "",
+        pickup_lng: "",
+        pickup_address: "",
+        device_id: "",
+        pickup_date: "",
+        pickup_time: "",
+        dropoff_lat: "",
+        dropoff_lng: "",
+        dropoff_address: "",
+        car_no: "",
+        cab_name: "",
+        telephone: "",
+        telephone_line: "",
+        amt_of_passengers: "",
+        fare: "",
+        details: "",
+        direct_notification_time: "",
+        pickdrop_fare: "",
+        account_no: "",
+        share: "",
+        pickup_cross_street: "",
+        dropoff_cross_street: "",
+    }
 
-    const getPickupLatLng = (pickupAddress,pickupAddressLat, pickupAddressLng) => {
+
+    const getPickupLatLng = (pickupAddress, pickupAddressLat, pickupAddressLng) => {
         setPickupLat(pickupAddressLat);
         setPickupLng(pickupAddressLng);
         setPickupAddress(pickupAddress);
     }
-    const getDropoffLatLng = (dropoffAddress,dropofAddressLat, dropofAddressLng) => {
+    const getDropoffLatLng = (dropoffAddress, dropofAddressLat, dropofAddressLng) => {
         setDropoffAddress(dropoffAddress);
         setDropoffLat(dropofAddressLat);
         setDropoffLng(dropofAddressLng);
     }
+    useEffect(() => {
+        if (formikRef.current) {
+            formikRef.current.setFieldValue("pickup_time", CurrentPickupTime);
+            formikRef.current.setFieldValue("pickup_date", CurrentDate);
+        }
+    }, [CurrentDate, CurrentPickupTime]);
 
     useEffect(() => {
         if (formikRef.current) {
             formikRef.current.setFieldValue("pickup_lat", pickupLat);
-            formikRef.current.setFieldValue("pickup_date", CurrentDate);
             formikRef.current.setFieldValue("pickup_lng", pickupLng);
             formikRef.current.setFieldValue("dropoff_lat", dropoffLat);
             formikRef.current.setFieldValue("dropoff_lng", dropoffLng);
         }
-    }, [pickupLat, pickupLng, dropoffLat, dropoffLng, CurrentDate]);
+    }, [pickupLat, pickupLng, dropoffLat, dropoffLng]);
 
 
     const getDeviceId = (deviceid) => {
@@ -104,11 +106,11 @@ const TriplogWrap = (props) => {
     }
 
     useEffect(() => {
-        if (formikRef.current){
+        if (formikRef.current) {
             formikRef.current.setFieldValue("car_no", carNumber);
             formikRef.current.setFieldValue("device_id", deviceId);
         }
-    }, [deviceId,carNumber]);
+    }, [deviceId, carNumber]);
 
     const onError = (message) => {
         toast.error(message)
@@ -132,7 +134,7 @@ const TriplogWrap = (props) => {
                 if (res.data && res.data.status === 1) {
                     setCurrentPickupTime(res.data.time);
                     setCurrentDate(res.data.date);
-                    setLoading(false)
+                    // setLoading(false)
                     let currentTime = moment(res.data.date + " " + res.data.time);
                     if (!refreshIntervalId) {
                         clearInterval(refreshIntervalId);
@@ -147,16 +149,21 @@ const TriplogWrap = (props) => {
                 onError(res.data.message);
             }
         } catch (err) {
-            setLoading(false)
+            // setLoading(false)
             onError();
         }
     }
     const loadTripList = async () => {
         try {
-            const res = await TriplogServices.getTriplist();
+            const res = await TriplogServices.getTriplist({});
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-                    setTriplist(res.data.result);
+                     let ret={};
+                     res.data.result.map((ele,i)=>{
+                        ret[ele.Triplog.id]=ele;
+                     })
+                    
+                    store.dispatch(loadTripListDataSuccess(ret))
                     return;
                 }
                 onError(res.data.message);
@@ -338,15 +345,15 @@ const TriplogWrap = (props) => {
     // }, []);
 
 
-    if (loading) {
-        return (
-            <div className="text-center bg-white tripload">
+    // if (loading) {
+    //     return (
+    //         <div className="text-center bg-white tripload">
 
-                <div class="lds-facebook text-center"><div></div><div></div><div></div></div>
+    //             <div class="lds-facebook text-center"><div></div><div></div><div></div></div>
 
-            </div>
-        )
-    }
+    //         </div>
+    //     )
+    // }
 
     return (
         <React.Fragment >
@@ -373,7 +380,7 @@ const TriplogWrap = (props) => {
                             <Form>
                                 <>
                                     <div className="row d-flex justify-content-left pl-0 pr-0">
-                                        <Field
+                                        {/* <Field
                                             name="TextCity"
                                             type="hidden"
                                             className="form-control"
@@ -392,14 +399,14 @@ const TriplogWrap = (props) => {
                                             name="TextDropoffCrossStreet"
                                             type="hidden"
                                             className="form-control"
-                                        />
+                                        /> */}
                                         <div className="col-4">
                                             <Field
                                                 component={PickupAddress}
                                                 getPickupLatLng={getPickupLatLng}
                                                 name="pickup_address"
                                                 id="pickupaddress"
-                                                autocomplete="off"
+                                                autoComplete="off"
                                                 className={`form-control ${touched.pickup_address && errors.pickup_address
                                                     ? "is-invalid"
                                                     : ""
@@ -440,7 +447,7 @@ const TriplogWrap = (props) => {
                                             <Field
                                                 type="date"
                                                 name="pickup_date"
-                                                autocomplete="off"
+                                                autoComplete="off"
                                                 className="form-control unstyled"
                                             />
                                         </div>
@@ -458,7 +465,7 @@ const TriplogWrap = (props) => {
                                                 name="telephone"
                                                 placeholder="Telephone"
                                                 className="form-control"
-                                                autocomplete="off"
+                                                autoComplete="off"
                                             />
                                             <br />
                                             {errors.telephone && touched.telephone ? (
@@ -478,7 +485,7 @@ const TriplogWrap = (props) => {
                                                 placeholder="Account Number"
                                                 name="account_no"
                                                 className="form-control"
-                                                autocomplete="off"
+                                                autoComplete="off"
                                             />
                                             <br />
                                             {errors.account_no && touched.account_no ? (
@@ -506,7 +513,7 @@ const TriplogWrap = (props) => {
                                                 getDropoffLatLng={getDropoffLatLng}
                                                 name="dropoff_address"
                                                 id="dropofaddress"
-                                                autocomplete="off"
+                                                autoComplete="off"
                                                 placeholder="drop-off-Address"
                                                 className={`form-control ${touched.dropoff_address && errors.dropoff_address
                                                     ? "is-invalid"
@@ -532,7 +539,7 @@ const TriplogWrap = (props) => {
                                             <Field
                                                 placeholder="Fare"
                                                 name="fare"
-                                                autocomplete="off"
+                                                autoComplete="off"
                                                 className={`form-control ${touched.fare && errors.fare
                                                     ? "is-invalid"
                                                     : ""
@@ -555,9 +562,9 @@ const TriplogWrap = (props) => {
                                         <div className="col-2 pr-0">
 
                                             <Field as="select" className="form-control w-100" name="cab_name" >
-                                                {userDetails.CarType && userDetails.CarType.map(el => (
-                                                    <option value={el.label} >{el.label}</option>
-                                                ))}
+                                                {userDetails.CarType ? userDetails.CarType.map((el,ind) => (
+                                                    <option key={ind.toString()} value={el.label} >{el.label}</option>
+                                                )) :<option></option>}
                                             </Field>
                                         </div>
                                         <div className="col-4 pr-0">
@@ -673,7 +680,7 @@ const TriplogWrap = (props) => {
                         </Button>
                     </div>
                 </div>
-                {Triplist && <Trips trips={Triplist} openTripDetails={openTripDetails} />}
+                {<Trips openTripDetails={openTripDetails} />}
                 {showEditTrip && <EditTripDetails currentBooking={currentBooking} SetShowEditTrip={SetShowEditTrip} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
                 {showDetails && <TripDetails SetShowTrip={setShowDetails} />}
             </div>

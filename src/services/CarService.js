@@ -11,9 +11,11 @@ const path = {
   BOOK_VEHICLE: "book",
   ADD_VEHICLE_TO_FAVOURITE: "addVehicleToWishlist",
   REMOVE_VEHICLE_TO_FAVOURITE: "removeWishlistVehicle",
-  RE_ASSIGN_CAR : "dispatchertriplogs/opentripsroute",
-  CAR_AUTOCOMPLETE : "car_autocomplete"
-  
+  RE_ASSIGN_CAR: "dispatchertriplogs/opentripsroute",
+  CAR_AUTOCOMPLETE: "car_autocomplete",
+  CAR_ASSIGNMENT: "sent_push_notification_direct",
+  REASSIGN_AFFILIATE:"reassign_affiliate_dispatch",
+  GRAB_TRIP_DETAILS:"grabTripDetails"
 };
 
 export const getPreAuthCarDetails = async (data) => {
@@ -33,6 +35,8 @@ export const getCarDetails = async (data) => {
     return null;
   }
 };
+
+
 
 export const getVehicleQuote = async (data) => {
   try {
@@ -79,9 +83,36 @@ export const reassignCar = async (data) => {
   }
 };
 
-export const autoCompleteCar = async (data)=>{
+export const autoCompleteCar = async (data) => {
   try {
     const res = await API.post(path.CAR_AUTOCOMPLETE, data, getHeader());
+    return res;
+  } catch (err) {
+    return null;
+  }
+}
+
+export const carAssignment = async (data) => {
+  try {
+    const res = await API.post(path.CAR_ASSIGNMENT, data, getHeader());
+    return res;
+  } catch (err) {
+    return null;
+  }
+}
+
+export const reassignAffiliate = async (data)=>{
+  try {
+    const res = await API.post(path.REASSIGN_AFFILIATE, data, getHeader());
+    return res;
+  } catch (err) {
+    return null;
+  }
+}
+
+export const reloadTripDetails = async (data)=>{
+  try {
+    const res = await API.post(path.GRAB_TRIP_DETAILS, data, getHeader());
     return res;
   } catch (err) {
     return null;

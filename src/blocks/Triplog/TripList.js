@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import * as Yup from "yup";
+import { useSelector } from "react-redux";
 import * as TriplogServices from '../../services/TriplogService';
 import { FullPageLoader } from "../Loaders";
-import { Button } from "@material-ui/core";
-import { render } from "react-dom";
 import moment from "moment";
-import { FcCancel } from 'react-icons/fc';
 import toast from "react-hot-toast";
 import { store } from "../../store/store";
-import { loadTripListDataRemove, loadTripListDataSuccess } from "../../store/actions/TripAction";
-import { WindowSharp } from "@mui/icons-material";
+import { loadTripListDataRemove } from "../../store/actions/TripAction";
 import CarAutoComplete from "../Pickers/CarAutoComplete";
 
 
@@ -19,19 +13,12 @@ const TripList = (props) => {
 
     const [submiting, setSubmitting] = useState(false);
     const [tripAllList, setTripAllList] = useState([]);
-    const [tripvalue, setTripValue] = useState("car #");
-    const [selectedOpt, setSelectedOpt] = useState([])
-
-    // useEffect(() => {
-    //     window.initChangeCar()
-    // }, [])
 
     var getData = () => {
     }
 
-    const { user, userDetails, TriplogSetting, TriplogSettingFields, DispatcherId, trip } = useSelector((state) => {
+    const { userDetails, TriplogSetting, TriplogSettingFields, DispatcherId, trip } = useSelector((state) => {
         return {
-            user: state.auth,
             userDetails: state.auth.userDetails,
             TriplogSetting: state.auth.userDetails.TriplogSetting,
             TriplogSettingFields: state.auth.userDetails.TriplogSettingFields,
@@ -39,24 +26,17 @@ const TripList = (props) => {
             trip: state.trip.tripList
         };
     });
-
     useEffect(() => {
         setTripAllList(trip)
     }, [trip])
-
-
-
     const openTripDetails = async (trip, dispacher, el) => {
         props.openTripDetails(trip, dispacher, el);
     };
-
-
-
     const getTriplogColumn = (coulumn, trip, dispacherId, cssclass, back_class, idx) => {
         let temp = '';
         let time_format = userDetails.TimeFormat;
         switch (coulumn) {
-        
+
             case 'fare_id':
                 return (
                     <td className={cssclass} onClick={() => openTripDetails(trip['Triplog']['id'], trip['Triplog']['dispacher_id'], this)}>
@@ -65,12 +45,7 @@ const TripList = (props) => {
                 );
                 break;
             case 'car_no':
-                    console.log("111111111111111",coulumn)
-                    console.log("trip",trip)
-                    console.log("dispacherId",dispacherId)
-                    console.log("cssclass",cssclass)
-                    console.log("back_class",back_class)
-                    console.log("idx",idx)
+             
                 return (
                     <CarAutoComplete trip={trip} dispacherId={dispacherId} back_class={back_class} />
                 )
@@ -341,7 +316,6 @@ const TripList = (props) => {
     const onError = () => {
 
     }
-
     const CancelTrip = async (i, tripid) => {
         const confir = window.confirm("Are you sure you want to cancel this booking ?")
         if (confir) {
@@ -352,6 +326,7 @@ const TripList = (props) => {
                 setSubmitting(false);
                 if (res && res.status === 200) {
                     if (res.data && res.data.status === 1) {
+
                         tripAllList.splice(i, 1)
                         setTripAllList([...tripAllList])
                         store.dispatch(loadTripListDataRemove(tripAllList))
@@ -371,7 +346,7 @@ const TripList = (props) => {
     }
     const processTripList = () => {
         return (
-            tripAllList.length > 0 ? tripAllList.map(function (trip, index, arr) {
+            Object.values(tripAllList).map(function (trip, index, arr) {
                 //let eta = 0;
                 let bgclass, back_class, blink_class = '';
                 if (trip['DispatcherTrip']['trip_status'] == 3) {
@@ -395,7 +370,6 @@ const TripList = (props) => {
                 return (
                     <tr id={`tripRow${trip['Triplog']['id']}`} className={`status_${trip['DispatcherTrip']['trip_status']}${trip['Triplog']['status']} ${back_class}`}>
                         {Object.keys(TriplogSetting).map((key, idx) => {
-                            // console.log("mapPOS",TriplogSetng)
                             return getTriplogColumn(key, trip, DispatcherId, blink_class, bgclass, idx);
                         })}
                         <td><img src="/images/b_drop.png" onClick={() => CancelTrip(index, trip.DispatcherTrip.trip_id)} className="rmbtn" alt="Cancel" /></td>
@@ -403,7 +377,7 @@ const TripList = (props) => {
                         <td></td>
                     </tr>
                 )
-            }) : <div><span>No Trips Available</span></div>
+            })
         )
     }
 
@@ -414,8 +388,8 @@ const TripList = (props) => {
 
                 <thead className="text-primary">
                     <tr>
-                        {TriplogSetting && TriplogSettingFields && Object.keys(TriplogSetting).map((el, i,arr) => {
-                            return TriplogSettingFields[el] && (<th align="center">{TriplogSettingFields[el]}</th>)
+                        {TriplogSetting && TriplogSettingFields && Object.keys(TriplogSetting).map((el, i, arr) => {
+                            return TriplogSettingFields[el] && (<th key={i.toString()} align="center">{TriplogSettingFields[el]}</th>)
                         })}
 
                         <th align="center">Cancel</th>
@@ -433,29 +407,3 @@ const TripList = (props) => {
 };
 
 export default TripList;
-
-
-// document.addEventListener("keydown", onKeyDown, false);
-// function onKeyDown(e) {
-//     var x = e.keyCode;
-//     if (x == 83 && trip['Triplog']['send_order'] == 'all' && trip['Triplog']['call_type'] != 'NET' && trip['Triplog']['multi_suggest'] != 'mult.') {
-//         setSelectedOption('Send To All')
-//         e.preventDefault(); 
-//     }
-//     if (x == 67) {
-//         setSelectedOption('Car #')
-//         e.preventDefault(); 
-//     }
-//     if (x == 68) {
-//         setSelectedOption('Auto-Dispatch')
-//         e.preventDefault(); 
-//     }
-//     if (x == 78 && trip['Triplog']['call_type'] == 'NET') {
-//         setSelectedOption('Send to NET')
-//         e.preventDefault(); 
-//     }
-//     if (x == 76) {
-//         setSelectedOption('Line')
-//         e.preventDefault(); 
-//     }
-// }

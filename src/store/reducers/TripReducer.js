@@ -4,12 +4,11 @@ import {
     TRIP_LIST_FAIL,
     TRIP_LIST_UPDATE,
     TRIP_LIST_REMOVE
-}
-    from "../actions/TripAction";
+} from "../actions/TripAction";
 
 const initialState = {
     loading: false,
-    tripList: [],
+    tripList: {},
     error: false
 };
 
