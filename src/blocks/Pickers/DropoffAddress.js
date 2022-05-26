@@ -5,9 +5,10 @@ import { loader } from '../Triplog/CommonTriplog/GoogleMapAutoComplete';
 
 const DropoffAddress = ({ field, form, id,getDropoffLatLng, ...props }) => {
 
-    const [dropofAddressLat, setDropofAddressLat] = useState("");
-    const [dropofAddressLng, setDropofAddressLng] = useState("");
     const [dropofAddress, setDropofAddress] = useState("");
+    const [dropoffLat, setDropofAddressLat] = useState("");
+    const [dropoffLng, setDropofAddressLng] = useState("");
+   
     const { setFieldValue, getFieldMeta } = useFormikContext();
     const { name, value } = field;
  
@@ -20,8 +21,8 @@ const DropoffAddress = ({ field, form, id,getDropoffLatLng, ...props }) => {
         google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var placeorg = autocomplete.getPlace();
             setDropofAddressLat(placeorg.geometry.location.lat());
-            setDropofAddressLng(placeorg.geometry.location.lng());
             setDropofAddress(placeorg.formatted_address);
+            setDropofAddressLng(placeorg.geometry.location.lng());
         });
     }
     useEffect(() => {
@@ -29,9 +30,9 @@ const DropoffAddress = ({ field, form, id,getDropoffLatLng, ...props }) => {
     }, [])
  
     useEffect(() => {
-        getDropoffLatLng(dropofAddressLat,dropofAddressLng)
+        getDropoffLatLng(dropoffLat,dropoffLng)
         setFieldValue(name,dropofAddress)
-    }, [dropofAddress,dropofAddressLat,dropofAddressLng])
+    }, [dropofAddress,dropoffLat,dropoffLng])
 
     return <input
         name={name}

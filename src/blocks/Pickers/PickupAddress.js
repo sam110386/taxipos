@@ -6,8 +6,8 @@ import { loader } from '../Triplog/CommonTriplog/GoogleMapAutoComplete';
 const PickupAddress = ({ field, form, id,getPickupLatLng, ...props }) => {
 
     const [pickupAddress, setPickupAddress] = useState("");
-    const [pickupAddressLat, setPickupAddressLat] = useState("");
-    const [pickupAddressLng, setPickupAddressLng] = useState("");
+    const [pickupLat, setPickupAddressLat] = useState("");
+    const [pickupLng, setPickupAddressLng] = useState("");
     const { setFieldValue, getFieldMeta } = useFormikContext();
     const { name, value } = field;
 
@@ -29,9 +29,9 @@ const PickupAddress = ({ field, form, id,getPickupLatLng, ...props }) => {
     }, [])
  
     useEffect(() => {
-        getPickupLatLng(pickupAddress,pickupAddressLat,pickupAddressLng)
+        getPickupLatLng(pickupAddress,pickupLat,pickupLng)
         setFieldValue(name,pickupAddress)
-    }, [pickupAddress,pickupAddressLng,pickupAddressLat,pickupAddress])
+    }, [pickupLng])
 
     return <input
         name={name}

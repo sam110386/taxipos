@@ -6,8 +6,7 @@ import { loadTripListDataSuccess } from "../../../store/actions/TripAction";
 
 export const CreateTrip = async (values) => {
     const onError = (message) => {
-        toast.error(message)
-        //setError(true);
+        toast.error("opps something went wrong")
     };
     try {
         if (typeof (values.pickup_time) == "object") {
@@ -16,28 +15,23 @@ export const CreateTrip = async (values) => {
         }
         const res = await TriplogServices.createTrip(values);
         if (res && res.status === 200) {
-            console.log("here")
             if (res.data && res.data.status === 1) {
-                toast.success(res.data.message,"first")
-                console.log("here1")
+                toast.success(res.data.message)
                 let res2 = await TriplogServices.getTriplist({});
-                // if (res2 && res2.data.status === 200) {
-                    console.log("here2")
+                if (res2 && res2.status === 200) {
                     if (res2.data.status === 1) {
-                        console.log("here3")
-                        let ret={};
-                        res.data.result.map((ele,i)=>{
-                           ret[ele.Triplog.id]=ele;
+                        let ret = {};
+                        res2.data.result.map((ele, i) => {
+                            ret[ele.Triplog.id] = ele;
                         })
                         store.dispatch(loadTripListDataSuccess(ret))
                         return res2.data.status
                     }
-                // }
+                }
                 return res2.data.status
             }
-            onError(res.data.message);
         }
     } catch (err) {
-        onError();
+        onError(err);
     }
 }

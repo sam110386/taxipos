@@ -13,6 +13,10 @@ export const loadTripListDataSuccess = (data) => ({
     type: TRIP_LIST_SUCCESS,
     data:data
 });
+export const loadTripListUpdate = (data) => ({
+    type: TRIP_LIST_UPDATE,
+    data:data
+});
 export const loadTripListDataRemove = (data) => ({
     type: TRIP_LIST_REMOVE,
     data:data

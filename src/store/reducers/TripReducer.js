@@ -24,7 +24,11 @@ const TripReducer = (state = initialState, action) => {
                 ...state,
                 tripList: action.data
             };
-      ;
+            case TRIP_LIST_UPDATE:
+                return {
+                    ...state,
+                    tripList: {...state.tripList,[action.data.Triplog.id]:action.data}
+                };
         case TRIP_LIST_REMOVE:
             return {
                 ...state,

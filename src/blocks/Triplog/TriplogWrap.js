@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Formik, Field, Form } from "formik";
 import { useSelector } from "react-redux";
 import * as TriplogServices from '../../services/TriplogService';
@@ -6,10 +6,9 @@ import { Button } from "@material-ui/core";
 import moment from "moment";
 import Trips from "./TripList";
 import EditTripDetails from "./EditTripDetails";
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import TripDetails from "./TripDetails";
 import CallerIdInfo from "./CallerIdInfo";
-import { Loader } from 'google-maps';
 import Chatsidebar from "./Chatsidebar";
 import { TriplogSchema } from './ValidationSchema/TriplogSchema'
 import { CreateTrip } from "./CommonTriplog/CreateTrip";
@@ -19,108 +18,141 @@ import MaskedInput from "react-text-mask";
 import { NotificationPicker } from '../Pickers/NotificationPicker'
 import { CarNumberPicker } from "../Pickers/CarNumberPicker";
 import { store } from "../../store/store";
-import { loadTripListDataSuccess } from "../../store/actions/TripAction";
-
+import { loadTripListDataSuccess, loadTripListUpdate } from "../../store/actions/TripAction";
+import { initial_Values } from "./ValidationSchema/TriplogSchema";
+import * as CarService from "../../services/CarService"
 
 
 const TriplogWrap = (props) => {
+
+    const { userDetails } = useSelector((mainState) => {
+        return { userDetails: mainState.auth.userDetails }
+    });
+
     const formikRef = useRef();
     const [submiting, setSubmitting] = useState(false);
-    const [btndisable, setBtnDisable] = useState(false);
-    const [CurrentPickupTime, setCurrentPickupTime] = useState(null);
-    const [CurrentDate, setCurrentDate] = useState(0);
-    const [Triplist, setTriplist] = useState([]);
     const [showEditTrip, SetShowEditTrip] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
     const [currentBooking, SetCurrentBooking] = useState([]);
-    const [fareInput, setFareInput] = useState("");
-    const [pickupLat, setPickupLat] = useState("");
-    const [pickupLng, setPickupLng] = useState("");
-    const [dropoffaddress, setDropoffAddress] = useState("");
-    const [dropoffLat, setDropoffLat] = useState("");
-    const [dropoffLng, setDropoffLng] = useState("");
-    const [deviceId, setDeviceId] = useState("");
-    const [carNumber, setCarNumber] = useState("");
-    const [pickupAddress, setPickupAddress] = useState("");
 
-    const { userDetails } = useSelector((state) => {
-        return { userDetails: state.auth.userDetails }
+    const [mainState, setMainState] = useState({
+        btndisable: false,
+        CurrentPickupTime: null,
+        CurrentDate: 0,
+        currentBooking: [],
+        fareInput: "",
+        pickupAddress: "",
+        pickupLat: "",
+        pickupLng: "",
+        dropoffAddress: "",
+        dropoffLat: "",
+        dropoffLng: "",
+        deviceId: "",
+        carNumber: "",
     });
 
-    let initial_Values = {
-        pickup_lat: "",
-        pickup_lng: "",
-        pickup_address: "",
-        device_id: "",
-        pickup_date: "",
-        pickup_time: "",
-        dropoff_lat: "",
-        dropoff_lng: "",
-        dropoff_address: "",
-        car_no: "",
-        cab_name: "",
-        telephone: "",
-        telephone_line: "",
-        amt_of_passengers: "",
-        fare: "",
-        details: "",
-        direct_notification_time: "",
-        pickdrop_fare: "",
-        account_no: "",
-        share: "",
-        pickup_cross_street: "",
-        dropoff_cross_street: "",
-    }
-
-
-    const getPickupLatLng = (pickupAddress, pickupAddressLat, pickupAddressLng) => {
-        setPickupLat(pickupAddressLat);
-        setPickupLng(pickupAddressLng);
-        setPickupAddress(pickupAddress);
-    }
-    const getDropoffLatLng = (dropoffAddress, dropofAddressLat, dropofAddressLng) => {
-        setDropoffAddress(dropoffAddress);
-        setDropoffLat(dropofAddressLat);
-        setDropoffLng(dropofAddressLng);
-    }
-    useEffect(() => {
-        if (formikRef.current) {
-            formikRef.current.setFieldValue("pickup_time", CurrentPickupTime);
-            formikRef.current.setFieldValue("pickup_date", CurrentDate);
+    const reloadTripDetails = async(id,type) =>{
+        let res = await CarService.reloadTripDetails({TripId:id})
+        if (res && res.status === 200) {
+            if (res.data && res.data.status === 1) {
+           
+                store.dispatch(loadTripListUpdate(res.data.result))
+            }
         }
-    }, [CurrentDate, CurrentPickupTime]);
 
-    useEffect(() => {
-        if (formikRef.current) {
-            formikRef.current.setFieldValue("pickup_lat", pickupLat);
-            formikRef.current.setFieldValue("pickup_lng", pickupLng);
-            formikRef.current.setFieldValue("dropoff_lat", dropoffLat);
-            formikRef.current.setFieldValue("dropoff_lng", dropoffLng);
-        }
-    }, [pickupLat, pickupLng, dropoffLat, dropoffLng]);
-
-
-    const getDeviceId = (deviceid) => {
-        setDeviceId(deviceid.value)
-        setCarNumber(deviceid.label)
     }
 
-    useEffect(() => {
-        if (formikRef.current) {
-            formikRef.current.setFieldValue("car_no", carNumber);
-            formikRef.current.setFieldValue("device_id", deviceId);
+    const sendInfoToAffiliatetriplog =  async(car_no, device_id, id, status, call_type_line) => {
+        var call_type = '';
+        if (status === "deactivated") {
+            alert("Car # " + car_no + " is Deactivated. Speak to Management.");
+            return false;
         }
-    }, [deviceId, carNumber]);
+        if (status === "not_found") {
+            alert("Car # " + car_no + " does not exist.");
+            return false;
+        }
+        if (status === "not_booked") {
+            alert("Car # " + car_no + " is not booked in.");
+            return false;
+        }
+        if (status === "no_lined_device") {
+            alert("No lined device found.");
+            return false;
+        } else if (status === "lined_device") {
+            call_type = call_type_line;
+        }
+        if (status === "net_activated") {
+            call_type = 'NET';
+        }
+        var params = { id, device_id, car_no, call_type }
+        let res =  await CarService.reassignAffiliate(params)
+        if (res && res.status === 200) {
+            if (res.data && res.data.status === 1) {
+                reloadTripDetails(id,"update")
+            }
+        }
+    }
 
-    const onError = (message) => {
-        toast.error(message)
-        //setError(true);
-    };
+    // const sendInfoToCar_triplog = async(car_no, device_id, id, status, call_type_line)=> {
 
-    const onDialogClose = () => {
-        //setError(false);
-        //setErrorMessage("");
-    };
+    //     var call_type = '';
+    //     if (status === "deactivated") {
+    //         setSelectedOpt('')
+    //         // $("#" + id + "").focus();
+    //         alert("Car # " + car_no + " is Deactivated. Speak to Management.");
+    //         return false;
+    //     }
+    //     if (status === "not_found") {
+    //         setSelectedOpt('')
+    //         // $("#" + id + "").focus();
+    //         alert("Car # " + car_no + " does not exist.");
+    //         return false;
+    //     }
+    //     if (status === "not_booked") {
+    //         setSelectedOpt('')
+    //         // $("#" + id + "").focus();
+    //         alert("Car # " + car_no + " is not booked in.");
+    //         return false;
+    //     }
+    //     if (status === "no_lined_device") {
+    //         setSelectedOpt('')
+    //         // $("#" + id + "").focus();
+    //         alert("No lined device found.");
+    //         return false;
+    //     } else if (status === "lined_device") {
+    //         setSelectedOpt('')
+    //         call_type = call_type_line;
+    //     }
+    //     if (status === "net_activated") {
+    //         setSelectedOpt('')
+    //         // $("#" + id + "").focus();
+    //         call_type = 'NET';
+
+    //     }
+    //     if (status === "auto_activated") {
+    //         setSelectedOpt('')
+    //         // $("#" + id + "").focus();
+    //         call_type = '';
+
+    //     }
+
+    //     var params = { id, device_id, car_no,call_type }
+    //     // $("#" + id + "").removeClass('focused');
+    //     // $("#" + id + "").blur();
+    //     let res = await CarService.carAssignment(params)
+    //     // console.log(res,"myres")
+    //     // $.ajax({
+    //     //     url: SITE_URL + "dispachers/send_push_notification_direct",
+    //     //     type: "post",
+    //     //     data: params,
+    //     //     async: false,
+    //     //     success: function (data) {
+
+    //     //     }
+    //     // });
+    // }
+
 
     const initialize = () => {
         updateCurrentTime();
@@ -132,9 +164,7 @@ const TriplogWrap = (props) => {
             const res = await TriplogServices.getCurrentDateTime();
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-                    setCurrentPickupTime(res.data.time);
-                    setCurrentDate(res.data.date);
-                    // setLoading(false)
+                    setMainState({ ...mainState, CurrentPickupTime: res.data.time, CurrentDate: res.data.date })
                     let currentTime = moment(res.data.date + " " + res.data.time);
                     if (!refreshIntervalId) {
                         clearInterval(refreshIntervalId);
@@ -142,8 +172,9 @@ const TriplogWrap = (props) => {
                     //start timer
                     var refreshIntervalId = setInterval(function () {
                         currentTime = currentTime.add(30, 'seconds');
-                        setCurrentPickupTime(currentTime.format('LT'));
+                        setMainState({ ...mainState, CurrentPickupTime: currentTime.format('LT') })
                     }, 30000);
+                    
                     return;
                 }
                 onError(res.data.message);
@@ -158,11 +189,10 @@ const TriplogWrap = (props) => {
             const res = await TriplogServices.getTriplist({});
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-                     let ret={};
-                     res.data.result.map((ele,i)=>{
-                        ret[ele.Triplog.id]=ele;
-                     })
-                    
+                    let ret = {};
+                    res.data.result.map((ele, i) => {
+                        ret[ele.Triplog.id] = ele;
+                    })
                     store.dispatch(loadTripListDataSuccess(ret))
                     return;
                 }
@@ -175,14 +205,56 @@ const TriplogWrap = (props) => {
 
     useEffect(() => {
         initialize();
-    }, [])
+    }, [1])
+
+    const getPickupLatLng = (pickupAddress, pickupLat, pickupLng) => {
+        setMainState({ ...mainState, pickupAddress, pickupLat, pickupLng })
+    }
+    const getDropoffLatLng = (dropoffAddress, dropoffLat, dropoffLng) => {
+        setMainState({ ...mainState, dropoffAddress, dropoffLat, dropoffLng })
+    }
+    const getDeviceId = (deviceid) => {
+        setMainState({...mainState,carNumber:deviceid.label,deviceId:deviceid.value})
+    }
+
+    useEffect(() => {
+        if (formikRef.current) {
+            formikRef.current.setFieldValue("pickup_time", mainState.CurrentPickupTime);
+           
+        }},[ mainState.CurrentPickupTime]);
+
+    useEffect(() => {
+        console.log(mainState.CurrentDate,"current date")
+        if (formikRef.current) {
+            formikRef.current.setFieldValue("pickup_lat", mainState.pickupLat);
+            formikRef.current.setFieldValue("pickup_lng", mainState.pickupLng);
+            formikRef.current.setFieldValue("dropoff_lat", mainState.dropoffLat);
+            formikRef.current.setFieldValue("dropoff_lng", mainState.dropoffLng);
+            formikRef.current.setFieldValue("pickup_date", mainState.CurrentDate);
+        }}, [mainState.pickupLat, mainState.pickupLng, mainState.dropoffLat, mainState.dropoffLng,mainState.CurrentDate]);
+ 
+    useEffect(() => {
+        if (formikRef.current) {
+            formikRef.current.setFieldValue("car_no", mainState.carNumber);
+            formikRef.current.setFieldValue("device_id", mainState.deviceId);
+        }}, [mainState.deviceId, mainState.carNumber]);
+
+    const onError = (message) => {
+        toast.error(message)
+        //setError(true);
+    };
+
+    const onDialogClose = () => {
+        //setError(false);
+        //setErrorMessage("");
+    };
 
 
     const handleSubmit = (values) => {
-        setBtnDisable(true)
+        setMainState({ ...mainState, btndisable: true })
         CreateTrip(values).then((e) => {
             if (e === 1) {
-                setBtnDisable(false)
+                setMainState({ ...mainState, btndisable: false })
             }
         })
     };
@@ -217,7 +289,7 @@ const TriplogWrap = (props) => {
             setSubmitting(false);
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-                    setFareInput(res.data.result.fare)
+                    setMainState({...mainState,fareInput:res.data.result.fare})
                     // onSuccess(res.data);
                     return;
                 }
@@ -267,7 +339,6 @@ const TriplogWrap = (props) => {
             onError();
         }
     };
-
     const saveNetEditBooking = async (values) => {
         try {
             setSubmitting(true);
@@ -320,8 +391,6 @@ const TriplogWrap = (props) => {
         textTransform: "uppercase"
     }
 
-
-
     const saveEditBooking = async (values) => {
         try {
             setSubmitting(true);
@@ -339,21 +408,6 @@ const TriplogWrap = (props) => {
             onError();
         }
     };
-
-    // useEffect(() => {
-    //     initialize()
-    // }, []);
-
-
-    // if (loading) {
-    //     return (
-    //         <div className="text-center bg-white tripload">
-
-    //             <div class="lds-facebook text-center"><div></div><div></div><div></div></div>
-
-    //         </div>
-    //     )
-    // }
 
     return (
         <React.Fragment >
@@ -380,7 +434,7 @@ const TriplogWrap = (props) => {
                             <Form>
                                 <>
                                     <div className="row d-flex justify-content-left pl-0 pr-0">
-                                        {/* <Field
+                                        <Field
                                             name="TextCity"
                                             type="hidden"
                                             className="form-control"
@@ -399,7 +453,7 @@ const TriplogWrap = (props) => {
                                             name="TextDropoffCrossStreet"
                                             type="hidden"
                                             className="form-control"
-                                        /> */}
+                                        />
                                         <div className="col-4">
                                             <Field
                                                 component={PickupAddress}
@@ -562,9 +616,9 @@ const TriplogWrap = (props) => {
                                         <div className="col-2 pr-0">
 
                                             <Field as="select" className="form-control w-100" name="cab_name" >
-                                                {userDetails.CarType ? userDetails.CarType.map((el,ind) => (
+                                                {userDetails.CarType ? userDetails.CarType.map((el, ind) => (
                                                     <option key={ind.toString()} value={el.label} >{el.label}</option>
-                                                )) :<option></option>}
+                                                )) : <option></option>}
                                             </Field>
                                         </div>
                                         <div className="col-4 pr-0">
@@ -628,7 +682,7 @@ const TriplogWrap = (props) => {
                                                     fontSize: "12px"
                                                 }}
                                                 variant="contained"
-                                                disabled={btndisable && true}
+                                                disabled={mainState.btndisable && true}
                                             >
                                                 Send
                                             </Button>
@@ -680,7 +734,7 @@ const TriplogWrap = (props) => {
                         </Button>
                     </div>
                 </div>
-                {<Trips openTripDetails={openTripDetails} />}
+                { <Trips openTripDetails={openTripDetails} sendInfoToAffiliatetriplog={sendInfoToAffiliatetriplog} />}
                 {showEditTrip && <EditTripDetails currentBooking={currentBooking} SetShowEditTrip={SetShowEditTrip} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
                 {showDetails && <TripDetails SetShowTrip={setShowDetails} />}
             </div>

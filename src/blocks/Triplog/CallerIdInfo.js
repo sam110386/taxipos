@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import * as TriplogServices from '../../services/TriplogService';
 import CallerIdDetails from "./CallerIdDetails";
 
@@ -68,11 +68,11 @@ const CallerIdInfo = () => {
                                 {ar.map((el2, index2,arr) => {
                                     if (index2 < 3) {
                                         let f_numb;
-                                        if (index == 0) {
+                                        if (index === 0) {
                                             f_numb = index2 + 1;
-                                        } else if (index == 1) {
+                                        } else if (index === 1) {
                                             f_numb = index2 + 4;
-                                        } else if (index == 2) {
+                                        } else if (index === 2) {
                                             f_numb = index2 + 7;
                                         } else {
                                             f_numb = index2 + 10;
@@ -82,13 +82,14 @@ const CallerIdInfo = () => {
                                             <tr className="inner_div" >
                                                <th className="mid_th comtab" >F{f_numb}</th>
                                                 {callerTripInfo.map((ele3)=>{
-                                                    if(ele3.UrlSend.Line == f_numb){
+                                                    
+                                                    if(ele3.UrlSend.Line === f_numb){
                                                         document.addEventListener("keydown", onKeyDown, false);
                                                         function onKeyDown(e) {
                                                         
                                                             var x = e.keyCode;
                                                             var keyName = {F:111}
-                                                            if (x == keyName.F+f_numb) {
+                                                            if (x === keyName.F+f_numb) {
                                                                 ShowModal(ele3.UrlSend.Phone,ele3.UrlSend.id);
                                                                 e.preventDefault(); 
                                                             }

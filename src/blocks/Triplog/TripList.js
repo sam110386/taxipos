@@ -7,14 +7,18 @@ import toast from "react-hot-toast";
 import { store } from "../../store/store";
 import { loadTripListDataRemove } from "../../store/actions/TripAction";
 import CarAutoComplete from "../Pickers/CarAutoComplete";
+import CarValue from "../Pickers/CarValue";
 
 
 const TripList = (props) => {
 
     const [submiting, setSubmitting] = useState(false);
     const [tripAllList, setTripAllList] = useState([]);
+    const [flag, setFlag] = useState(false)
+    const [UnacceptedCarValue, setUnacceptedCarValue] = useState('')
 
     var getData = () => {
+
     }
 
     const { userDetails, TriplogSetting, TriplogSettingFields, DispatcherId, trip } = useSelector((state) => {
@@ -36,7 +40,6 @@ const TripList = (props) => {
         let temp = '';
         let time_format = userDetails.TimeFormat;
         switch (coulumn) {
-
             case 'fare_id':
                 return (
                     <td className={cssclass} onClick={() => openTripDetails(trip['Triplog']['id'], trip['Triplog']['dispacher_id'], this)}>
@@ -45,75 +48,58 @@ const TripList = (props) => {
                 );
                 break;
             case 'car_no':
-             
-                return (
-                    <CarAutoComplete trip={trip} dispacherId={dispacherId} back_class={back_class} />
-                )
-                // let flag = false;
-                // if (trip['Triplog']['dispacher_id'] != dispacherId) {
-                //     flag = true;
-                // }
-                // if (((trip['Triplog']['car_no']).length !== 0 && trip['Triplog']['car_no'] != "Car #")) {
-                //     if (trip['Triplog']['status'] == 0) {
-                //         let unaccepted_car_value = trip['Triplog']['call_type'];
-                //         if ((trip['Triplog']['car_no']).length !== 0) {
-                //             unaccepted_car_value = trip['Triplog']['car_no'];
-                //         }
-                //         if ((trip['Triplog']['pending_car_no']).length !== 0) {
-                //             unaccepted_car_value = 'P' + trip['Triplog']['pending_car_no'];
-                //         }
-                //         let allowreassign = ([1, 5].indexOf(trip['Triplog']['status']) > -1) ? ' allowreassign' : '';
-                //         return (
-                //             <td className={`cntr_algn ${back_class} ${allowreassign}`} rel-tripid={trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} on-hold={`NO`}>
-                //                 <input type="text" value={unaccepted_car_value} id={+trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} rel-call_type={trip['Triplog']['call_type']} className="textfield carAutoComplete" readOnly={flag} />
-                //             </td>
-                //         )
-                //     } else {
-                //         let car_value = '';
-                //         if (dispacherId != trip['Triplog']['dispacher_id'] && trip['Triplog']['call_type'] == 'NET') {
-                //             car_value = 'NET/' + trip['Triplog']['car_no'];
-                //         } else if ((trip['Triplog']['car_no']).length !== 0) {
-                //             car_value = trip['Triplog']['car_no'];
-                //         } else if ((trip['Triplog']['pending_car_no']).length !== 0) {
-                //             car_value = 'P' + trip['Triplog']['pending_car_no'];
-                //         } else {
-                //             car_value = trip['Triplog']['car_no'];
-                //         }
-                //         return (
-                //             <td className={`cntr_algn ${back_class} `} rel-tripid={trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} on-hold={`NO`}>
-                //                 {car_value}
-                //             </td>
-                //         )
-                //     }
-                // } else {
-
-                //     // var handleChnage = (event) => {
-                //     //     console.log(event, '--------------idx')
-                //     //     let newArr = [...selectedOpt];
-                //     //     newArr[trip['Triplog']['id']] = event.target.value;
-                //     //     setSelectedOpt(newArr);
-                //     // }
-                //     let selectedOption = 'Car #';
-
-                //     if (trip['Triplog']['send_order'] == 'all' && trip['Triplog']['call_type'] != 'NET' && trip['Triplog']['multi_suggest'] != 'mult.') {
-                //         selectedOption('Send To All');
-                //     } else if (trip['Triplog']['call_type'] == 'NET') {
-                //         selectedOption('Send To NET');
-                //     } else if ((trip['Triplog']['pending_car_no']).length !== 0) {
-                //         selectedOption('P' + trip['Triplog']['pending_car_no']);
-                //     } else if ((trip['Triplog']['multi_suggest']).length !== 0) {
-                //         selectedOption('mult.');
-                //     }
-
-
-                //     return (
-                //         <td className={`cntr_algn ${back_class}`}>
-                //             <CarAutoComplete  name={trip['Triplog']['id']} id={trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} rel-call_type={trip['Triplog']['call_type']} className="textfield carAutoComplete" />
-                //             {/* <input type="text" value={selectedOption} onFocus={(e) => e.target.value = ""} name={trip['Triplog']['id']} id={trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} rel-call_type={trip['Triplog']['call_type']} className="textfield carAutoComplete" /> */}
-                //         </td>
-                //     )
-
-                // }
+                if (trip['Triplog']['dispacher_id'] != dispacherId) {
+                    setFlag(true);
+                }
+                if (((trip['Triplog']['car_no']).length != 0 && trip['Triplog']['car_no'] != "Car #")) {
+                    if (trip['Triplog']['status'] === 0) {
+                        setUnacceptedCarValue(trip['Triplog']['call_type']);
+                        if ((trip['Triplog']['car_no']).length != 0) {
+                            setUnacceptedCarValue(trip['Triplog']['car_no'])
+                        }
+                        if ((trip['Triplog']['pending_car_no']).length != 0) {
+                            setUnacceptedCarValue('P' + trip['Triplog']['pending_car_no']);
+                        }
+                        let allowreassign = ([1, 5].indexOf(trip['Triplog']['status']) > -1) ? ' allowreassign' : '';
+                        return (
+                            <td className={`cntr_algn window.${back_class} window.${allowreassign}`} rel-tripid={trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} on-hold={`NO`}>
+                                <input type="text" value={UnacceptedCarValue} id={+trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} rel-call_type={trip['Triplog']['call_type']} className="textfield carAutoComplete" readOnly={flag} />
+                            </td>
+                        )
+                    } else {
+                        let carName = 'Car #';
+                        if (dispacherId != trip['Triplog']['dispacher_id'] && trip['Triplog']['call_type'] === 'NET') {
+                            carName = 'NET/' + trip['Triplog']['car_no'];
+                        } else if ((trip['Triplog']['car_no']).length != 0) {
+                            carName = trip['Triplog']['car_no'];
+                        } else if ((trip['Triplog']['pending_car_no']).length != 0) {
+                            carName = 'P' + trip['Triplog']['pending_car_no'];
+                        } else {
+                            carName = trip['Triplog']['car_no'];
+                        }
+                        return (
+                            <td className={`cntr_algn window.${back_class} `} rel-tripid={trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} on-hold={`NO`}>
+                                <CarValue carName={carName} />
+                            </td>
+                        )
+                    }
+                } else {
+                    let opt;
+                    if (trip['Triplog']['send_order'] === 'all' && trip['Triplog']['call_type'] != 'NET' && trip['Triplog']['multi_suggest'] != 'mult.') {
+                        opt = 'Send To All'
+                    } else if (trip['Triplog']['call_type'] === 'NET') {
+                        opt = "'Send To NET'"
+                    } else if ((trip['Triplog']['pending_car_no']).length != 0) {
+                        opt = `'P' ${trip['Triplog']['pending_car_no']}`
+                    } else if ((trip['Triplog']['multi_suggest']).length != 0) {
+                        opt = "mult."
+                    }
+                    return (
+                        <CarAutoComplete trip={trip} dispacherId={dispacherId} back_class={back_class} carName={opt} sendInfoToAffiliatetriplog={props.sendInfoToAffiliatetriplog} />
+                    )
+                    
+                }
+                
                 break;
             case 'pickup_address':
                 return (
@@ -322,13 +308,11 @@ const TripList = (props) => {
             try {
                 setSubmitting(true);
                 const res = await TriplogServices.cancelTrip({ id: tripid });
-
                 setSubmitting(false);
                 if (res && res.status === 200) {
                     if (res.data && res.data.status === 1) {
-
-                        tripAllList.splice(i, 1)
-                        setTripAllList([...tripAllList])
+                        delete tripAllList[tripid]
+                        setTripAllList({ ...tripAllList })
                         store.dispatch(loadTripListDataRemove(tripAllList))
                         toast.success(res.data.message)
                         return;
