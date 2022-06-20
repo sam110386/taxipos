@@ -18,8 +18,22 @@ import { NotificationPicker } from "../Pickers/NotificationPicker";
 const TripDetails = (props) => {
 
     const formikRef = useRef();
+    const [superState,setSuperState] = useState({
+        CurrentPickupTime:"",
+        CurrentDate:"",
+        Triplist:"",
+        pickupLat:"",
+        pickupLng:"",
+        pickupLat2:"",
+        pickupLng2:"",
+        dropoffLat:"",
+        dropoffLng:"",
+        dropoffLat2:"",
+        dropoffLng:""
+    });
+
+
     const [CurrentPickupTime, setCurrentPickupTime] = useState(0);
-    const [submiting, setSubmitting] = useState(false);
     const [CurrentDate, setCurrentDate] = useState(0);
     const [Triplist, setTriplist] = useState([]);
     const [pickupLat, setPickupLat] = useState("");
@@ -36,43 +50,16 @@ const TripDetails = (props) => {
     });
 
     const getPickupLatLng = (pickupAddressLat, pickupAddressLng) => {
+        console.log("pickuplatlng",pickupAddressLat, pickupAddressLng)
         setPickupLat(pickupAddressLat);
         setPickupLng(pickupAddressLng);
     }
     const getDropoffLatLng = (dropofAddressLat, dropofAddressLng) => {
+        console.log("dropofflatlng",dropofAddressLat, dropofAddressLng)
         setDropoffLat(dropofAddressLat);
         setDropoffLng(dropofAddressLng);
     }
-
-    let initial_Values = useMemo(() => {
-        if (CurrentPickupTime !== null) {
-            return {
-                pickup_lat: "",
-                pickup_lng: "",
-                pickup_address: "",
-                device_id: "",
-                pickup_date: CurrentDate,
-                pickup_time: CurrentPickupTime,
-                dropoff_lat: "",
-                dropoff_lng: "",
-                dropoff_address: "",
-                car_no: "",
-                cab_name: "",
-                telephone: "",
-                telephone_line: "",
-                amt_of_passengers: "",
-                fare: "",
-                details: "",
-                direct_notification_time: "",
-                pickdrop_fare: "",
-                account_no: "",
-                share: "",
-                pickup_cross_street: "",
-                dropoff_cross_street: "",
-            }
-        }
-
-    }, [CurrentPickupTime, CurrentDate])
+           
 
     useEffect(() => {
         formikRef.current.setFieldValue("pickup_time", CurrentPickupTime);
@@ -287,7 +274,7 @@ const TripDetails = (props) => {
                                                                 />
                                                             </div>
                                                         </div>
-                                                        {/* <div className="col-md-6">
+                                                        <div className="col-md-6">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Pick Up Address2: </label>
                                                                 <Field
@@ -303,16 +290,16 @@ const TripDetails = (props) => {
                                                                         }`}
                                                                 />
                                                                 <Field
-                                                                    name="pickup_lat"
+                                                                    name="pickup_lat2"
                                                                     type="hidden"
                                                                 />
                                                                 <Field
-                                                                    name="pickup_lng"
+                                                                    name="pickup_lng2"
                                                                     type="hidden"
                                                                 />
                                                             </div>
-                                                        </div> */}
-                                                        {/* <div className="col-md-6">
+                                                        </div>
+                                                        <div className="col-md-6">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Drop off Address2: </label>
                                                                 <Field
@@ -325,15 +312,15 @@ const TripDetails = (props) => {
                                                                     autocomplete="off"
                                                                 />
                                                                 <Field
-                                                                    name="dropoff_lat"
+                                                                    name="dropoff_lat2"
                                                                     type="hidden"
                                                                 />
                                                                 <Field
-                                                                    name="dropoff_lng"
+                                                                    name="dropoff_lng2"
                                                                     type="hidden"
                                                                 />
                                                             </div>
-                                                        </div> */}
+                                                        </div>
                                                         <div className="col-md-6">
                                                             <div className="form-group ">
                                                                 <label className="form_lbl">Pickup Cross Street: </label>

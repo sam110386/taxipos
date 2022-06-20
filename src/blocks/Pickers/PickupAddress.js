@@ -29,9 +29,9 @@ const PickupAddress = ({ field, form, id,getPickupLatLng, ...props }) => {
     }, [])
  
     useEffect(() => {
-        getPickupLatLng(pickupAddress,pickupLat,pickupLng)
+        getPickupLatLng(pickupLat,pickupLng)
         setFieldValue(name,pickupAddress)
-    }, [pickupLng])
+    }, [pickupLat,pickupLng])
 
     return <input
         name={name}

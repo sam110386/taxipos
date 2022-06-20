@@ -30,6 +30,10 @@ export const CreateTrip = async (values) => {
                 }
                 return res2.data.status
             }
+            if(res.data.status === 0){
+                toast.error(res.data.message)
+                return res.data.status
+            }
         }
     } catch (err) {
         onError(err);

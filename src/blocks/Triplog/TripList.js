@@ -8,6 +8,7 @@ import { store } from "../../store/store";
 import { loadTripListDataRemove } from "../../store/actions/TripAction";
 import CarAutoComplete from "../Pickers/CarAutoComplete";
 import CarValue from "../Pickers/CarValue";
+import CarValueUnaccepted from "../Pickers/CarValueUnaccepted";
 
 
 const TripList = (props) => {
@@ -16,10 +17,6 @@ const TripList = (props) => {
     const [tripAllList, setTripAllList] = useState([]);
     const [flag, setFlag] = useState(false)
     const [UnacceptedCarValue, setUnacceptedCarValue] = useState('')
-
-    var getData = () => {
-
-    }
 
     const { userDetails, TriplogSetting, TriplogSettingFields, DispatcherId, trip } = useSelector((state) => {
         return {
@@ -53,17 +50,20 @@ const TripList = (props) => {
                 }
                 if (((trip['Triplog']['car_no']).length != 0 && trip['Triplog']['car_no'] != "Car #")) {
                     if (trip['Triplog']['status'] === 0) {
-                        setUnacceptedCarValue(trip['Triplog']['call_type']);
+                        let unacceptedCarValue;
+                        unacceptedCarValue = trip['Triplog']['call_type']
                         if ((trip['Triplog']['car_no']).length != 0) {
-                            setUnacceptedCarValue(trip['Triplog']['car_no'])
+                            unacceptedCarValue = trip['Triplog']['car_no']
                         }
                         if ((trip['Triplog']['pending_car_no']).length != 0) {
-                            setUnacceptedCarValue('P' + trip['Triplog']['pending_car_no']);
+                            unacceptedCarValue = `P${trip['Triplog']['pending_car_no']}`
                         }
+                        setUnacceptedCarValue(unacceptedCarValue)
                         let allowreassign = ([1, 5].indexOf(trip['Triplog']['status']) > -1) ? ' allowreassign' : '';
                         return (
                             <td className={`cntr_algn window.${back_class} window.${allowreassign}`} rel-tripid={trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} on-hold={`NO`}>
-                                <input type="text" value={UnacceptedCarValue} id={+trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} rel-call_type={trip['Triplog']['call_type']} className="textfield carAutoComplete" readOnly={flag} />
+                                <CarValueUnaccepted value={UnacceptedCarValue} trip={trip} dispacherId={dispacherId} flag={flag} />
+                                {/* <input type="text" value={UnacceptedCarValue} id={trip['Triplog']['id']} rel-affiliate-dispacher={trip['Triplog']['affiliate_accept']} rel-parent-dispacher={trip['Triplog']['parent_dispacher_id']} rel-current-dispacher={dispacherId} rel-call_type={trip['Triplog']['call_type']} className="textfield carAutoComplete" readOnly={flag} /> */}
                             </td>
                         )
                     } else {
@@ -97,9 +97,7 @@ const TripList = (props) => {
                     return (
                         <CarAutoComplete trip={trip} dispacherId={dispacherId} back_class={back_class} carName={opt} sendInfoToAffiliatetriplog={props.sendInfoToAffiliatetriplog} />
                     )
-                    
                 }
-                
                 break;
             case 'pickup_address':
                 return (

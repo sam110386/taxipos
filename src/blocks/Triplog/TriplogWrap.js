@@ -24,7 +24,6 @@ import * as CarService from "../../services/CarService"
 
 
 const TriplogWrap = (props) => {
-
     const { userDetails } = useSelector((mainState) => {
         return { userDetails: mainState.auth.userDetails }
     });
@@ -41,43 +40,39 @@ const TriplogWrap = (props) => {
         CurrentDate: 0,
         currentBooking: [],
         fareInput: "",
-        pickupAddress: "",
         pickupLat: "",
         pickupLng: "",
-        dropoffAddress: "",
         dropoffLat: "",
         dropoffLng: "",
         deviceId: "",
         carNumber: "",
     });
 
-    const reloadTripDetails = async(id,type) =>{
-        let res = await CarService.reloadTripDetails({TripId:id})
+    const reloadTripDetails = async (id, type) => {
+        let res = await CarService.reloadTripDetails({ TripId: id })
         if (res && res.status === 200) {
             if (res.data && res.data.status === 1) {
-           
                 store.dispatch(loadTripListUpdate(res.data.result))
             }
         }
-
     }
 
-    const sendInfoToAffiliatetriplog =  async(car_no, device_id, id, status, call_type_line) => {
+    const sendInfoToAffiliatetriplog = async (car_no, device_id, id, status, call_type_line) => {
         var call_type = '';
         if (status === "deactivated") {
-            alert("Car # " + car_no + " is Deactivated. Speak to Management.");
+            toast.error("Car # " + car_no + " is Deactivated. Speak to Management.");
             return false;
         }
         if (status === "not_found") {
-            alert("Car # " + car_no + " does not exist.");
+            toast.error("Car # " + car_no + " does not exist.");
             return false;
         }
         if (status === "not_booked") {
-            alert("Car # " + car_no + " is not booked in.");
+            toast.error("Car # " + car_no + " is not booked in.");
             return false;
         }
         if (status === "no_lined_device") {
-            alert("No lined device found.");
+            toast.error("No lined device found.");
             return false;
         } else if (status === "lined_device") {
             call_type = call_type_line;
@@ -86,10 +81,10 @@ const TriplogWrap = (props) => {
             call_type = 'NET';
         }
         var params = { id, device_id, car_no, call_type }
-        let res =  await CarService.reassignAffiliate(params)
+        let res = await CarService.reassignAffiliate(params)
         if (res && res.status === 200) {
             if (res.data && res.data.status === 1) {
-                reloadTripDetails(id,"update")
+                reloadTripDetails(id, "update");
             }
         }
     }
@@ -174,7 +169,7 @@ const TriplogWrap = (props) => {
                         currentTime = currentTime.add(30, 'seconds');
                         setMainState({ ...mainState, CurrentPickupTime: currentTime.format('LT') })
                     }, 30000);
-                    
+
                     return;
                 }
                 onError(res.data.message);
@@ -207,56 +202,58 @@ const TriplogWrap = (props) => {
         initialize();
     }, [1])
 
-    const getPickupLatLng = (pickupAddress, pickupLat, pickupLng) => {
-        setMainState({ ...mainState, pickupAddress, pickupLat, pickupLng })
+    const getPickupLatLng = (pickupLat, pickupLng) => {
+        setMainState({ ...mainState, pickupLat, pickupLng })
     }
-    const getDropoffLatLng = (dropoffAddress, dropoffLat, dropoffLng) => {
-        setMainState({ ...mainState, dropoffAddress, dropoffLat, dropoffLng })
+    const getDropoffLatLng = (dropoffLat, dropoffLng) => {
+        setMainState({ ...mainState, dropoffLat, dropoffLng })
     }
-    const getDeviceId = (deviceid) => {
-        setMainState({...mainState,carNumber:deviceid.label,deviceId:deviceid.value})
+    const getDeviceId = (carNumber) => {
+
+        let CarNum;
+        let deviceId;
+        if (carNumber) {
+            let Car = JSON.parse(carNumber)
+            CarNum = Car.label;
+            deviceId = Car.value
+            setMainState({ ...mainState, carNumber: CarNum, deviceId: deviceId })
+        }
     }
 
     useEffect(() => {
         if (formikRef.current) {
             formikRef.current.setFieldValue("pickup_time", mainState.CurrentPickupTime);
-           
-        }},[ mainState.CurrentPickupTime]);
+            formikRef.current.setFieldValue("pickup_date", mainState.CurrentDate);
+        }
+    }, [mainState.CurrentPickupTime, mainState.CurrentDate]);
 
     useEffect(() => {
-        console.log(mainState.CurrentDate,"current date")
         if (formikRef.current) {
             formikRef.current.setFieldValue("pickup_lat", mainState.pickupLat);
             formikRef.current.setFieldValue("pickup_lng", mainState.pickupLng);
             formikRef.current.setFieldValue("dropoff_lat", mainState.dropoffLat);
             formikRef.current.setFieldValue("dropoff_lng", mainState.dropoffLng);
-            formikRef.current.setFieldValue("pickup_date", mainState.CurrentDate);
-        }}, [mainState.pickupLat, mainState.pickupLng, mainState.dropoffLat, mainState.dropoffLng,mainState.CurrentDate]);
- 
+
+        }
+    }, [mainState.pickupLat, mainState.pickupLng, mainState.dropoffLat, mainState.dropoffLng]);
+
+
     useEffect(() => {
         if (formikRef.current) {
             formikRef.current.setFieldValue("car_no", mainState.carNumber);
             formikRef.current.setFieldValue("device_id", mainState.deviceId);
-        }}, [mainState.deviceId, mainState.carNumber]);
+        }
+    }, [mainState.deviceId,mainState.carNumber]);
 
     const onError = (message) => {
         toast.error(message)
-        //setError(true);
     };
-
-    const onDialogClose = () => {
-        //setError(false);
-        //setErrorMessage("");
-    };
-
 
     const handleSubmit = (values) => {
         setMainState({ ...mainState, btndisable: true })
         CreateTrip(values).then((e) => {
-            if (e === 1) {
-                setMainState({ ...mainState, btndisable: false })
-            }
-        })
+            setMainState({ ...mainState, btndisable: false })
+        });
     };
 
     const fareEstimate = async (values) => {
@@ -279,9 +276,9 @@ const TriplogWrap = (props) => {
     const getFate = async (value) => {
 
         if (!value.pickupAddress) {
-            return toast.error("Please Enter Pick-up-Address")
+            return toast.error("Please Enter Pick-up-Address");
         } else if (!value.dropofAddress) {
-            return toast.error("Please Enter Drop-of-Address")
+            return toast.error("Please Enter Drop-of-Address");
         }
         try {
             setSubmitting(true);
@@ -289,7 +286,7 @@ const TriplogWrap = (props) => {
             setSubmitting(false);
             if (res && res.status === 200) {
                 if (res.data && res.data.status === 1) {
-                    setMainState({...mainState,fareInput:res.data.result.fare})
+                    setMainState({ ...mainState, fareInput: res.data.result.fare })
                     // onSuccess(res.data);
                     return;
                 }
@@ -602,15 +599,19 @@ const TriplogWrap = (props) => {
                                         </div>
                                         <div className="col-1 pr-0">
                                             <Field
-                                                as="select"
-                                                className="form-control w-100"
-                                                name="car_no"
                                                 component={CarNumberPicker}
-                                                getDeviceId={getDeviceId}>
-                                            </Field>
+                                                getDeviceId={getDeviceId}
+                                                className="form-control w-100"
+                                                name="carno"
+
+                                            />
                                         </div>
                                         <Field
                                             name="device_id"
+                                            type="hidden"
+                                        />
+                                          <Field
+                                            name="car_no"
                                             type="hidden"
                                         />
                                         <div className="col-2 pr-0">
@@ -734,7 +735,7 @@ const TriplogWrap = (props) => {
                         </Button>
                     </div>
                 </div>
-                { <Trips openTripDetails={openTripDetails} sendInfoToAffiliatetriplog={sendInfoToAffiliatetriplog} />}
+                {<Trips openTripDetails={openTripDetails} sendInfoToAffiliatetriplog={sendInfoToAffiliatetriplog} />}
                 {showEditTrip && <EditTripDetails currentBooking={currentBooking} SetShowEditTrip={SetShowEditTrip} saveNetEditBooking={saveNetEditBooking} processNoShow={processNoShow} saveEditBooking={saveEditBooking} />}
                 {showDetails && <TripDetails SetShowTrip={setShowDetails} />}
             </div>
