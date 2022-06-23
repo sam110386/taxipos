@@ -4,6 +4,7 @@ import Dispatcher from "../pages/Dispatcher";
 import Footer from "./Footer";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
+import Settings from "../pages/account/Profile/Settings";
 
 
 function Page(props) {
@@ -24,6 +25,8 @@ function Page(props) {
         return <Login />;
       case "triplog":
         return <Dispatcher />;
+        case "account":
+        return <Settings/>;
       default:
         return <Home />;
     }

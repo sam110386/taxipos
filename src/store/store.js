@@ -13,7 +13,8 @@ import {
   globalReducer,
   userReducer,
   TripReducer,
-  SetCallerIdReducer
+  SetCallerIdReducer,
+  profileReducer
 } from "./reducers";
 
 const rootPersistConfig = {
@@ -27,7 +28,8 @@ const rootReducer = combineReducers({
   global: globalReducer,
   user: userReducer,
   trip:TripReducer,
-  callerid:SetCallerIdReducer
+  callerid:SetCallerIdReducer,
+  profile: profileReducer
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
@@ -42,4 +44,6 @@ export const persistor = persistStore(store);
 sagaMiddleware.run(carSaga);
 sagaMiddleware.run(authSaga);
 sagaMiddleware.run(tripSage);
-
+store.subscribe(() => {
+  console.log(store.getState());
+});

@@ -5,6 +5,7 @@ import { store } from "../../../store/store"
 import { loadTripListDataSuccess } from "../../../store/actions/TripAction";
 
 export const CreateTrip = async (values) => {
+    console.log(values)
     const onError = (message) => {
         toast.error("opps something went wrong")
     };
