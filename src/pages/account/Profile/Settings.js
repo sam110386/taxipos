@@ -1,8 +1,12 @@
 import React from "react";
 import GoogleForm from "./components/GoogleForm";
 import PubNubForm from "./components/PubNubForm";
+import { store } from "../../../store/store";
+
+
 
 function Settings() {
+ 
   return (
     <>
       <div class="container-fluid px-1 py-5 mx-auto">

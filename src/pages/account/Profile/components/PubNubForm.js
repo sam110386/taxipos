@@ -27,11 +27,11 @@ function PubNubForm() {
   return (
     <>
     <form onSubmit={formik.handleSubmit}>
-     <div class="row justify-content-between text-left">
-                  <div class="form-group col-sm-6 flex-column d-flex">
+     <div className="row justify-content-between text-left">
+                  <div className="form-group col-sm-6 flex-column d-flex">
                     {" "}
-                    <label class="form-control-label px-3">
-                      Publish key<span class="text-danger"> *</span>
+                    <label className="form-control-label px-3">
+                      Publish key<span className="text-danger"> *</span>
                     </label>{" "}
                     <input
                       type="text"
@@ -45,10 +45,10 @@ function PubNubForm() {
           <span className="text-danger" >{formik.errors.publishkey}</span>
         )}
                   </div>
-                  <div class="form-group col-sm-6 flex-column d-flex">
+                  <div className="form-group col-sm-6 flex-column d-flex">
                     {" "}
-                    <label class="form-control-label px-3">
-                      Subscribe Key<span class="text-danger"> *</span>
+                    <label className="form-control-label px-3">
+                      Subscribe Key<span className="text-danger"> *</span>
                     </label>{" "}
                     <input
                       type="text"
@@ -63,11 +63,11 @@ function PubNubForm() {
         )}
                   </div>
                   </div>
-                <div class="row justify-content-between text-left">
-                  <div class="form-group col-sm-6 flex-column d-flex">
+                <div className="row justify-content-between text-left">
+                  <div className="form-group col-sm-6 flex-column d-flex">
                     {" "}
-                    <label class="form-control-label px-3">
-                      Secret Key<span class="text-danger"> *</span>
+                    <label className="form-control-label px-3">
+                      Secret Key<span className="text-danger"> *</span>
                     </label>{" "}
                     <input
                       type="text"
@@ -81,14 +81,14 @@ function PubNubForm() {
           <span className="text-danger" >{formik.errors.secretkey}</span>
         )}
                   </div>
-                  <div class="form-group col-sm-6 flex-column d-flex">
+                  <div className="form-group col-sm-6 flex-column d-flex">
                     {" "}
-                    <label class="form-control-label px-3">
-                      <span class="text-danger"> </span>
+                    <label className="form-control-label px-3">
+                      <span className="text-danger"> </span>
                     </label>{" "}
                     <button
                       style={{ marginTop: "28px" }}
-                      class="btn-block btn-primary"
+                      className="btn-block btn-primary"
                       type="submit"
                     >
                       Submit PubNub Keys

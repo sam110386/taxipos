@@ -17,15 +17,15 @@ import { GlobalErrorDialog } from "./blocks/Dialogs";
 import { Toaster } from "react-hot-toast";
 import { PubNubProvider } from "pubnub-react";
 import PubNub from "pubnub";
+import { useSelector } from "react-redux";
 
-//import PageNotFound from './pages/PageNotFound';
-const pubnub = new PubNub({
-  publishKey: "pub-c-453976e7-6a8a-4614-871e-d4734b090efe",
-  subscribeKey: "sub-c-729624f4-d3e8-4705-b0e9-d150ed42a116",
-  uuid: "d4734b090efejwj89y7r837djewd938wekfjw0983",
-});
-class App extends Component {
-  render() {
+
+function App() {
+
+  const pubnub = new PubNub({
+    subscribeKey: "sub-c-fdff122c-f95f-11eb-bf4c-22908b043f7e",
+    publishKey: "pub-c-b8181590-060c-4c2c-9b12-6cf484a73532"
+  });
     return (
       <PubNubProvider client={pubnub}>
         <Provider store={store}>
@@ -63,7 +63,7 @@ class App extends Component {
         </Provider>
       </PubNubProvider>
     );
-  }
+  
 }
 
 export default App;

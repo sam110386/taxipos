@@ -3,7 +3,6 @@ import { Formik, Field, Form } from "formik";
 import { useSelector } from "react-redux";
 import * as TriplogServices from "../../services/TriplogService";
 import { Button } from "@material-ui/core";
-import moment from "moment";
 import Trips from "./TripList";
 import EditTripDetails from "./EditTripDetails";
 import toast from "react-hot-toast";
@@ -25,8 +24,9 @@ import {
 import { initial_Values } from "./ValidationSchema/TriplogSchema";
 import * as CarService from "../../services/CarService";
 import { FullPageLoader } from "../Loaders";
-import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import TelephoneVerfiy from "./Components/TelephoneVerfiy";
+import { usePubNub } from "pubnub-react";
+import { PubNubProvider } from "pubnub-react";
 
 const TriplogWrap = (props) => {
   const { userDetails } = useSelector((mainState) => {
@@ -51,8 +51,51 @@ const TriplogWrap = (props) => {
     dropoffLng: "",
     deviceId: "",
     carNumber: "",
-    tpnum:""
+    tpnum: "",
   });
+  const pubnub = usePubNub();
+
+  const [channels] = useState([`PCAPP_${userDetails.DispatcherId}`, `CTGPCAPP_${userDetails.DispatcherId}`]);
+  const [messages, addMessage] = useState([]);
+  const [message, setMessage] = useState("");
+
+  const handleMessage = (event) => {
+    const message = event.message;
+    console.log(message);
+
+
+    //     var TripId=msg.tripid;
+    //     if(msg.messageType=='cancelTripWeb'){
+    //         $("table#tripLogTable tr#tripRow"+TripId).remove();
+    //         return;
+    //     }
+    //     if(msg.status=="3"){
+    //         $("table#tripLogTable tr#tripRow"+TripId).remove();
+    //         return;
+    //     }
+    //     if(msg.messageType=='Add'){
+      // reloadTripDetails()
+    //     }
+    //     if(msg.messageType=='Edit'){
+      // reloadTripDetails()
+    //     }
+    //     if(msg.messageType=='statusUpdate'){
+      // reloadTripDetails()
+    //     }
+    //     if(msg.messageType=='award'){
+      // reloadTripDetails()
+    //     }
+    //     if(msg.messageType=='callerid'){
+    //         getcallerinfo();
+    //     }
+
+
+  };
+
+  useEffect(() => {
+    pubnub.addListener({ message: handleMessage });
+    pubnub.subscribe({ channels, withPresence: true });
+  }, [pubnub, channels]);
 
   const reloadTripDetails = async (id, type) => {
     let res = await CarService.reloadTripDetails({ TripId: id });
@@ -60,6 +103,22 @@ const TriplogWrap = (props) => {
       if (res.data && res.data.status === 1) {
         store.dispatch(loadTripListUpdate(res.data.result));
       }
+    }
+  };
+  const LoadCallorInfoTripLog = async () => {
+    try {
+      setLoading(true);
+      const res = await TriplogServices.loadCallerInfoTriplog();
+      if (res && res.status === 200) {
+        if (res.data && res.data.status === 1) {
+          // setCallerTripInfo(res.data.result.phone_data)
+          setLoading(false);
+        }
+        onError(res.data.message);
+      }
+    } catch (err) {
+      setLoading(false);
+      onError();
     }
   };
 
@@ -100,9 +159,9 @@ const TriplogWrap = (props) => {
       }
     }
   };
-const gettelenum = (num) =>{
-  console.log(num)
-}
+  const gettelenum = (num) => {
+    console.log(num);
+  };
   // const sendInfoToCar_triplog = async(car_no, device_id, id, status, call_type_line)=> {
 
   //     var call_type = '';
@@ -177,18 +236,6 @@ const gettelenum = (num) =>{
             CurrentPickupTime: res.data.time,
             CurrentDate: res.data.date,
           });
-          // let currentTime = moment(res.data.date + " " + res.data.time);
-          // if (!refreshIntervalId) {
-          //   clearInterval(refreshIntervalId);
-          // }
-          //start timer
-          // var refreshIntervalId = setInterval(function() {
-          //   currentTime = currentTime.add(30, "seconds");
-          //   setMainState({
-          //     ...mainState,
-          //     CurrentPickupTime: currentTime.format("LT"),
-          //   });
-          // }, 30000);
           setInterval(async () => {
             try {
               const res = await TriplogServices.getCurrentDateTime();
@@ -209,7 +256,6 @@ const gettelenum = (num) =>{
         }
       }
     } catch (err) {
-      //  setLoading(false)
       onError();
     }
   };
@@ -575,8 +621,8 @@ const gettelenum = (num) =>{
                       <div className="col-1 pl-0">
                         <Field
                           name="telephone"
-component={TelephoneVerfiy}
-getTelenum={gettelenum}
+                          component={TelephoneVerfiy}
+                          getTelenum={gettelenum}
                           placeholder="Telephone"
                           className="form-control"
                           autoComplete="off"
@@ -585,7 +631,7 @@ getTelenum={gettelenum}
                           //   console.log(mainState.tpnum)
                           // }}
                         />
-                        
+
                         <br />
                         {errors.telephone && touched.telephone ? (
                           <div className="d-block invalid-feedback mt-n4 ml-3">

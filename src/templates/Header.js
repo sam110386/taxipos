@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { signOutUser } from "../store/actions/AuthAction";
 import { ConfirmDialog } from "../blocks/Dialogs";
 
+
 const Header = ({ isSticky }) => {
   const dispatch = useDispatch();
 
