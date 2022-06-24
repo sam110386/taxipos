@@ -22,12 +22,9 @@ import { useSelector } from "react-redux";
 
 function App() {
 
-  const pubnub = new PubNub({
-    subscribeKey: "sub-c-fdff122c-f95f-11eb-bf4c-22908b043f7e",
-    publishKey: "pub-c-b8181590-060c-4c2c-9b12-6cf484a73532"
-  });
+ 
     return (
-      <PubNubProvider client={pubnub}>
+     
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <div>
@@ -61,7 +58,7 @@ function App() {
             <GlobalErrorDialog />
           </PersistGate>
         </Provider>
-      </PubNubProvider>
+
     );
   
 }

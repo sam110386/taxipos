@@ -9,8 +9,8 @@ const DropoffAddress = ({ field, form, id,getDropoffLatLng, ...props }) => {
     const [dropoffLat, setDropofAddressLat] = useState("");
     const [dropoffLng, setDropofAddressLng] = useState("");
    
-    const { setFieldValue, getFieldMeta } = useFormikContext();
-    const { name, value } = field;
+    const { setFieldValue } = useFormikContext();
+    const { name  } = field;
  
 
     const getDropOffAddress = async () => {

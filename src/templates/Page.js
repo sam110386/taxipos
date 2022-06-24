@@ -1,21 +1,39 @@
 import React, { useEffect, useCallback, useRef, useState } from "react";
 import Header from "./Header";
 import Dispatcher from "../pages/Dispatcher";
-import Footer from "./Footer";
+import { PubNubProvider } from "pubnub-react";
+import PubNub from "pubnub";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Settings from "../pages/account/Profile/Settings";
-
+import { useSelector } from "react-redux";
 
 function Page(props) {
-  const getHead =()=>{
+  const { publishkey, subscribekey } = useSelector((state) => {
+    return {
+      publishkey: state.profile.publishkey,
+      subscribekey: state.profile.subscribekey,
+    };
+  });
+
+  const pubnub = new PubNub({
+    subscribeKey:
+      subscribekey === null
+        ? process.env.REACT_APP_PUBNUB_SUBSCRIBE_KEY
+        : subscribekey,
+    publishKey:
+      publishkey === null
+        ? process.env.REACT_APP_PUBNUB_SUBSCRIBE_KEY
+        : publishkey,
+  });
+  const getHead = () => {
     switch (props.page) {
       case "triplog":
-        return <Header isSticky={isSticky}/>;
+        return <Header isSticky={isSticky} />;
       default:
-        return <Header isSticky={isSticky}/>;
-    } 
-  }
+        return <Header isSticky={isSticky} />;
+    }
+  };
 
   const getPage = () => {
     switch (props.page) {
@@ -25,8 +43,8 @@ function Page(props) {
         return <Login />;
       case "triplog":
         return <Dispatcher />;
-        case "account":
-        return <Settings/>;
+      case "account":
+        return <Settings />;
       default:
         return <Home />;
     }
@@ -63,12 +81,22 @@ function Page(props) {
 
   return (
     <div>
-      {getHead()}
-      
-      <div ref={headerRef} className={props.page==="triplog" ? "container-fluid text-black":"container-fluid"}  id={props.page==="triplog" ? "dashboardcs":null}>
-        {getPage()}
-      </div>
-      {/* <Footer /> */}
+      <PubNubProvider client={pubnub}>
+        {getHead()}
+
+        <div
+          ref={headerRef}
+          className={
+            props.page === "triplog"
+              ? "container-fluid text-black"
+              : "container-fluid"
+          }
+          id={props.page === "triplog" ? "dashboardcs" : null}
+        >
+          {getPage()}
+        </div>
+        {/* <Footer /> */}
+      </PubNubProvider>
     </div>
   );
 }

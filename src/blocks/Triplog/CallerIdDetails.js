@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Formik, Field, Form } from "formik";
-import { useSelector, useDispatch } from "react-redux";
 import { Button } from "@material-ui/core";
 import * as TriplogServices from "../../services/TriplogService";
 import moment from "moment";
@@ -182,7 +181,7 @@ const CallerIdDetails = (props) => {
     store.dispatch(setCallerIdAction(props.details));
     props.SetShowCallerId(false);
   };
-console.log("ALDSDL=>",props.details.phone_no)
+
   return (
     <React.Fragment>
       <div
@@ -249,7 +248,7 @@ console.log("ALDSDL=>",props.details.phone_no)
                                 Drop Off Address
                               </div>
                             </div>
-                             {props.details.all_trips &&
+                            {props.details.all_trips &&
                               props.details.all_trips.map((e, index) => (
                                 <>
                                   <div className="col-md-2">

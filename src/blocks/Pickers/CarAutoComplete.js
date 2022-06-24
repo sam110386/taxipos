@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import * as CarService from "../../services/CarService"
 
 const CarAutoComplete = (props) => {
@@ -7,7 +7,7 @@ const CarAutoComplete = (props) => {
 
     let trip = props.trip
     let dispacherId = props.dispacherId;
-    let back_class = props.back_class;
+   
 
 
 
@@ -131,7 +131,7 @@ const CarAutoComplete = (props) => {
         var code = (e.keyCode ? e.keyCode : e.which);
         if (code === 13 && value != "") {
             var term = value;
-            var callType = e.target.getAttribute('rel-call_type')
+            // var callType = e.target.getAttribute('rel-call_type')
             var currentDispacher = e.target.getAttribute('rel-current-dispacher')
             var loggedInDispacher = dispacherId;
             var ParentDispacher = e.target.getAttribute('rel-parent-dispacher')
