@@ -15,21 +15,20 @@ import { store, persistor } from "./store/store";
 import { FullPageLoader } from "./blocks/Loaders";
 import { GlobalErrorDialog } from "./blocks/Dialogs";
 import { Toaster } from "react-hot-toast";
-import { PubNubProvider } from "pubnub-react";
-import PubNub from "pubnub";
-import { useSelector } from "react-redux";
+
 
 
 function App() {
 
  
     return (
-     
+    
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <div>
               <Toaster />
             </div>
+            
             <Router basename={`${process.env.PUBLIC_URL}/`}>
               <Switch>
                 <Route exact path="/" render={() => <Page page="homepage" />} />

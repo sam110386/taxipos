@@ -23,7 +23,7 @@ function Page(props) {
         : subscribekey,
     publishKey:
       publishkey === null
-        ? process.env.REACT_APP_PUBNUB_SUBSCRIBE_KEY
+        ? process.env.REACT_APP_PUBNUB_PUBLISH_KEY
         : publishkey,
   });
   const getHead = () => {

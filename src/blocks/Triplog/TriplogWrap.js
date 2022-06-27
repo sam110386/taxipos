@@ -20,6 +20,7 @@ import { store } from "../../store/store";
 import {
   loadTripListDataSuccess,
   loadTripListUpdate,
+  loadTripListDataRemove,
 } from "../../store/actions/TripAction";
 import { initial_Values } from "./ValidationSchema/TriplogSchema";
 import * as CarService from "../../services/CarService";
@@ -27,12 +28,16 @@ import { FullPageLoader } from "../Loaders";
 import TelephoneVerfiy from "./Components/TelephoneVerfiy";
 import { usePubNub } from "pubnub-react";
 import { PubNubProvider } from "pubnub-react";
+import { useDispatch } from "react-redux";
 
 const TriplogWrap = (props) => {
-  const { userDetails } = useSelector((mainState) => {
-    return { userDetails: mainState.auth.userDetails };
+  const { userDetails, tripList } = useSelector((mainState) => {
+    return {
+      userDetails: mainState.auth.userDetails,
+      tripList: mainState.trip.tripList,
+    };
   });
-
+  const dispatch = useDispatch();
   const formikRef = useRef();
   const [submiting, setSubmitting] = useState(false);
   const [showEditTrip, SetShowEditTrip] = useState(false);
@@ -55,24 +60,51 @@ const TriplogWrap = (props) => {
   });
   const pubnub = usePubNub();
 
-  const [channels] = useState([`PCAPP_${userDetails.DispatcherId}`, `CTGPCAPP_${userDetails.DispatcherId}`]);
-  const [messages, addMessage] = useState([]);
-  const [message, setMessage] = useState("");
+  const [channels] = useState([
+    `PCAPP_${userDetails.DispatcherId}`,
+    `CTGPCAPP_${userDetails.DispatcherId}`,
+  ]);
+
+ 
+
+
 
   const handleMessage = (event) => {
     const message = event.message;
-    console.log(message);
+
 
     var TripId = message.tripid;
     if (message.messageType == "cancelTripWeb") {
-     // $("table#tripLogTable tr#tripRow" + TripId).remove();
-     // return;
+      // $("table#tripLogTable tr#tripRow" + TripId).remove();
+      // return;
       //store.dispatch(loadTripListDataRemove(res.data.result));
+      const tripids = Object.keys(tripList).filter((key, index) => {
+        const data = tripList[key].DispatcherTrip.trip_id !== TripId;
+        return data;
+      });
+      const filteredTrips = Object.keys(tripList)
+        .filter((key) => tripids.includes(key))
+        .reduce((obj, key) => {
+          obj[key] = tripList[key];
+          return obj;
+        }, {});
+      dispatch(loadTripListDataRemove(filteredTrips));
     }
     if (message.status == "3") {
-     // $("table#tripLogTable tr#tripRow" + TripId).remove();
-     // return;
+      // $("table#tripLogTable tr#tripRow" + TripId).remove();
+      // return;
       //store.dispatch(loadTripListDataRemove(res.data.result));
+      const tripids = Object.keys(tripList).filter((key, index) => {
+        const data = tripList[key].DispatcherTrip.trip_id !== TripId;
+        return data;
+      });
+      const filteredTrips = Object.keys(tripList)
+        .filter((key) => tripids.includes(key))
+        .reduce((obj, key) => {
+          obj[key] = tripList[key];
+          return obj;
+        }, {});
+      dispatch(loadTripListDataRemove(filteredTrips));
     }
     if (message.messageType == "Add") {
       reloadTripDetails(TripId);
@@ -502,363 +534,356 @@ const TriplogWrap = (props) => {
 
   return (
     <React.Fragment>
-      {loading ? (
-        <FullPageLoader />
-      ) : (
-        <div>
-          <fieldset className="pendingentries">
-            <legend>Pending Entries</legend>
-            <img
-              src="/images/clear_button.png"
-              alt="Clear"
-              className="clearchatsidebar mb-1"
-            />
-            <section className="chat-sidebar" id="chatsidebar">
-              <Chatsidebar />
-            </section>
-            <CallerIdInfo />
-          </fieldset>
-          <fieldset className="DispatchInfoDriver">
-            <legend>Dispatch info to Driver</legend>
-            <Formik
-              innerRef={formikRef}
-              initialValues={initial_Values}
-              validationSchema={TriplogSchema}
-              onSubmit={(values) => {
-                setTimeout(() => {
-                  handleSubmit(values);
-                }, 2000);
-              }}
-            >
-              {({ errors, touched }) => (
-                <Form>
-                  <>
-                    <div className="row d-flex justify-content-left pl-0 pr-0">
+      <div>
+        <fieldset className="pendingentries">
+          <legend>Pending Entries</legend>
+          <img
+            src="/images/clear_button.png"
+            alt="Clear"
+            className="clearchatsidebar mb-1"
+          />
+          <section className="chat-sidebar" id="chatsidebar">
+            <Chatsidebar />
+          </section>
+          <CallerIdInfo />
+        </fieldset>
+        <fieldset className="DispatchInfoDriver">
+          <legend>Dispatch info to Driver</legend>
+          <Formik
+            innerRef={formikRef}
+            initialValues={initial_Values}
+            validationSchema={TriplogSchema}
+            onSubmit={(values) => {
+              setTimeout(() => {
+                handleSubmit(values);
+              }, 2000);
+            }}
+          >
+            {({ errors, touched }) => (
+              <Form>
+                <>
+                  <div className="row d-flex justify-content-left pl-0 pr-0">
+                    <Field
+                      name="TextCity"
+                      type="hidden"
+                      className="form-control"
+                    />
+                    <Field
+                      name="TextState"
+                      type="hidden"
+                      className="form-control"
+                    />
+                    <Field
+                      name="TextPickupCrossStreet"
+                      type="hidden"
+                      className="form-control"
+                    />
+                    <Field
+                      name="TextDropoffCrossStreet"
+                      type="hidden"
+                      className="form-control"
+                    />
+                    <div className="col-4">
                       <Field
-                        name="TextCity"
-                        type="hidden"
-                        className="form-control"
+                        component={PickupAddress}
+                        getPickupLatLng={getPickupLatLng}
+                        name="pickup_address"
+                        id="pickupaddress"
+                        autoComplete="off"
+                        className={`form-control ${
+                          touched.pickup_address && errors.pickup_address
+                            ? "is-invalid"
+                            : ""
+                        }`}
                       />
-                      <Field
-                        name="TextState"
-                        type="hidden"
-                        className="form-control"
-                      />
-                      <Field
-                        name="TextPickupCrossStreet"
-                        type="hidden"
-                        className="form-control"
-                      />
-                      <Field
-                        name="TextDropoffCrossStreet"
-                        type="hidden"
-                        className="form-control"
-                      />
-                      <div className="col-4">
-                        <Field
-                          component={PickupAddress}
-                          getPickupLatLng={getPickupLatLng}
-                          name="pickup_address"
-                          id="pickupaddress"
-                          autoComplete="off"
-                          className={`form-control ${
-                            touched.pickup_address && errors.pickup_address
-                              ? "is-invalid"
-                              : ""
-                          }`}
-                        />
-                        <Field name="pickup_lat" type="hidden" />
-                        <Field name="pickup_lng" type="hidden" />
-                        <br />
-                        {errors.pickup_address && touched.pickup_address ? (
-                          <div className="d-block invalid-feedback mt-n4 ml-3">
-                            {errors.pickup_address}
-                          </div>
-                        ) : null}
-                      </div>
+                      <Field name="pickup_lat" type="hidden" />
+                      <Field name="pickup_lng" type="hidden" />
                       <br />
-                      <div className="col-1 pl-0">
-                        <Field
-                          name="pickup_time"
-                          className="form-control"
-                          render={({ field }) => (
-                            <MaskedInput
-                              {...field}
-                              mask={[
-                                /^([0-2])/,
-                                /([0-9])/,
-                                ":",
-                                /[0-5]/,
-                                /[0-9]/,
-                                " ",
-                                /([AaPp])/,
-                                /([Mm])/,
-                              ]}
-                              type="text"
-                              className="form-control"
-                            />
-                          )}
-                        />
-                      </div>
-                      <div className="col-2 pr-0 pl-0">
-                        <Field
-                          type="date"
-                          name="pickup_date"
-                          autoComplete="off"
-                          className="form-control unstyled"
-                        />
-                      </div>
-                      <div className="col-2">
-                        <Field
-                          component={NotificationPicker}
-                          name="direct_notification_time"
-                          placeholder="Notification"
-                          id="direct_notification_time"
-                          className="form-control"
-                        />
-                      </div>
-                      <div className="col-1 pl-0">
-                        <Field
-                          name="telephone"
-                          component={TelephoneVerfiy}
-                          getTelenum={gettelenum}
-                          placeholder="Telephone"
-                          className="form-control"
-                          autoComplete="off"
-                          // onChange={(e) =>{
-                          //   setMainState({...mainState,tpnum:e.target.value})
-                          //   console.log(mainState.tpnum)
-                          // }}
-                        />
-
-                        <br />
-                        {errors.telephone && touched.telephone ? (
-                          <div className="d-block invalid-feedback mt-n4 ml-3">
-                            {errors.telephone}
-                          </div>
-                        ) : null}
-                      </div>
-
+                      {errors.pickup_address && touched.pickup_address ? (
+                        <div className="d-block invalid-feedback mt-n4 ml-3">
+                          {errors.pickup_address}
+                        </div>
+                      ) : null}
+                    </div>
+                    <br />
+                    <div className="col-1 pl-0">
                       <Field
-                        name="TextDetails"
-                        type="hidden"
+                        name="pickup_time"
+                        className="form-control"
+                        render={({ field }) => (
+                          <MaskedInput
+                            {...field}
+                            mask={[
+                              /^([0-2])/,
+                              /([0-9])/,
+                              ":",
+                              /[0-5]/,
+                              /[0-9]/,
+                              " ",
+                              /([AaPp])/,
+                              /([Mm])/,
+                            ]}
+                            type="text"
+                            className="form-control"
+                          />
+                        )}
+                      />
+                    </div>
+                    <div className="col-2 pr-0 pl-0">
+                      <Field
+                        type="date"
+                        name="pickup_date"
+                        autoComplete="off"
+                        className="form-control unstyled"
+                      />
+                    </div>
+                    <div className="col-2">
+                      <Field
+                        component={NotificationPicker}
+                        name="direct_notification_time"
+                        placeholder="Notification"
+                        id="direct_notification_time"
                         className="form-control"
                       />
-                      <div className="col-1 pr-0 pl-0">
-                        <Field
-                          placeholder="Account Number"
-                          name="account_no"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                        <br />
-                        {errors.account_no && touched.account_no ? (
-                          <div className="d-block invalid-feedback mt-n4 ml-3">
-                            {errors.account_no}
-                          </div>
-                        ) : null}
-                      </div>
-                      <div className="col-1 pr-0">
-                        <div role="group" aria-labelledby="checkbox-group">
-                          <label>
-                            <Field type="checkbox" name="TextShare" />
-                            Sharing Allowed
-                          </label>
+                    </div>
+                    <div className="col-1 pl-0">
+                      <Field
+                        name="telephone"
+                        component={TelephoneVerfiy}
+                        getTelenum={gettelenum}
+                        placeholder="Telephone"
+                        className="form-control"
+                        autoComplete="off"
+                        // onChange={(e) =>{
+                        //   setMainState({...mainState,tpnum:e.target.value})
+                        //   console.log(mainState.tpnum)
+                        // }}
+                      />
+
+                      <br />
+                      {errors.telephone && touched.telephone ? (
+                        <div className="d-block invalid-feedback mt-n4 ml-3">
+                          {errors.telephone}
                         </div>
+                      ) : null}
+                    </div>
+
+                    <Field
+                      name="TextDetails"
+                      type="hidden"
+                      className="form-control"
+                    />
+                    <div className="col-1 pr-0 pl-0">
+                      <Field
+                        placeholder="Account Number"
+                        name="account_no"
+                        className="form-control"
+                        autoComplete="off"
+                      />
+                      <br />
+                      {errors.account_no && touched.account_no ? (
+                        <div className="d-block invalid-feedback mt-n4 ml-3">
+                          {errors.account_no}
+                        </div>
+                      ) : null}
+                    </div>
+                    <div className="col-1 pr-0">
+                      <div role="group" aria-labelledby="checkbox-group">
+                        <label>
+                          <Field type="checkbox" name="TextShare" />
+                          Sharing Allowed
+                        </label>
                       </div>
                     </div>
-                    <div className="row d-flex justify-content-left pl-0 pr-0 mt-3 ">
-                      <div className="col-4">
-                        <Field
-                          component={DropoffAddress}
-                          getDropoffLatLng={getDropoffLatLng}
-                          name="dropoff_address"
-                          id="dropofaddress"
-                          autoComplete="off"
-                          placeholder="drop-off-Address"
-                          className={`form-control ${
-                            touched.dropoff_address && errors.dropoff_address
-                              ? "is-invalid"
-                              : ""
-                          }`}
-                        />
-                        <Field name="dropoff_lat" type="hidden" />
-                        <Field name="dropoff_lng" type="hidden" />
-                        <br />
-                        {errors.dropoff_address && touched.dropoff_address ? (
-                          <div className="d-block invalid-feedback mt-n4 ml-3">
-                            {errors.dropoff_address}
-                          </div>
-                        ) : null}
-                      </div>
-                      <div className="col-1 pl-0 pr-0">
-                        <Field
-                          placeholder="Fare"
-                          name="fare"
-                          autoComplete="off"
-                          className={`form-control ${
-                            touched.fare && errors.fare ? "is-invalid" : ""
-                          }`}
-                        />
-                      </div>
-
-                      <div className="col-1 pr-0">
-                        <Field
-                          component={CarNumberPicker}
-                          getDeviceId={getDeviceId}
-                          className="form-control w-100"
-                          name="carno"
-                        />
-                      </div>
-                      <Field name="device_id" type="hidden" />
-                      <Field name="car_no" type="hidden" />
-                      <div className="col-2 pr-0">
-                        <Field
-                          as="select"
-                          className="form-control w-100"
-                          name="cab_name"
-                        >
-                          {userDetails.CarType
-                            ? userDetails.CarType.map((el, ind) => (
-                                <option
-                                  key={ind.toString()}
-                                  value={el.cab_name}
-                                >
-                                  {el.value}
-                                </option>
-                              ))
-                            : null}
-                        </Field>
-                      </div>
-                      <div className="col-4 pr-0">
-                        <Button
-                          className="border btn btn-success text-capitalize"
-                          onClick={() => fareEstimate()}
-                          to={``}
-                          style={{
-                            borderRadius: 8,
-                            backgroundColor: "#1c7be0d7",
-                            padding: "7px 14px",
-                            color: "white",
-                            fontSize: "12px",
-                          }}
-                          variant="contained"
-                        >
-                          Fare Estimate
-                        </Button>
-
-                        <Button
-                          className="border btn btn-success text-capitalize ml-1"
-                          // onClick={() => getFate({ pickupAddress, pickupLat, pickupLng, dropoffaddress, pickupLat, pickupLng, cabName })}
-                          to={``}
-                          style={{
-                            borderRadius: 8,
-                            backgroundColor: "#1c7be0d7",
-                            padding: "7px 14px",
-                            color: "white",
-                            fontSize: "12px",
-                          }}
-                          variant="contained"
-                        >
-                          Get Fare
-                        </Button>
-
-                        <Button
-                          className="border btn btn-success text-capitalize ml-1"
-                          onClick={() => openDetails()}
-                          to={``}
-                          style={{
-                            borderRadius: 8,
-                            backgroundColor: "#1c7be0d7",
-                            padding: "7px 14px",
-                            color: "white",
-                            fontSize: "12px",
-                          }}
-                          variant="contained"
-                        >
-                          Details
-                        </Button>
-
-                        <Button
-                          className="border btn btn-success text-capitalize ml-1"
-                          type="submit"
-                          style={{
-                            borderRadius: 8,
-                            backgroundColor: "#1c7be0d7",
-                            color: "white",
-                            padding: "7px 14px",
-                            fontSize: "12px",
-                          }}
-                          variant="contained"
-                          disabled={mainState.btndisable && true}
-                        >
-                          Send
-                        </Button>
-                      </div>
+                  </div>
+                  <div className="row d-flex justify-content-left pl-0 pr-0 mt-3 ">
+                    <div className="col-4">
+                      <Field
+                        component={DropoffAddress}
+                        getDropoffLatLng={getDropoffLatLng}
+                        name="dropoff_address"
+                        id="dropofaddress"
+                        autoComplete="off"
+                        placeholder="drop-off-Address"
+                        className={`form-control ${
+                          touched.dropoff_address && errors.dropoff_address
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                      />
+                      <Field name="dropoff_lat" type="hidden" />
+                      <Field name="dropoff_lng" type="hidden" />
+                      <br />
+                      {errors.dropoff_address && touched.dropoff_address ? (
+                        <div className="d-block invalid-feedback mt-n4 ml-3">
+                          {errors.dropoff_address}
+                        </div>
+                      ) : null}
                     </div>
-                  </>
-                </Form>
-              )}
-            </Formik>
-          </fieldset>
-          <div className="row">
-            <div className="col-12 pull-right text-right mt-2 mb-2">
-              <Button
-                className="border link-success text-capitalize ml-1"
-                onClick={() => otherTrips()}
-                to={``}
-                style={btnstyle}
-                variant="contained"
-              >
-                Other Trips
-              </Button>
-              <Button
-                className="border link-success text-capitalize ml-1 mynewbtn"
-                onClick={() => otherTrips()}
-                to={``}
-                style={btnstyle}
-                variant="contained"
-              >
-                Full View Map
-              </Button>
-              <Button
-                className="border link-success text-capitalize ml-1"
-                onClick={() => otherTrips()}
-                to={``}
-                style={btnstyle}
-                variant="contained"
-              >
-                Today History
-              </Button>
-              <Button
-                className="border link-success text-capitalize ml-1"
-                onClick={() => otherTrips()}
-                to={``}
-                style={btnstyle}
-                variant="contained"
-              >
-                Sort Trips
-              </Button>
-            </div>
+                    <div className="col-1 pl-0 pr-0">
+                      <Field
+                        placeholder="Fare"
+                        name="fare"
+                        autoComplete="off"
+                        className={`form-control ${
+                          touched.fare && errors.fare ? "is-invalid" : ""
+                        }`}
+                      />
+                    </div>
+
+                    <div className="col-1 pr-0">
+                      <Field
+                        component={CarNumberPicker}
+                        getDeviceId={getDeviceId}
+                        className="form-control w-100"
+                        name="carno"
+                      />
+                    </div>
+                    <Field name="device_id" type="hidden" />
+                    <Field name="car_no" type="hidden" />
+                    <div className="col-2 pr-0">
+                      <Field
+                        as="select"
+                        className="form-control w-100"
+                        name="cab_name"
+                      >
+                        {userDetails.CarType
+                          ? userDetails.CarType.map((el, ind) => (
+                              <option key={ind.toString()} value={el.cab_name}>
+                                {el.value}
+                              </option>
+                            ))
+                          : null}
+                      </Field>
+                    </div>
+                    <div className="col-4 pr-0">
+                      {/* <Button
+                        className="border btn btn-success text-capitalize"
+                        onClick={() => fareEstimate()}
+                        to={``}
+                        style={{
+                          borderRadius: 8,
+                          backgroundColor: "#1c7be0d7",
+                          padding: "7px 14px",
+                          color: "white",
+                          fontSize: "12px",
+                        }}
+                        variant="contained"
+                      >
+                        Fare Estimate
+                      </Button> */}
+
+                      {/* <Button
+                        className="border btn btn-success text-capitalize ml-1"
+                        // onClick={() => getFate({ pickupAddress, pickupLat, pickupLng, dropoffaddress, pickupLat, pickupLng, cabName })}
+                        to={``}
+                        style={{
+                          borderRadius: 8,
+                          backgroundColor: "#1c7be0d7",
+                          padding: "7px 14px",
+                          color: "white",
+                          fontSize: "12px",
+                        }}
+                        variant="contained"
+                      >
+                        Get Fare
+                      </Button> */}
+
+                      <Button
+                        className="border btn btn-success text-capitalize ml-1"
+                        onClick={() => openDetails()}
+                        to={``}
+                        style={{
+                          borderRadius: 8,
+                          backgroundColor: "#1c7be0d7",
+                          padding: "7px 14px",
+                          color: "white",
+                          fontSize: "12px",
+                        }}
+                        variant="contained"
+                      >
+                        Details
+                      </Button>
+
+                      <Button
+                        className="border btn btn-success text-capitalize ml-1"
+                        type="submit"
+                        style={{
+                          borderRadius: 8,
+                          backgroundColor: "#1c7be0d7",
+                          color: "white",
+                          padding: "7px 14px",
+                          fontSize: "12px",
+                        }}
+                        variant="contained"
+                        disabled={mainState.btndisable && true}
+                      >
+                        Send
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              </Form>
+            )}
+          </Formik>
+        </fieldset>
+        <div className="row">
+          <div className="col-12 pull-right text-right mt-2 mb-2">
+            <Button
+              className="border link-success text-capitalize ml-1"
+              onClick={() => otherTrips()}
+              to={``}
+              style={btnstyle}
+              variant="contained"
+            >
+              Other Trips
+            </Button>
+            <Button
+              className="border link-success text-capitalize ml-1 mynewbtn"
+              onClick={() => otherTrips()}
+              to={``}
+              style={btnstyle}
+              variant="contained"
+            >
+              Full View Map
+            </Button>
+            <Button
+              className="border link-success text-capitalize ml-1"
+              onClick={() => otherTrips()}
+              to={``}
+              style={btnstyle}
+              variant="contained"
+            >
+              Today History
+            </Button>
+            <Button
+              className="border link-success text-capitalize ml-1"
+              onClick={() => otherTrips()}
+              to={``}
+              style={btnstyle}
+              variant="contained"
+            >
+              Sort Trips
+            </Button>
           </div>
-          {
-            <Trips
-              openTripDetails={openTripDetails}
-              sendInfoToAffiliatetriplog={sendInfoToAffiliatetriplog}
-            />
-          }
-          {showEditTrip && (
-            <EditTripDetails
-              currentBooking={currentBooking}
-              SetShowEditTrip={SetShowEditTrip}
-              saveNetEditBooking={saveNetEditBooking}
-              processNoShow={processNoShow}
-              saveEditBooking={saveEditBooking}
-            />
-          )}
-          {showDetails && <TripDetails SetShowTrip={setShowDetails} />}
         </div>
-      )}
+        {
+          <Trips
+            openTripDetails={openTripDetails}
+            sendInfoToAffiliatetriplog={sendInfoToAffiliatetriplog}
+          />
+        }
+        {showEditTrip && (
+          <EditTripDetails
+            currentBooking={currentBooking}
+            SetShowEditTrip={SetShowEditTrip}
+            saveNetEditBooking={saveNetEditBooking}
+            processNoShow={processNoShow}
+            saveEditBooking={saveEditBooking}
+          />
+        )}
+        {showDetails && <TripDetails SetShowTrip={setShowDetails} />}
+      </div>
     </React.Fragment>
   );
 };

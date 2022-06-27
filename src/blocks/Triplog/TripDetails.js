@@ -16,6 +16,7 @@ import DropoffAddress from "../Pickers/DropoffAddress";
 import MaskedInput from "react-text-mask";
 import { CreateTrip } from "./CommonTriplog/CreateTrip";
 import { NotificationPicker } from "../Pickers/NotificationPicker";
+import GoogleMaps from "./CommonTriplog/GoogleMaps";
 
 const TripDetails = (props) => {
   const formikRef = useRef();
@@ -141,7 +142,6 @@ const TripDetails = (props) => {
 
   return (
     <React.Fragment>
-  
       <div
         className="modal d-block mymodal tripModal"
         tabIndex="-1"
@@ -175,7 +175,7 @@ const TripDetails = (props) => {
                       <Form>
                         <>
                           <div className="row d-flex justify-content-left pl-0 pr-0 text-center">
-                            <div className="col-md-4">
+                            <div className="col-md-2">
                               <div className="form-group ">
                                 <label className="form_lbl">Car#: </label>
                                 <Field
@@ -203,7 +203,7 @@ const TripDetails = (props) => {
                                 </Field>
                               </div>
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-2">
                               <div className="form-group ">
                                 <label className="form_lbl">Cat Type: </label>
                                 <Field
@@ -219,7 +219,7 @@ const TripDetails = (props) => {
                                 </Field>
                               </div>
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-2">
                               <div className="form-group ">
                                 <label className="form_lbl">
                                   Pick Up Date:{" "}
@@ -232,7 +232,7 @@ const TripDetails = (props) => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-6">
+                            <div className="col-md-2">
                               <div className="form-group ">
                                 <label className="form_lbl">
                                   Pick Up Time:{" "}
@@ -260,159 +260,7 @@ const TripDetails = (props) => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-6">
-                              <div className="form-group ">
-                                <label className="form_lbl">
-                                  Notification:{" "}
-                                </label>
-                                <Field
-                                  component={NotificationPicker}
-                                  name="direct_notification_time"
-                                  id="direct_notification_time"
-                                  placeholder="Notification"
-                                  className="form-control"
-                                  autocomplete="off"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="form-group ">
-                                <label className="form_lbl">
-                                  Pick Up Address:{" "}
-                                </label>
-                                <Field
-                                  component={PickupAddress}
-                                  getPickupLatLng={getPickupLatLng}
-                                  name="pickup_address"
-                                  id="pickupaddressid"
-                                  placeholder="Pick-up-Address"
-                                  autocomplete="off"
-                                  className={`form-control ${
-                                    touched.pickup_address &&
-                                    errors.pickup_address
-                                      ? "is-invalid"
-                                      : ""
-                                  }`}
-                                />
-                                <Field name="pickup_lat" type="hidden" />
-                                <Field name="pickup_lng" type="hidden" />
-                              </div>
-                            </div>
-
-                            <div className="col-md-6">
-                              <div className="form-group ">
-                                <label className="form_lbl">
-                                  Drop off Address:{" "}
-                                </label>
-                                <Field
-                                  component={DropoffAddress}
-                                  getDropoffLatLng={getDropoffLatLng}
-                                  name="dropoff_address"
-                                  id="dropofaddressid"
-                                  placeholder="drop-off-Address"
-                                  autocomplete="off"
-                                  className={`form-control ${
-                                    touched.dropoff_address &&
-                                    errors.dropoff_address
-                                      ? "is-invalid"
-                                      : ""
-                                  }`}
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="form-group ">
-                                <label className="form_lbl">
-                                  Pick Up Address2:{" "}
-                                </label>
-                                <Field
-                                  component={PickupAddress}
-                                  getPickupLatLng={getPickupLatLng}
-                                  name="pickup_address2"
-                                  id="pickupaddressid2"
-                                  placeholder="Pick-up-Address"
-                                  autocomplete="off"
-                                  className={`form-control ${
-                                    touched.pickup_address &&
-                                    errors.pickup_address
-                                      ? "is-invalid"
-                                      : ""
-                                  }`}
-                                />
-                                <Field name="pickup_lat2" type="hidden" />
-                                <Field name="pickup_lng2" type="hidden" />
-                              </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="form-group ">
-                                <label className="form_lbl">
-                                  Drop off Address2:{" "}
-                                </label>
-                                <Field
-                                  component={DropoffAddress}
-                                  getDropoffLatLng={getDropoffLatLng}
-                                  name="dropoff_address2"
-                                  id="dropofaddressid2"
-                                  placeholder="Please Enter Drop-off-Address"
-                                  className="form-control autoCompleteAddress"
-                                  autocomplete="off"
-                                />
-                                <Field name="dropoff_lat2" type="hidden" />
-                                <Field name="dropoff_lng2" type="hidden" />
-                              </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="form-group ">
-                                <label className="form_lbl">
-                                  Pickup Cross Street:{" "}
-                                </label>
-                                <Field
-                                  placeholder="Please Enter Pickup Cross Street"
-                                  name="pickup_cross_street"
-                                  className="form-control"
-                                  autocomplete="off"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="col-md-6">
-                              <div className="form-group ">
-                                <label className="form_lbl">
-                                  Drop Cross Street2:{" "}
-                                </label>
-                                <Field
-                                  name="dropoff_cross_street"
-                                  placeholder="Please Enter Drop Cross Street"
-                                  className="form-control"
-                                  autocomplete="off"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="form-group ">
-                                <label className="form_lbl">Telephone : </label>
-                                <Field
-                                  placeholder="Please Enter Telephone Number"
-                                  name="telephone"
-                                  className="form-control"
-                                  autocomplete="off"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="form-group ">
-                                <label className="form_lbl">
-                                  Passenger Name :{" "}
-                                </label>
-                                <Field
-                                  name="passenger_name"
-                                  placeholder="Please Enter Passenger Name "
-                                  className="form-control"
-                                  autocomplete="off"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-6">
+                            <div className="col-md-2">
                               <div className="form-group ">
                                 <label className="form_lbl">
                                   Number of Passengers :{" "}
@@ -432,7 +280,102 @@ const TripDetails = (props) => {
                                 </Field>
                               </div>
                             </div>
-                            <div className="col-md-6">
+
+
+                            <div className="col-md-2">
+                              <div className="form-group ">
+                              <label className="form_lbl">
+                                  Notification:{" "}
+                                </label>
+                                <Field
+                                  component={NotificationPicker}
+                                  name="direct_notification_time"
+                                  id="direct_notification_time"
+                                  placeholder="Notification"
+                                  className="form-control"
+                                  autocomplete="off"
+                                />
+                              </div>
+                            </div>
+
+
+
+
+                        
+                            <div className="col-md-6 nopadding">
+                              <div className="col-md-12">
+                                <div className="form-group ">
+                                  <label className="form_lbl">
+                                    Pick Up Address:{" "}
+                                  </label>
+                                  <Field
+                                    component={PickupAddress}
+                                    getPickupLatLng={getPickupLatLng}
+                                    name="pickup_address"
+                                    id="pickupaddressid"
+                                    placeholder="Pick-up-Address"
+                                    autocomplete="off"
+                                    className={`form-control ${
+                                      touched.pickup_address &&
+                                      errors.pickup_address
+                                        ? "is-invalid"
+                                        : ""
+                                    }`}
+                                  />
+                                  <Field name="pickup_lat" type="hidden" />
+                                  <Field name="pickup_lng" type="hidden" />
+                                </div>
+                              </div>
+                              <div className="col-md-12">
+                                <div className="form-group ">
+                                  <label className="form_lbl">
+                                    Drop off Address:{" "}
+                                  </label>
+                                  <Field
+                                    component={DropoffAddress}
+                                    getDropoffLatLng={getDropoffLatLng}
+                                    name="dropoff_address"
+                                    id="dropofaddressid"
+                                    placeholder="drop-off-Address"
+                                    autocomplete="off"
+                                    className={`form-control ${
+                                      touched.dropoff_address &&
+                                      errors.dropoff_address
+                                        ? "is-invalid"
+                                        : ""
+                                    }`}
+                                  />
+                                </div>
+                              </div>
+                              
+
+                            <div className="col-md-6 pull-left">
+                              <div className="form-group ">
+                             
+                                 <label className="form_lbl">
+                                  Passenger Name :{" "}
+                                </label>
+                                <Field
+                                  name="passenger_name"
+                                  placeholder="Please Enter Passenger Name "
+                                  className="form-control"
+                                  autocomplete="off"
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-6 pull-left">
+                              <div className="form-group ">
+                              <label className="form_lbl">Telephone : </label>
+                                <Field
+                                  placeholder="Please Enter Telephone Number"
+                                  name="telephone"
+                                  className="form-control"
+                                  autocomplete="off"
+                                />
+                                
+                              </div>
+                            </div> 
+                            <div className="col-md-6 pull-left">
                               <div className="form-group ">
                                 <label className="form_lbl">
                                   Dispatch Time :{" "}
@@ -445,7 +388,7 @@ const TripDetails = (props) => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-6">
+                            <div className="col-md-6 pull-left">
                               <div className="form-group ">
                                 <label className="form_lbl">Fare : </label>
                                 <Field
@@ -460,7 +403,8 @@ const TripDetails = (props) => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-6">
+
+                            <div className="col-md-6 pull-left">
                               <div className="form-group ">
                                 <label className="form_lbl">Tip : </label>
                                 <Field
@@ -471,7 +415,7 @@ const TripDetails = (props) => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-6 pull-left">
                               <div className="form-group ">
                                 <label className="form_lbl">Tolls : </label>
                                 <Field
@@ -482,7 +426,7 @@ const TripDetails = (props) => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-6 pull-left">
                               <div className="form-group ">
                                 <label className="form_lbl">Wait Time : </label>
                                 <Field
@@ -493,7 +437,7 @@ const TripDetails = (props) => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-6 pull-left">
                               <div className="form-group ">
                                 <label className="form_lbl">Stops : </label>
                                 <Field
@@ -504,7 +448,7 @@ const TripDetails = (props) => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-6 pull-left">
                               <div className="form-group ">
                                 <label className="form_lbl">Misc : </label>
                                 <Field
@@ -515,7 +459,7 @@ const TripDetails = (props) => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-6 pull-left">
                               <div className="form-group ">
                                 <label className="form_lbl">
                                   Account No :{" "}
@@ -528,7 +472,7 @@ const TripDetails = (props) => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-6 pull-left">
                               <div className="form-group ">
                                 <label className="form_lbl">
                                   Voucher No :{" "}
@@ -539,10 +483,9 @@ const TripDetails = (props) => {
                                   className="form-control"
                                   autocomplete="off"
                                 />
-                              </div>
+                              </div>    
                             </div>
-                            <div className="col-md-4  text-center"></div>
-                            <div className="col-md-4  text-center">
+                            <div className="col-md-12  ">
                               <div className="form-group">
                                 <label className="form_lbl">Notes : </label>
                                 <Field
@@ -552,7 +495,23 @@ const TripDetails = (props) => {
                                 />
                               </div>
                             </div>
+                            </div>
+                            <div className="col-md-6">
+                              <div className="form-group ">
+                              <GoogleMaps/>  
+                              </div>
+                            </div>
+                           
+
+                         
+                           
+                            
+                        
+                      
+{/*                          
                             <div className="col-md-4  text-center"></div>
+                           
+                            <div className="col-md-4  text-center"></div> */}
                             <div className="col-md-3 mt-1  text-left">
                               Make this round trip :
                             </div>
@@ -644,6 +603,7 @@ const TripDetails = (props) => {
                               />
                               <span> Moday </span>
                             </div>
+                          
                             <div className="form-group col-md-12 mt-4">
                               <label className="form_lbl">&nbsp; </label>
                               <Button
