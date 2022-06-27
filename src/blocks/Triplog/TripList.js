@@ -51,6 +51,7 @@ const TripList = (props) => {
       case "fare_id":
         return (
           <td
+            key={`fare_id${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -88,12 +89,13 @@ const TripList = (props) => {
                 : "";
             return (
               <td
+                key={`car_no${trip["Triplog"]["id"]}`}
                 className={`cntr_algn window.${back_class} window.${allowreassign}`}
                 rel-tripid={trip["Triplog"]["id"]}
                 rel-affiliate-dispacher={trip["Triplog"]["affiliate_accept"]}
                 rel-parent-dispacher={trip["Triplog"]["parent_dispacher_id"]}
                 rel-current-dispacher={dispacherId}
-                on-hold={`NO`}
+                hold={`NO`}
               >
                 <CarValueUnaccepted
                   value={UnacceptedCarValue}
@@ -120,12 +122,13 @@ const TripList = (props) => {
             }
             return (
               <td
+                key={`car_no${trip["Triplog"]["id"]}`}
                 className={`cntr_algn window.${back_class} `}
                 rel-tripid={trip["Triplog"]["id"]}
                 rel-affiliate-dispacher={trip["Triplog"]["affiliate_accept"]}
                 rel-parent-dispacher={trip["Triplog"]["parent_dispacher_id"]}
                 rel-current-dispacher={dispacherId}
-                on-hold={`NO`}
+                hold={`NO`}
               >
                 <CarValue carName={carName} />
               </td>
@@ -146,20 +149,20 @@ const TripList = (props) => {
           } else if (trip["Triplog"]["multi_suggest"].length != 0) {
             opt = "mult.";
           }
-          return (
-            <CarAutoComplete
+          return (<CarAutoComplete
+              key={`car_no${trip["Triplog"]["id"]}`}
               trip={trip}
               dispacherId={dispacherId}
               back_class={back_class}
               carName={opt}
               sendInfoToAffiliatetriplog={props.sendInfoToAffiliatetriplog}
-            />
-          );
+            />);
         }
         break;
       case "pickup_address":
         return (
           <td
+            key={`pickup_address${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -184,6 +187,7 @@ const TripList = (props) => {
       case "dropoff_address":
         return (
           <td
+            key={`dropoff_address${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -208,6 +212,7 @@ const TripList = (props) => {
       case "created":
         return (
           <td
+            key={`created${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -225,6 +230,7 @@ const TripList = (props) => {
         if (trip["Triplog"]["uu_trip_id"].length !== 0) {
           return (
             <td
+              key={`pickup_time${trip["Triplog"]["id"]}`}
               className={cssclass}
               onClick={() =>
                 openTripDetails(
@@ -246,6 +252,7 @@ const TripList = (props) => {
         } else {
           return (
             <td
+              key={`pickup_time${trip["Triplog"]["id"]}`}
               className={cssclass}
               onClick={() =>
                 openTripDetails(
@@ -269,6 +276,7 @@ const TripList = (props) => {
       case "pickup_date":
         return (
           <td
+            key={`pickup_date${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -285,6 +293,7 @@ const TripList = (props) => {
       case "eta":
         return (
           <td
+            key={`eta${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -301,6 +310,7 @@ const TripList = (props) => {
       case "details":
         return (
           <td
+            key={`details${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -320,6 +330,7 @@ const TripList = (props) => {
       case "car_type":
         return (
           <td
+          key={`car_type${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -334,6 +345,7 @@ const TripList = (props) => {
       case "total_paid_amount":
         return (
           <td
+          key={`total_paid_amount${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -350,6 +362,7 @@ const TripList = (props) => {
       case "telephone":
         return (
           <td
+          key={`telephone${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -366,6 +379,7 @@ const TripList = (props) => {
       case "passenger_name":
         return (
           <td
+          key={`passenger_name${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -380,11 +394,12 @@ const TripList = (props) => {
         );
         break;
       case "cps":
-        return <td className={cssclass}></td>;
+        return <td key={`cps${trip["Triplog"]["id"]}`} className={cssclass}></td>;
         break;
       case "pickup_cross_street":
         return (
           <td
+            key={`pickup_cross${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -401,6 +416,7 @@ const TripList = (props) => {
       case "dropoff_cross_street":
         return (
           <td
+          key={`dropoff_cross${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -417,6 +433,7 @@ const TripList = (props) => {
       case "dispacher_note":
         return (
           <td
+            key={`dispatcher_note${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -433,6 +450,7 @@ const TripList = (props) => {
       case "payment_method":
         return (
           <td
+            key={`payment_method${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -451,6 +469,7 @@ const TripList = (props) => {
       case "account_no":
         return (
           <td
+            key={`account_no${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -467,6 +486,7 @@ const TripList = (props) => {
       case "job_no":
         return (
           <td
+            key={`job_no${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -483,6 +503,7 @@ const TripList = (props) => {
       case "network_parent_company":
         return (
           <td
+            key={`network_parent_company${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -499,6 +520,7 @@ const TripList = (props) => {
       case "network_child_company":
         return (
           <td
+          key={`network_child_company${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -515,6 +537,7 @@ const TripList = (props) => {
       case "sub_userid":
         return (
           <td
+          key={`sub_userid${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -531,6 +554,7 @@ const TripList = (props) => {
       case "arrive_time":
         return (
           <td
+          key={`arrive_time${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -549,6 +573,7 @@ const TripList = (props) => {
       case "pickup_timing":
         return (
           <td
+          key={`pickup_timing${trip["Triplog"]["id"]}`}
             className={cssclass}
             onClick={() =>
               openTripDetails(
@@ -663,6 +688,7 @@ const TripList = (props) => {
       bgclass = "bg_" + bgclass;
       return (
         <tr
+         key={`trip${trip["Triplog"]["id"]}`}
           id={`tripRow${trip["Triplog"]["id"]}`}
           className={`status_${trip["DispatcherTrip"]["trip_status"]}${trip["Triplog"]["status"]} ${back_class}`}
         >
