@@ -15,12 +15,7 @@ import { store, persistor } from "./store/store";
 import { FullPageLoader } from "./blocks/Loaders";
 import { GlobalErrorDialog } from "./blocks/Dialogs";
 import { Toaster } from "react-hot-toast";
-
-
-
 function App() {
-
- 
     return (
     
         <Provider store={store}>
@@ -57,9 +52,7 @@ function App() {
             <GlobalErrorDialog />
           </PersistGate>
         </Provider>
-
     );
   
 }
-
 export default App;

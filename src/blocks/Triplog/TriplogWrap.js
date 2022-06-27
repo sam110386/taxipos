@@ -27,7 +27,6 @@ import * as CarService from "../../services/CarService";
 import { FullPageLoader } from "../Loaders";
 import TelephoneVerfiy from "./Components/TelephoneVerfiy";
 import { usePubNub } from "pubnub-react";
-import { PubNubProvider } from "pubnub-react";
 import { useDispatch } from "react-redux";
 
 const TriplogWrap = (props) => {
@@ -125,7 +124,7 @@ const TriplogWrap = (props) => {
 
   useEffect(() => {
     pubnub.addListener({ message: handleMessage });
-    pubnub.subscribe({ channels, withPresence: true });
+    pubnub.subscribe({ channels/*, withPresence: true */});
   }, [pubnub, channels]);
 
   const reloadTripDetails = async (id, type) => {
