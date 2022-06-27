@@ -63,33 +63,32 @@ const TriplogWrap = (props) => {
     const message = event.message;
     console.log(message);
 
-
-    //     var TripId=msg.tripid;
-    //     if(msg.messageType=='cancelTripWeb'){
-    //         $("table#tripLogTable tr#tripRow"+TripId).remove();
-    //         return;
-    //     }
-    //     if(msg.status=="3"){
-    //         $("table#tripLogTable tr#tripRow"+TripId).remove();
-    //         return;
-    //     }
-    //     if(msg.messageType=='Add'){
-      // reloadTripDetails()
-    //     }
-    //     if(msg.messageType=='Edit'){
-      // reloadTripDetails()
-    //     }
-    //     if(msg.messageType=='statusUpdate'){
-      // reloadTripDetails()
-    //     }
-    //     if(msg.messageType=='award'){
-      // reloadTripDetails()
-    //     }
-    //     if(msg.messageType=='callerid'){
-    //         getcallerinfo();
-    //     }
-
-
+    var TripId = message.tripid;
+    if (message.messageType == "cancelTripWeb") {
+     // $("table#tripLogTable tr#tripRow" + TripId).remove();
+     // return;
+      //store.dispatch(loadTripListDataRemove(res.data.result));
+    }
+    if (message.status == "3") {
+     // $("table#tripLogTable tr#tripRow" + TripId).remove();
+     // return;
+      //store.dispatch(loadTripListDataRemove(res.data.result));
+    }
+    if (message.messageType == "Add") {
+      reloadTripDetails(TripId);
+    }
+    if (message.messageType == "Edit") {
+      reloadTripDetails(TripId);
+    }
+    if (message.messageType == "statusUpdate") {
+      reloadTripDetails(TripId);
+    }
+    if (message.messageType == "award") {
+      reloadTripDetails(TripId);
+    }
+    if (message.messageType == "callerid") {
+      LoadCallorInfoTripLog();
+    }
   };
 
   useEffect(() => {
