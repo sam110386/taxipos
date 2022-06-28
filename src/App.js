@@ -9,7 +9,6 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import Page from "./templates/Page";
-//import Dispatcher from "./templates/Dispatcher";
 import SimplePage from "./templates/SimplePage";
 import { store, persistor } from "./store/store";
 import { FullPageLoader } from "./blocks/Loaders";

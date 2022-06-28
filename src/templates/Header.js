@@ -95,7 +95,9 @@ const Header = ({ isSticky }) => {
                       >
                         Triplog
                       </NavLink>
-                      
+                   
+                   
+                    
                       <button
                         className="dropdown-item"
                         title="Logout"
@@ -103,6 +105,7 @@ const Header = ({ isSticky }) => {
                       >
                         Logout
                       </button>
+                      
                     </div>
                   </li>
                 </>
