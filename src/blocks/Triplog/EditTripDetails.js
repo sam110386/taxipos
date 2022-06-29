@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { Button } from "@material-ui/core";
 import moment from "moment";
 import { optSchema } from "./ValidationSchema/TriplogSchema";
+import GoogleMaps from "./CommonTriplog/GoogleMaps";
 
 const EditTripDetails = (props) => {
   const [device_id, setDeviceId] = useState("");
@@ -64,7 +65,13 @@ const EditTripDetails = (props) => {
     }
     setShareallowed(tripLog.share);
   };
+  // tripLog.pickup_lat
+  const pickupLat = tripLog.pickup_lat;
+  const pickupLng = tripLog.pickup_lng;
+  const dropoffLat = tripLog.dropoff_lat;
+  const dropoffLng = tripLog.dropoff_lng;
 
+  //
   useEffect(() => {
     initall();
   }, []);
@@ -101,7 +108,7 @@ const EditTripDetails = (props) => {
                         {tripLog.dispacher_id ==
                           tripLog.parent_dispacher_id && (
                           <div className="row">
-                            <div className="form-group col-md-6">
+                            <div className="form-group col-md-4">
                               <label className="form_lbl">Car#: </label>
                               <select
                                 name="device_id"
@@ -145,7 +152,7 @@ const EditTripDetails = (props) => {
                               />
                             </div>
 
-                            <div className="form-group col-md-6">
+                            <div className="form-group col-md-4">
                               <label className="form_lbl">Pick Up Date: </label>
 
                               <Field
@@ -159,7 +166,7 @@ const EditTripDetails = (props) => {
                               />
                             </div>
 
-                            <div className="form-group col-md-6">
+                            <div className="form-group col-md-4">
                               <label className="form_lbl">Pick Up time: </label>
                               <Field
                                 name="pickup_time"
@@ -176,7 +183,11 @@ const EditTripDetails = (props) => {
                               />
                             </div>
 
+                          
+
                             <div className="form-group col-md-6">
+
+                            <div className="form-group col-md-12">
                               <label className="form_lbl">
                                 Pick Up Address:{" "}
                               </label>
@@ -204,98 +215,223 @@ const EditTripDetails = (props) => {
                                 }
                               />
                             </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">
-                                Drop off Address:{" "}
-                              </label>
 
-                              <Field
-                                name="dropoff_address"
-                                type="text"
-                                className="form-control"
-                                value={tripLog.dropoff_address}
-                                onChange={(v) =>
-                                  setFieldValue("dropoff_address", v)
-                                }
-                                readOnly={editable}
-                                onKeyUp={() => setFieldValue("destlatlng", "")}
-                              />
-                              <Field
-                                name="destlatlng"
-                                type="hidden"
-                                value={
-                                  tripLog.dropoff_lat +
-                                  "," +
-                                  tripLog.dropoff_lng
-                                }
-                                onChange={(v) => setFieldValue("destlatlng", v)}
-                              />
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">
+                                  Drop off Address:{" "}
+                                </label>
+
+                                <Field
+                                  name="dropoff_address"
+                                  type="text"
+                                  className="form-control"
+                                  value={tripLog.dropoff_address}
+                                  onChange={(v) =>
+                                    setFieldValue("dropoff_address", v)
+                                  }
+                                  readOnly={editable}
+                                  onKeyUp={() =>
+                                    setFieldValue("destlatlng", "")
+                                  }
+                                />
+                                <Field
+                                  name="destlatlng"
+                                  type="hidden"
+                                  value={
+                                    tripLog.dropoff_lat +
+                                    "," +
+                                    tripLog.dropoff_lng
+                                  }
+                                  onChange={(v) =>
+                                    setFieldValue("destlatlng", v)
+                                  }
+                                />
+                              </div>
+
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">
+                                  Telephone number:{" "}
+                                </label>
+
+                                <Field
+                                  name="telephone"
+                                  type="text"
+                                  className="form-control"
+                                  value={tripLog.telephone}
+                                  onChange={(v) =>
+                                    setFieldValue("telephone", v)
+                                  }
+                                />
+                              </div>
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">
+                                  Passenger Name:{" "}
+                                </label>
+
+                                <Field
+                                  name="passenger_name"
+                                  type="text"
+                                  className="form-control"
+                                  value={tripLog.passenger_name}
+                                  onChange={(v) =>
+                                    setFieldValue("passenger_name", v)
+                                  }
+                                />
+                              </div>
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">
+                                  Dispatch Time:{" "}
+                                </label>
+
+                                <Field
+                                  name="dispatch_time"
+                                  type="text"
+                                  className="form-control"
+                                  value={tripLog.dispatch_time}
+                                  onChange={(v) =>
+                                    setFieldValue("dispatch_time", v)
+                                  }
+                                />
+                              </div>
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">
+                                  Number of Passengers:{" "}
+                                </label>
+
+                                <select
+                                  name="amt_of_passengers"
+                                  className="form-control w-100"
+                                  onChange={(v) =>
+                                    setFieldValue("amt_of_passengers", v)
+                                  }
+                                  defaultValue={tripLog.amt_of_passengers}
+                                >
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option value="4">4</option>
+                                  <option value="5">5</option>
+                                  <option value="6">6</option>
+                                </select>
+                              </div>
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">Fare: </label>
+
+                                <Field
+                                  type="text"
+                                  name="fare"
+                                  className="form-control"
+                                  value={tripLog.fare}
+                                  onChange={(v) => setFieldValue("fare", v)}
+                                />
+                              </div>
+
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">Tip: </label>
+
+                                <Field
+                                  name="tip"
+                                  type="text"
+                                  className="form-control"
+                                  value={tripLog.tip}
+                                  onChange={(v) => setFieldValue("tip", v)}
+                                />
+                              </div>
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">Tolls: </label>
+
+                                <Field
+                                  name="toll"
+                                  type="text"
+                                  className="form-control"
+                                  value={tripLog.toll}
+                                  onChange={(v) => setFieldValue("toll", v)}
+                                />
+                              </div>
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">Wait time: </label>
+
+                                <Field
+                                  name="wait_time"
+                                  type="text"
+                                  className="form-control"
+                                  value={tripLog.wait_time}
+                                  onChange={(v) =>
+                                    setFieldValue("wait_time", v)
+                                  }
+                                />
+                              </div>
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">Stops: </label>
+
+                                <Field
+                                  name="stops"
+                                  type="text"
+                                  className="form-control"
+                                  value={tripLog.stops}
+                                  onChange={(v) => setFieldValue("stops", v)}
+                                />
+                              </div>
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">Misc: </label>
+
+                                <Field
+                                  name="misc"
+                                  type="text"
+                                  className="form-control"
+                                  value={tripLog.misc}
+                                  onChange={(v) => setFieldValue("misc", v)}
+                                />
+                              </div>
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">Account No: </label>
+
+                                <select
+                                  name="account_no"
+                                  className="form-control w-100"
+                                  onChange={(v) =>
+                                    setFieldValue("account_no", v)
+                                  }
+                                  defaultValue={tripLog.account_no}
+                                >
+                                  {accountnos &&
+                                    Object.keys(accountnos).map((i) => (
+                                      <option value={i}>{accountnos[i]}</option>
+                                    ))}
+                                </select>
+                              </div>
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">Voucher No: </label>
+
+                                <Field
+                                  name="job_no"
+                                  type="text"
+                                  className="form-control"
+                                  value={tripLog.job_no}
+                                  onChange={(v) => setFieldValue("job_no", v)}
+                                />
+                              </div>
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">Notes: </label>
+
+                                <Field
+                                  name="details"
+                                  type="textarea"
+                                  className="form-control"
+                                  value={tripLog.details}
+                                  onChange={(v) => setFieldValue("details", v)}
+                                />
+                              </div>
                             </div>
                             <div className="form-group col-md-6">
-                              <label className="form_lbl">
-                                Telephone number:{" "}
-                              </label>
-
-                              <Field
-                                name="telephone"
-                                type="text"
-                                className="form-control"
-                                value={tripLog.telephone}
-                                onChange={(v) => setFieldValue("telephone", v)}
+                              <GoogleMaps
+                                latlng={
+                                  {pickupLat, pickupLng, dropoffLat, dropoffLng}
+                                }
+                                status = {props.currentBooking.Triplog.status}
                               />
                             </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">
-                                Passenger Name:{" "}
-                              </label>
-
-                              <Field
-                                name="passenger_name"
-                                type="text"
-                                className="form-control"
-                                value={tripLog.passenger_name}
-                                onChange={(v) =>
-                                  setFieldValue("passenger_name", v)
-                                }
-                              />
-                            </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">
-                                Number of Passengers:{" "}
-                              </label>
-
-                              <select
-                                name="amt_of_passengers"
-                                className="form-control w-100"
-                                onChange={(v) =>
-                                  setFieldValue("amt_of_passengers", v)
-                                }
-                                defaultValue={tripLog.amt_of_passengers}
-                              >
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                              </select>
-                            </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">
-                                Dispatch Time:{" "}
-                              </label>
-
-                              <Field
-                                name="dispatch_time"
-                                type="text"
-                                className="form-control"
-                                value={tripLog.dispatch_time}
-                                onChange={(v) =>
-                                  setFieldValue("dispatch_time", v)
-                                }
-                              />
-                            </div>
-                            <div className="form-group col-md-6">
+                            <div className="form-group col-md-12">
                               <label className="form_lbl">
                                 Sharing Allowed:{" "}
                               </label>
@@ -313,109 +449,7 @@ const EditTripDetails = (props) => {
                                 }
                               />
                             </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">Fare: </label>
 
-                              <Field
-                                type="text"
-                                name="fare"
-                                className="form-control"
-                                value={tripLog.fare}
-                                onChange={(v) => setFieldValue("fare", v)}
-                              />
-                            </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">Tip: </label>
-
-                              <Field
-                                name="tip"
-                                type="text"
-                                className="form-control"
-                                value={tripLog.tip}
-                                onChange={(v) => setFieldValue("tip", v)}
-                              />
-                            </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">Tolls: </label>
-
-                              <Field
-                                name="toll"
-                                type="text"
-                                className="form-control"
-                                value={tripLog.toll}
-                                onChange={(v) => setFieldValue("toll", v)}
-                              />
-                            </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">Wait time: </label>
-
-                              <Field
-                                name="wait_time"
-                                type="text"
-                                className="form-control"
-                                value={tripLog.wait_time}
-                                onChange={(v) => setFieldValue("wait_time", v)}
-                              />
-                            </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">Stops: </label>
-
-                              <Field
-                                name="stops"
-                                type="text"
-                                className="form-control"
-                                value={tripLog.stops}
-                                onChange={(v) => setFieldValue("stops", v)}
-                              />
-                            </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">Misc: </label>
-
-                              <Field
-                                name="misc"
-                                type="text"
-                                className="form-control"
-                                value={tripLog.misc}
-                                onChange={(v) => setFieldValue("misc", v)}
-                              />
-                            </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">Account No: </label>
-
-                              <select
-                                name="account_no"
-                                className="form-control w-100"
-                                onChange={(v) => setFieldValue("account_no", v)}
-                                defaultValue={tripLog.account_no}
-                              >
-                                {accountnos &&
-                                  Object.keys(accountnos).map((i) => (
-                                    <option value={i}>{accountnos[i]}</option>
-                                  ))}
-                              </select>
-                            </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">Voucher No: </label>
-
-                              <Field
-                                name="job_no"
-                                type="text"
-                                className="form-control"
-                                value={tripLog.job_no}
-                                onChange={(v) => setFieldValue("job_no", v)}
-                              />
-                            </div>
-                            <div className="form-group col-md-6">
-                              <label className="form_lbl">Notes: </label>
-
-                              <Field
-                                name="details"
-                                type="textarea"
-                                className="form-control"
-                                value={tripLog.details}
-                                onChange={(v) => setFieldValue("details", v)}
-                              />
-                            </div>
                             <div className="form-group col-md-12">
                               <label className="form_lbl">&nbsp; </label>
 

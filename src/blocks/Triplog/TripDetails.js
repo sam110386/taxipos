@@ -20,7 +20,7 @@ import { CreateTrip } from "./CommonTriplog/CreateTrip";
 import { NotificationPicker } from "../Pickers/NotificationPicker";
 import GoogleMaps from "./CommonTriplog/GoogleMaps";
 
-export const LatLng = createContext();
+
 
 const TripDetails = (props) => {
   const formikRef = useRef();
@@ -54,12 +54,10 @@ const TripDetails = (props) => {
   });
 
   const getPickupLatLng = (pickupAddressLat, pickupAddressLng) => {
-    console.log("pickuplatlng", pickupAddressLat, pickupAddressLng);
     setPickupLat(pickupAddressLat);
     setPickupLng(pickupAddressLng);
   };
   const getDropoffLatLng = (dropofAddressLat, dropofAddressLng) => {
-    console.log("dropofflatlng", dropofAddressLat, dropofAddressLng);
     setDropoffLat(dropofAddressLat);
     setDropoffLng(dropofAddressLng);
   };
@@ -146,7 +144,6 @@ const TripDetails = (props) => {
 
   return (
     <React.Fragment>
-      <LatLng.Provider value={{pickupLat, pickupLng, dropoffLat, dropoffLng}}>
         <div
           className="modal d-block mymodal tripModal"
           tabIndex="-1"
@@ -501,9 +498,14 @@ const TripDetails = (props) => {
                                 </div>
                               </div>
                               <div className="col-md-6">
-                                <div className="form-group ">
-                                  <GoogleMaps />
-                                </div>
+                                <GoogleMaps
+                                  latlng={{
+                                    pickupLat,
+                                    pickupLng,
+                                    dropoffLat,
+                                    dropoffLng,
+                                  }}
+                                />
                               </div>
 
                               {/*                          
@@ -654,7 +656,7 @@ const TripDetails = (props) => {
             </div>
           </div>
         </div>
-      </LatLng.Provider>
+
     </React.Fragment>
   );
 };

@@ -346,6 +346,7 @@ const TriplogWrap = (props) => {
 
   useEffect(() => {
     if (formikRef.current) {
+      console.log(mainState)
       formikRef.current.setFieldValue("pickup_lat", mainState.pickupLat);
       formikRef.current.setFieldValue("pickup_lng", mainState.pickupLng);
       formikRef.current.setFieldValue("dropoff_lat", mainState.dropoffLat);
