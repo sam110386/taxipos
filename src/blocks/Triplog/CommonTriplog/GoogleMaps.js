@@ -3,7 +3,7 @@ import { GoogleMap, DirectionsRenderer, Marker } from "@react-google-maps/api";
 
 // driveitaway_car.png
 export default function GoogleMaps({ latlng, status }) {
-  console.log("SDASDSD",latlng, status)
+
   const [activeMarker, setActiveMarker] = useState(null);
   const [state, setState] = useState(null);
   const DirectionsService = new window.google.maps.DirectionsService();
@@ -48,7 +48,23 @@ export default function GoogleMaps({ latlng, status }) {
   );
   return (
     <>
-      <GoogleMap
+     {status === undefined ?  <GoogleMap
+        onLoad={handleOnLoad}
+        zoom={10}
+        center={center}
+        onClick={() => setActiveMarker(null)}
+        mapContainerStyle={{ width: "530px", height: "650px" }}
+      >
+        {
+          latlng.pickupLat === "" && latlng.dropoffLat === "" ? null : 
+            <>
+              <DirectionsRenderer directions={state} />
+           
+     
+            </>
+}
+        
+      </GoogleMap> :  <GoogleMap
         onLoad={handleOnLoad}
         zoom={10}
         center={center}
@@ -76,7 +92,7 @@ export default function GoogleMaps({ latlng, status }) {
             </>
 }
         
-      </GoogleMap>
+      </GoogleMap>}
     </>
   );
 }
