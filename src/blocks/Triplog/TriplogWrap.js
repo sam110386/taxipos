@@ -61,7 +61,7 @@ const TriplogWrap = (props) => {
 
   const [channels] = useState([
     `PCAPP_${userDetails.DispatcherId}`,
-    `CTGPCAPP_${userDetails.DispatcherId}`,
+    // `CTGPCAPP_${userDetails.DispatcherId}`,
   ]);
 
  
@@ -190,7 +190,7 @@ const TriplogWrap = (props) => {
     }
   };
   const gettelenum = (num) => {
-    console.log(num);
+    // console.log(num);
   };
   // const sendInfoToCar_triplog = async(car_no, device_id, id, status, call_type_line)=> {
 
@@ -346,7 +346,6 @@ const TriplogWrap = (props) => {
 
   useEffect(() => {
     if (formikRef.current) {
-      console.log(mainState)
       formikRef.current.setFieldValue("pickup_lat", mainState.pickupLat);
       formikRef.current.setFieldValue("pickup_lng", mainState.pickupLng);
       formikRef.current.setFieldValue("dropoff_lat", mainState.dropoffLat);
