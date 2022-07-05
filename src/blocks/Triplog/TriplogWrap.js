@@ -28,6 +28,7 @@ import { FullPageLoader } from "../Loaders";
 import TelephoneVerfiy from "./Components/TelephoneVerfiy";
 import { usePubNub } from "pubnub-react";
 import { useDispatch } from "react-redux";
+import { useFormikContext } from "formik";
 
 const TriplogWrap = (props) => {
   const { userDetails, tripList } = useSelector((mainState) => {
@@ -38,6 +39,7 @@ const TriplogWrap = (props) => {
   });
   const dispatch = useDispatch();
   const formikRef = useRef();
+  const [reset, setReset] = useState(false);
   const [submiting, setSubmitting] = useState(false);
   const [showEditTrip, SetShowEditTrip] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
@@ -64,13 +66,8 @@ const TriplogWrap = (props) => {
     // `CTGPCAPP_${userDetails.DispatcherId}`,
   ]);
 
- 
-
-
-
   const handleMessage = (event) => {
     const message = event.message;
-
 
     var TripId = message.tripid;
     if (message.messageType == "cancelTripWeb") {
@@ -124,7 +121,7 @@ const TriplogWrap = (props) => {
 
   useEffect(() => {
     pubnub.addListener({ message: handleMessage });
-    pubnub.subscribe({ channels/*, withPresence: true */});
+    pubnub.subscribe({ channels /*, withPresence: true */ });
   }, [pubnub, channels]);
 
   const reloadTripDetails = async (id, type) => {
@@ -190,8 +187,11 @@ const TriplogWrap = (props) => {
     }
   };
   const gettelenum = (num) => {
-    // console.log(num);
+    setMainState((prev) => ({ ...prev, tpnum: num }));
   };
+  useEffect(() => {
+    formikRef.current.setFieldValue("telephone", mainState.tpnum);
+  }, [mainState.tpnum]);
   // const sendInfoToCar_triplog = async(car_no, device_id, id, status, call_type_line)=> {
 
   //     var call_type = '';
@@ -369,12 +369,35 @@ const TriplogWrap = (props) => {
     toast.error(message);
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, resetForm) => {
+    setTimeout(() => {
+      setReset(!reset);
+    }, 3000);
+    console.log("VALUES",values)
     setMainState({ ...mainState, btndisable: true });
     CreateTrip(values).then((e) => {
       setMainState({ ...mainState, btndisable: false });
+      resetForm({ values: initial_Values });
+      setReset(true)
+      formikRef.current.resetForm({values:""});
+      formikRef.current.setFieldValue(
+        "pickup_time",
+        mainState.CurrentPickupTime
+      );
+      formikRef.current.setFieldValue("pickup_date", mainState.CurrentDate);
+    
+      setReset(false)
     });
+
   };
+  // useEffect(() => {
+  //   console.log("First Occurence", mainState.tpnum);
+  //   setMainState({ ...mainState, tpnum: "" });
+  //   setTimeout(() => {
+  //     const num = "";
+  //     formikRef.current.setFieldValue("telephone", num);
+  //   }, 2000);
+  // }, [reset]);
 
   const fareEstimate = async (values) => {
     try {
@@ -552,10 +575,9 @@ const TriplogWrap = (props) => {
             innerRef={formikRef}
             initialValues={initial_Values}
             validationSchema={TriplogSchema}
-            onSubmit={(values,{resetForm}) => {
+            onSubmit={(values, { resetForm }) => {
               setTimeout(() => {
-                handleSubmit(values);
-                resetForm({values:""})
+                handleSubmit(values, resetForm);
               }, 2000);
             }}
           >
@@ -651,6 +673,7 @@ const TriplogWrap = (props) => {
                         name="telephone"
                         component={TelephoneVerfiy}
                         getTelenum={gettelenum}
+                        reset={reset}
                         placeholder="Telephone"
                         className="form-control"
                         autoComplete="off"

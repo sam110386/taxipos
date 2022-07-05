@@ -52,7 +52,7 @@ const TripList = (props) => {
         return (
           <td
             key={`fare_id${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -90,7 +90,7 @@ const TripList = (props) => {
             return (
               <td
                 key={`car_no${trip["Triplog"]["id"]}`}
-                className={`cntr_algn window.${back_class} window.${allowreassign}`}
+                className={`cntr_algn ${back_class} ${allowreassign}`}
                 rel-tripid={trip["Triplog"]["id"]}
                 rel-affiliate-dispacher={trip["Triplog"]["affiliate_accept"]}
                 rel-parent-dispacher={trip["Triplog"]["parent_dispacher_id"]}
@@ -123,7 +123,7 @@ const TripList = (props) => {
             return (
               <td
                 key={`car_no${trip["Triplog"]["id"]}`}
-                className={`cntr_algn window.${back_class} `}
+                className={`cntr_algn ${back_class} `}
                 rel-tripid={trip["Triplog"]["id"]}
                 rel-affiliate-dispacher={trip["Triplog"]["affiliate_accept"]}
                 rel-parent-dispacher={trip["Triplog"]["parent_dispacher_id"]}
@@ -149,21 +149,27 @@ const TripList = (props) => {
           } else if (trip["Triplog"]["multi_suggest"].length != 0) {
             opt = "mult.";
           }
-          return (<CarAutoComplete
+          return (
+          <td
+           className={`${back_class} `}
+          >
+          <CarAutoComplete
               key={`car_no${trip["Triplog"]["id"]}`}
               trip={trip}
               dispacherId={dispacherId}
               back_class={back_class}
               carName={opt}
               sendInfoToAffiliatetriplog={props.sendInfoToAffiliatetriplog}
-            />);
+            />
+            </td>
+            );
         }
         break;
       case "pickup_address":
         return (
           <td
             key={`pickup_address${trip["Triplog"]["id"]}`}
-            className={cssclass}
+            className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -188,7 +194,7 @@ const TripList = (props) => {
         return (
           <td
             key={`dropoff_address${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -213,7 +219,7 @@ const TripList = (props) => {
         return (
           <td
             key={`created${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -231,7 +237,7 @@ const TripList = (props) => {
           return (
             <td
               key={`pickup_time${trip["Triplog"]["id"]}`}
-              className={cssclass}
+               className={`${back_class} `}
               onClick={() =>
                 openTripDetails(
                   trip["Triplog"]["id"],
@@ -253,7 +259,7 @@ const TripList = (props) => {
           return (
             <td
               key={`pickup_time${trip["Triplog"]["id"]}`}
-              className={cssclass}
+               className={`${back_class} `}
               onClick={() =>
                 openTripDetails(
                   trip["Triplog"]["id"],
@@ -277,7 +283,7 @@ const TripList = (props) => {
         return (
           <td
             key={`pickup_date${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -294,7 +300,7 @@ const TripList = (props) => {
         return (
           <td
             key={`eta${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -311,7 +317,7 @@ const TripList = (props) => {
         return (
           <td
             key={`details${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -331,7 +337,7 @@ const TripList = (props) => {
         return (
           <td
           key={`car_type${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -346,7 +352,7 @@ const TripList = (props) => {
         return (
           <td
           key={`total_paid_amount${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -363,7 +369,7 @@ const TripList = (props) => {
         return (
           <td
           key={`telephone${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -380,7 +386,7 @@ const TripList = (props) => {
         return (
           <td
           key={`passenger_name${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -394,13 +400,13 @@ const TripList = (props) => {
         );
         break;
       case "cps":
-        return <td key={`cps${trip["Triplog"]["id"]}`} className={cssclass}></td>;
+        return <td key={`cps${trip["Triplog"]["id"]}`}  className={`${back_class} `}></td>;
         break;
       case "pickup_cross_street":
         return (
           <td
             key={`pickup_cross${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -417,7 +423,7 @@ const TripList = (props) => {
         return (
           <td
           key={`dropoff_cross${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -434,7 +440,7 @@ const TripList = (props) => {
         return (
           <td
             key={`dispatcher_note${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -451,7 +457,7 @@ const TripList = (props) => {
         return (
           <td
             key={`payment_method${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -470,7 +476,7 @@ const TripList = (props) => {
         return (
           <td
             key={`account_no${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -487,7 +493,7 @@ const TripList = (props) => {
         return (
           <td
             key={`job_no${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -504,7 +510,7 @@ const TripList = (props) => {
         return (
           <td
             key={`network_parent_company${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -521,7 +527,7 @@ const TripList = (props) => {
         return (
           <td
           key={`network_child_company${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -538,7 +544,7 @@ const TripList = (props) => {
         return (
           <td
           key={`sub_userid${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -555,7 +561,7 @@ const TripList = (props) => {
         return (
           <td
           key={`arrive_time${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -574,7 +580,7 @@ const TripList = (props) => {
         return (
           <td
           key={`pickup_timing${trip["Triplog"]["id"]}`}
-            className={cssclass}
+             className={`${back_class} `}
             onClick={() =>
               openTripDetails(
                 trip["Triplog"]["id"],
@@ -652,9 +658,9 @@ const TripList = (props) => {
   const processTripList = () => {
     return Object.values(tripAllList).map(function(trip, index, arr) {
       //let eta = 0;
-      let bgclass,
-        back_class,
-        blink_class = "";
+      let bgclass='';
+      let back_class='';
+      let blink_class = "";
       if (trip["DispatcherTrip"]["trip_status"] == 3) {
         bgclass = "blue_col";
       } else {
@@ -671,13 +677,13 @@ const TripList = (props) => {
         trip["DispatcherTrip"]["is_reservation"] == 1 &&
         trip["Triplog"]["account_no"].length !== 0
       ) {
-        back_class = "pink_text";
+        back_class = "pink";
       }
       if (
         trip["DispatcherTrip"]["is_reservation"] == 1 &&
         trip["Triplog"]["account_no"].length == 0
       ) {
-        back_class = "blue_text";
+        back_class = "blue";
       }
       if (
         trip["DispatcherTrip"]["is_reservation"] != 1 &&
@@ -685,8 +691,7 @@ const TripList = (props) => {
       ) {
         back_class = "purple";
       }
-      bgclass = "bg_" + bgclass;
-      // console.log("cssClasses",bgclass,back_class, blink_class)
+      bgclass='bg_'+bgclass;
       return (
         <tr
          key={`trip${trip["Triplog"]["id"]}`}
