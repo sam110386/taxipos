@@ -171,7 +171,7 @@ const TripDetails = (props) => {
                       validationSchema={TriplogSchema}
                       onSubmit={(values,{resetForm}) => {
                         handleSubmit(values);
-                        resetForm()
+                        resetForm({values:""})
                       }}
                     >
                       {({ errors, touched, setFieldValue }) => (

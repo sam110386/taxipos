@@ -555,7 +555,7 @@ const TriplogWrap = (props) => {
             onSubmit={(values,{resetForm}) => {
               setTimeout(() => {
                 handleSubmit(values);
-                resetForm()
+                resetForm({values:""})
               }, 2000);
             }}
           >

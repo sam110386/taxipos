@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 const CarValue = (props) => {
-    const [carName, setCarName] = useState(props.carName)
-    const handleChnage = (event) => {
-        setCarName(event.target.value);
+  const [carName, setCarName] = useState(props.carName);
+  const [toogle, setToogle] = useState(false);
+  const handleChnage = (event) => {
+    setCarName(event.target.value);
+  };
+  return (
+    <>
+    {toogle?   <input value={carName} onChange={handleChnage} />:
+    <span onClick={() => setToogle(true)}>{carName}</span>
     }
-    return (
-        <input value={carName} onChange={handleChnage}></input>
-    )
-
-}
+    </>
+  );
+};
 export default CarValue;

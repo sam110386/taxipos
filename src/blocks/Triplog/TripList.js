@@ -671,13 +671,13 @@ const TripList = (props) => {
         trip["DispatcherTrip"]["is_reservation"] == 1 &&
         trip["Triplog"]["account_no"].length !== 0
       ) {
-        back_class = "pink";
+        back_class = "pink_text";
       }
       if (
         trip["DispatcherTrip"]["is_reservation"] == 1 &&
         trip["Triplog"]["account_no"].length == 0
       ) {
-        back_class = "blue";
+        back_class = "blue_text";
       }
       if (
         trip["DispatcherTrip"]["is_reservation"] != 1 &&
@@ -686,6 +686,7 @@ const TripList = (props) => {
         back_class = "purple";
       }
       bgclass = "bg_" + bgclass;
+      // console.log("cssClasses",bgclass,back_class, blink_class)
       return (
         <tr
          key={`trip${trip["Triplog"]["id"]}`}
