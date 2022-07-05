@@ -169,8 +169,9 @@ const TripDetails = (props) => {
                       innerRef={formikRef}
                       initialValues={TripDetails_initial_Values}
                       validationSchema={TriplogSchema}
-                      onSubmit={(values) => {
+                      onSubmit={(values,{resetForm}) => {
                         handleSubmit(values);
+                        resetForm()
                       }}
                     >
                       {({ errors, touched, setFieldValue }) => (

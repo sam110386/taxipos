@@ -224,8 +224,9 @@ const CallerIdDetails = (props) => {
                     innerRef={formikRef}
                     initialValues={initiaal_Values}
                     validationSchema={TriplogSchema}
-                    onSubmit={(values) => {
+                    onSubmit={(values,{resetForm}) => {
                       handleSubmit(values);
+                      resetForm()
                     }}
                   >
                     {({ errors, touched }) => (

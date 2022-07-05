@@ -552,9 +552,10 @@ const TriplogWrap = (props) => {
             innerRef={formikRef}
             initialValues={initial_Values}
             validationSchema={TriplogSchema}
-            onSubmit={(values) => {
+            onSubmit={(values,{resetForm}) => {
               setTimeout(() => {
                 handleSubmit(values);
+                resetForm()
               }, 2000);
             }}
           >
