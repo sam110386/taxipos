@@ -7,6 +7,7 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Settings from "../pages/account/Profile/Settings";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function Page(props) {
   const { publishkey, subscribekey } = useSelector((state) => {
@@ -15,7 +16,8 @@ function Page(props) {
       subscribekey: state.profile.subscribekey,
     };
   });
-
+  const { userLoggedIn } = useSelector((state) => state.auth);
+  const btnRef = useRef();
   const pubnub = new PubNub({
     subscribeKey:
       subscribekey === null
@@ -79,9 +81,23 @@ function Page(props) {
     };
   }, [toggleSticky]);
 
+  const redirect = () => {
+    if (userLoggedIn === false) {
+      btnRef.current.click();
+    }
+  };
+  useEffect(() => {
+    if (!userLoggedIn) {
+      btnRef.current.click();
+    }
+  }, [userLoggedIn]);
+
   return (
-    <div>
+    <>
       <PubNubProvider client={pubnub}>
+        <button ref={btnRef} onClick={redirect} style={{ display: "none" }}>
+          <Link to="/">click</Link>
+        </button>
         {getHead()}
 
         <div
@@ -95,9 +111,10 @@ function Page(props) {
         >
           {getPage()}
         </div>
-        {/* <Footer /> */}
       </PubNubProvider>
-    </div>
+    </>
   );
 }
+
+
 export default Page;

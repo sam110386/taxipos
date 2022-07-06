@@ -130,7 +130,7 @@ const TripList = (props) => {
                 rel-current-dispacher={dispacherId}
                 hold={`NO`}
               >
-                <CarValue carName={carName} />
+                <CarValue carName={carName} rel_affiliate_dispache={trip["Triplog"]["affiliate_accept"]} rel_parent_dispacher={trip["Triplog"]["parent_dispacher_id"]} rel_current_dispacher={dispacherId} />
               </td>
             );
           }
@@ -708,7 +708,9 @@ const TripList = (props) => {
               idx
             );
           })}
-          <td>
+          <td
+    // className={`${back_class} `}
+          >
             <img
               src="/images/b_drop.png"
               onClick={() => CancelTrip(index, trip.DispatcherTrip.trip_id)}

@@ -14,6 +14,7 @@ import { store, persistor } from "./store/store";
 import { FullPageLoader } from "./blocks/Loaders";
 import { GlobalErrorDialog } from "./blocks/Dialogs";
 import { Toaster } from "react-hot-toast";
+import { history } from "./History/history";
 function App() {
     return (
     
@@ -23,9 +24,9 @@ function App() {
               <Toaster />
             </div>
             
-            <Router basename={`${process.env.PUBLIC_URL}/`}>
-              <Switch>
-                <Route exact path="/" render={() => <Page page="homepage" />} />
+            <Router basename={`${process.env.PUBLIC_URL}/`}  >
+              <Switch  >
+                <Route exact path="/" render={() => <Page page="homepage" />}  />
 
                 <Route
                   exact
