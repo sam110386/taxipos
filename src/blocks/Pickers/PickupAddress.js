@@ -9,7 +9,7 @@ const PickupAddress = ({ field, form, id, getPickupLatLng, ...props }) => {
   const [pickupLng, setPickupAddressLng] = useState("");
   const { setFieldValue, getFieldMeta } = useFormikContext();
   const { name, value } = field;
-
+console.log(name)
   const getPickupAddress = async () => {
     var google = await loader.load();
     let autocomplete = new google.maps.places.Autocomplete(
@@ -25,6 +25,7 @@ const PickupAddress = ({ field, form, id, getPickupLatLng, ...props }) => {
       setPickupAddressLng(placeorg.geometry.location.lng());
     });
   };
+
   useEffect(() => {
     getPickupAddress();
   }, []);

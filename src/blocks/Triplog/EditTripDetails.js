@@ -5,8 +5,17 @@ import { Button } from "@material-ui/core";
 import moment from "moment";
 import { optSchema } from "./ValidationSchema/TriplogSchema";
 import GoogleMaps from "./CommonTriplog/GoogleMaps";
+import { useRef } from "react";
+import PickupAddress from "../Pickers/PickupAddress";
 
 const EditTripDetails = (props) => {
+  const formikRef = useRef();
+  const [cordinates, setCordinates] = useState({
+    pickup_lat: "",
+    pickup_lng: "",
+    dropoff_lat: "",
+    dropoff_lng: "",
+  });
   const [device_id, setDeviceId] = useState("");
   const [editable, setEditable] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
@@ -66,15 +75,18 @@ const EditTripDetails = (props) => {
     setShareallowed(tripLog.share);
   };
   // tripLog.pickup_lat
-  const pickupLat = tripLog.pickup_lat;
-  const pickupLng = tripLog.pickup_lng;
-  const dropoffLat = tripLog.dropoff_lat;
-  const dropoffLng = tripLog.dropoff_lng;
+  let pickupLat = tripLog.pickup_lat;
+  let pickupLng = tripLog.pickup_lng;
+  let dropoffLat = tripLog.dropoff_lat;
+  let dropoffLng = tripLog.dropoff_lng;
 
   //
   useEffect(() => {
     initall();
   }, []);
+  const getPickUp =(l,n) =>{
+    console.log(l,n)
+  }
   return (
     <React.Fragment>
       <div className="modal d-block mymodal" tabIndex="-1" role="dialog">
@@ -96,14 +108,30 @@ const EditTripDetails = (props) => {
               <div className="modal-body py-3">
                 <div className="col-12">
                   <Formik
-                    initialValues={{}}
+                    innerRef={formikRef}
+                    initialValues={{
+                      telephone: tripLog.telephone,
+                      passenger_name: tripLog.passenger_name,
+                      dispatch_time: tripLog.dispatch_time,
+                      amt_of_passengers: "",
+                      fare: tripLog.fare,
+                      tip: tripLog.tip,
+                      toll: tripLog.toll,
+                      wait_time: tripLog.wait_time,
+                      stops: tripLog.stops,
+                      misc: tripLog.misc,
+                      amt_of_passengers: "",
+                      account_no: "",
+                      job_no: tripLog.job_no,
+                      dispacher_note: tripLog.dispacher_note,
+                    }}
                     className="form-horizontal"
                     validationSchema={optSchema}
                     onSubmit={(values) => {
                       //handleSubmit(values);
                     }}
                   >
-                    {({ setFieldValue, values, submitForm }) => (
+                    {({ setFieldValue, values, submitForm, handleChange }) => (
                       <>
                         {tripLog.dispacher_id ==
                           tripLog.parent_dispacher_id && (
@@ -183,38 +211,39 @@ const EditTripDetails = (props) => {
                               />
                             </div>
 
-                          
-
                             <div className="form-group col-md-6">
-
-                            <div className="form-group col-md-12">
-                              <label className="form_lbl">
-                                Pick Up Address:{" "}
-                              </label>
-                              <Field
-                                name="pickup_address"
-                                type="text"
-                                className="form-control"
-                                value={tripLog.pickup_address}
-                                onChange={(v) =>
-                                  setFieldValue("pickup_address", v)
-                                }
-                                readOnly={editable}
-                                onKeyUp={() =>
-                                  setFieldValue("originlatlng", "")
-                                }
-                              />
-                              <Field
-                                name="originlatlng"
-                                type="hidden"
-                                value={
-                                  tripLog.pickup_lat + "," + tripLog.pickup_lng
-                                }
-                                onChange={(v) =>
-                                  setFieldValue("originlatlng", v)
-                                }
-                              />
-                            </div>
+                              <div className="form-group col-md-12">
+                                <label className="form_lbl">
+                                  Pick Up Address:{" "}
+                                </label>
+                                <Field
+                                  name="pickup_address"
+                                  type="text"
+                                  className="form-control"
+                                  component = {PickupAddress}
+                                  getPickupLatLng={getPickUp}
+                                  // value={tripLog.pickup_address}
+                                  // onChange={(v) =>
+                                  //   setFieldValue("pickup_address", v)
+                                  // }
+                                  readOnly={editable}
+                                  onKeyUp={() =>
+                                    setFieldValue("originlatlng", "")
+                                  }
+                                />
+                                <Field
+                                  name="originlatlng"
+                                  type="hidden"
+                                  value={
+                                    tripLog.pickup_lat +
+                                    "," +
+                                    tripLog.pickup_lng
+                                  }
+                                  onChange={(v) =>
+                                    setFieldValue("originlatlng", v)
+                                  }
+                                />
+                              </div>
 
                               <div className="form-group col-md-12">
                                 <label className="form_lbl">
@@ -257,10 +286,8 @@ const EditTripDetails = (props) => {
                                   name="telephone"
                                   type="text"
                                   className="form-control"
-                                  value={tripLog.telephone}
-                                  onChange={(v) =>
-                                    setFieldValue("telephone", v)
-                                  }
+                                  value={values.telephone}
+                                  onChange={handleChange}
                                 />
                               </div>
                               <div className="form-group col-md-12">
@@ -272,10 +299,8 @@ const EditTripDetails = (props) => {
                                   name="passenger_name"
                                   type="text"
                                   className="form-control"
-                                  value={tripLog.passenger_name}
-                                  onChange={(v) =>
-                                    setFieldValue("passenger_name", v)
-                                  }
+                                  value={values.passenger_name}
+                                  onChange={handleChange}
                                 />
                               </div>
                               <div className="form-group col-md-12">
@@ -285,12 +310,10 @@ const EditTripDetails = (props) => {
 
                                 <Field
                                   name="dispatch_time"
-                                  type="text"
+                                  type="time"
                                   className="form-control"
-                                  value={tripLog.dispatch_time}
-                                  onChange={(v) =>
-                                    setFieldValue("dispatch_time", v)
-                                  }
+                                  value={values.dispatch_time}
+                                  onChange={handleChange}
                                 />
                               </div>
                               <div className="form-group col-md-12">
@@ -302,7 +325,10 @@ const EditTripDetails = (props) => {
                                   name="amt_of_passengers"
                                   className="form-control w-100"
                                   onChange={(v) =>
-                                    setFieldValue("amt_of_passengers", v)
+                                    setFieldValue(
+                                      "amt_of_passengers",
+                                      v.target.value
+                                    )
                                   }
                                   defaultValue={tripLog.amt_of_passengers}
                                 >
@@ -321,8 +347,8 @@ const EditTripDetails = (props) => {
                                   type="text"
                                   name="fare"
                                   className="form-control"
-                                  value={tripLog.fare}
-                                  onChange={(v) => setFieldValue("fare", v)}
+                                  value={values.fare}
+                                  onChange={handleChange}
                                 />
                               </div>
 
@@ -333,8 +359,8 @@ const EditTripDetails = (props) => {
                                   name="tip"
                                   type="text"
                                   className="form-control"
-                                  value={tripLog.tip}
-                                  onChange={(v) => setFieldValue("tip", v)}
+                                  value={values.tip}
+                                  onChange={handleChange}
                                 />
                               </div>
                               <div className="form-group col-md-12">
@@ -344,8 +370,8 @@ const EditTripDetails = (props) => {
                                   name="toll"
                                   type="text"
                                   className="form-control"
-                                  value={tripLog.toll}
-                                  onChange={(v) => setFieldValue("toll", v)}
+                                  value={values.toll}
+                                  onChange={handleChange}
                                 />
                               </div>
                               <div className="form-group col-md-12">
@@ -355,10 +381,8 @@ const EditTripDetails = (props) => {
                                   name="wait_time"
                                   type="text"
                                   className="form-control"
-                                  value={tripLog.wait_time}
-                                  onChange={(v) =>
-                                    setFieldValue("wait_time", v)
-                                  }
+                                  value={values.wait_time}
+                                  onChange={handleChange}
                                 />
                               </div>
                               <div className="form-group col-md-12">
@@ -368,8 +392,8 @@ const EditTripDetails = (props) => {
                                   name="stops"
                                   type="text"
                                   className="form-control"
-                                  value={tripLog.stops}
-                                  onChange={(v) => setFieldValue("stops", v)}
+                                  value={values.stops}
+                                  onChange={handleChange}
                                 />
                               </div>
                               <div className="form-group col-md-12">
@@ -379,8 +403,8 @@ const EditTripDetails = (props) => {
                                   name="misc"
                                   type="text"
                                   className="form-control"
-                                  value={tripLog.misc}
-                                  onChange={(v) => setFieldValue("misc", v)}
+                                  value={values.misc}
+                                  onChange={handleChange}
                                 />
                               </div>
                               <div className="form-group col-md-12">
@@ -390,7 +414,7 @@ const EditTripDetails = (props) => {
                                   name="account_no"
                                   className="form-control w-100"
                                   onChange={(v) =>
-                                    setFieldValue("account_no", v)
+                                    setFieldValue("account_no", v.target.value)
                                   }
                                   defaultValue={tripLog.account_no}
                                 >
@@ -407,28 +431,31 @@ const EditTripDetails = (props) => {
                                   name="job_no"
                                   type="text"
                                   className="form-control"
-                                  value={tripLog.job_no}
-                                  onChange={(v) => setFieldValue("job_no", v)}
+                                  value={values.job_no}
+                                  onChange={handleChange}
                                 />
                               </div>
                               <div className="form-group col-md-12">
                                 <label className="form_lbl">Notes: </label>
 
                                 <Field
-                                  name="details"
+                                  name="dispacher_note"
                                   type="textarea"
                                   className="form-control"
-                                  value={tripLog.details}
-                                  onChange={(v) => setFieldValue("details", v)}
+                                  value={values.dispacher_note}
+                                  onChange={handleChange}
                                 />
                               </div>
                             </div>
                             <div className="form-group col-md-6">
                               <GoogleMaps
-                                latlng={
-                                  {pickupLat, pickupLng, dropoffLat, dropoffLng}
-                                }
-                                status = {props.currentBooking.Triplog.status}
+                                latlng={{
+                                  pickupLat,
+                                  pickupLng,
+                                  dropoffLat,
+                                  dropoffLng,
+                                }}
+                                status={props.currentBooking.Triplog.status}
                               />
                             </div>
                             <div className="form-group col-md-12">
@@ -630,10 +657,8 @@ const EditTripDetails = (props) => {
                                 name="dispacher_note"
                                 type="text"
                                 className="form-control"
-                                value={tripLog.dispacher_note}
-                                onChange={(v) =>
-                                  setFieldValue("dispacher_note", v)
-                                }
+                                value={values.dispacher_note}
+                                onChange={handleChange}
                               />
                             </div>
 
