@@ -4,7 +4,7 @@ import storage from "redux-persist/lib/storage";
 import createSagaMiddleware from "redux-saga";
 import authSaga from "./sagas/authSaga";
 import carSaga from "./sagas/carSaga";
-import tripSage from "./sagas/tripSage"
+import tripSage from "./sagas/tripSage";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 import {
@@ -13,7 +13,8 @@ import {
   globalReducer,
   userReducer,
   TripReducer,
-  SetCallerIdReducer
+  SetCallerIdReducer,
+  profileReducer,
 } from "./reducers";
 
 const rootPersistConfig = {
@@ -26,8 +27,9 @@ const rootReducer = combineReducers({
   cars: carReducer,
   global: globalReducer,
   user: userReducer,
-  trip:TripReducer,
-  callerid:SetCallerIdReducer
+  trip: TripReducer,
+  callerid: SetCallerIdReducer,
+  profile: profileReducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
@@ -42,4 +44,3 @@ export const persistor = persistStore(store);
 sagaMiddleware.run(carSaga);
 sagaMiddleware.run(authSaga);
 sagaMiddleware.run(tripSage);
-

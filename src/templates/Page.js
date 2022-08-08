@@ -1,20 +1,41 @@
 import React, { useEffect, useCallback, useRef, useState } from "react";
 import Header from "./Header";
 import Dispatcher from "../pages/Dispatcher";
-import Footer from "./Footer";
+import { PubNubProvider } from "pubnub-react";
+import PubNub from "pubnub";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
-
+import Settings from "../pages/account/Profile/Settings";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function Page(props) {
-  const getHead =()=>{
+  const { publishkey, subscribekey } = useSelector((state) => {
+    return {
+      publishkey: state.profile.publishkey,
+      subscribekey: state.profile.subscribekey,
+    };
+  });
+  const { userLoggedIn } = useSelector((state) => state.auth);
+  const btnRef = useRef();
+  const pubnub = new PubNub({
+    subscribeKey:
+      subscribekey === null
+        ? process.env.REACT_APP_PUBNUB_SUBSCRIBE_KEY
+        : subscribekey,
+    publishKey:
+      publishkey === null
+        ? process.env.REACT_APP_PUBNUB_PUBLISH_KEY
+        : publishkey,
+  });
+  const getHead = () => {
     switch (props.page) {
       case "triplog":
-        return <Header isSticky={isSticky}/>;
+        return <Header isSticky={isSticky} />;
       default:
-        return <Header isSticky={isSticky}/>;
-    } 
-  }
+        return <Header isSticky={isSticky} />;
+    }
+  };
 
   const getPage = () => {
     switch (props.page) {
@@ -24,6 +45,8 @@ function Page(props) {
         return <Login />;
       case "triplog":
         return <Dispatcher />;
+      case "account":
+        return <Settings />;
       default:
         return <Home />;
     }
@@ -58,15 +81,40 @@ function Page(props) {
     };
   }, [toggleSticky]);
 
+  const redirect = () => {
+    if (userLoggedIn === false) {
+      btnRef.current.click();
+    }
+  };
+  useEffect(() => {
+    if (!userLoggedIn) {
+      btnRef.current.click();
+    }
+  }, [userLoggedIn]);
+
   return (
-    <div>
-      {getHead()}
-      
-      <div ref={headerRef} className={props.page==="triplog" ? "container-fluid text-black":"container-fluid"}  id={props.page==="triplog" ? "dashboardcs":null}>
-        {getPage()}
-      </div>
-      {/* <Footer /> */}
-    </div>
+    <>
+      <PubNubProvider client={pubnub}>
+        <button ref={btnRef} onClick={redirect} style={{ display: "none" }}>
+          <Link to="/">click</Link>
+        </button>
+        {getHead()}
+
+        <div
+          ref={headerRef}
+          className={
+            props.page === "triplog"
+              ? "container-fluid text-black"
+              : "container-fluid"
+          }
+          id={props.page === "triplog" ? "dashboardcs" : null}
+        >
+          {getPage()}
+        </div>
+      </PubNubProvider>
+    </>
   );
 }
+
+
 export default Page;

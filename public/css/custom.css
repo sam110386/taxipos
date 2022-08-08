@@ -4023,3 +4023,23 @@ section.review_sec {
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
+
+.gray{ background-color:#bfbfbf;outline: thin solid;}
+.blue{background-color:#b7dee8;outline: thin solid;}
+.purple{background-color:#b3a2c7;outline: thin solid;}
+.pink{background-color:#ffC0CB;outline: thin solid;}
+.blink_me {-webkit-animation-name: blinker;-webkit-animation-duration: 1s;-webkit-animation-timing-function: linear;
+           -webkit-animation-iteration-count: infinite;-moz-animation-name: blinker;-moz-animation-duration: 1s;-moz-animation-timing-function: linear;
+           -moz-animation-iteration-count: infinite;animation-name: blinker;animation-duration: 1s;animation-timing-function: linear;
+           animation-iteration-count: infinite;
+}
+.orange_col{color:#ff6600;}
+.orange2_col{color:#984807;}
+.green_col{color:#008000;}
+.red_col{color:#ff0000;}
+.blue_col{color:#1f497d;}
+.bg_orange_col{background-color:#ff6600;}
+.bg_orange2_col{background-color:#984807;}
+.bg_green_col{background-color:#008000;}
+.bg_red_col{background-color:#ff0000;}
+.bg_blue_col{background-color:#1f497d;}

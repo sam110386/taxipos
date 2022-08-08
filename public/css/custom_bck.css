@@ -2829,3 +2829,8 @@ p {
 .landing_header .navbar-nav li a.sub-active {
   color: #ea0b8c !important;
 }
+
+
+.icon_input{
+  border: 2px solid black;
+}

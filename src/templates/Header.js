@@ -49,12 +49,8 @@ const Header = ({ isSticky }) => {
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav ml-auto justify-content-end">
-              
-             
-             
               {user.userLoggedIn && (
                 <>
-                  
                   <li className="nav-item dropdown user_dropdown">
                     <NavLink
                       className="nav-link position-relative dropdown-toggle d-flex align-items-center"
@@ -94,28 +90,28 @@ const Header = ({ isSticky }) => {
                       >
                         Triplog
                       </NavLink>
-                      
-                      <button
+
+                      <NavLink
+                        to="/"
                         className="dropdown-item"
                         title="Logout"
                         onClick={logoutUser}
                       >
                         Logout
-                      </button>
+                      </NavLink>
                     </div>
                   </li>
                 </>
               )}
             </ul>
             <ul className="navbar-nav ml-auto justify-content-end">
-            {!user.userLoggedIn && (
-              <li className="nav-item">
-                <NavLink to="/login" className="nav-link login_color">
+              {!user.userLoggedIn && (
+                <li className="nav-item">
+                  <NavLink to="/login" className="nav-link login_color">
                     LOG IN
-                </NavLink>
-              </li>
-            )}
-            
+                  </NavLink>
+                </li>
+              )}
             </ul>
           </div>
         </div>

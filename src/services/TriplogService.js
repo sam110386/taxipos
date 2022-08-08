@@ -2,6 +2,7 @@ import API from "../config/DiaAxios";
 import { getHeader } from "./Api";
 import { toast } from "react-hot-toast";
 
+
 const path = {
   GET_CURRENT_TIME: "getCurrentDateTime",
   GET_TRIP_LIST: "tripList",
@@ -15,7 +16,8 @@ const path = {
   GET_FARE:"getfare",
   CANCEL_TRIP:"cancel",
   LOAD_CALLER_INFO_TRIPLOG :"load_caller_info_triplog",
-  OPEN_TRIPS_TRIPLOG : "open_trips_triplog"
+  OPEN_TRIPS_TRIPLOG : "open_trips_triplog",
+  TRIPLOG_CALLERID_POPUP :"triplog_callerid_popup"
 };
 
 export const loadCallerInfoTriplog = async (data) => {
@@ -27,6 +29,17 @@ export const loadCallerInfoTriplog = async (data) => {
     return null;
   }
 };
+
+export const telephoneverifyication = async (data) => {
+  
+  try {
+    const res = await API.post(path.TRIPLOG_CALLERID_POPUP, data);
+    return res;
+  } catch (err) {
+    return null;
+  }
+};
+
 
 export const openTripsTriplog = async (data) => {
   try {
