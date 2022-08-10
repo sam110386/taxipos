@@ -7,6 +7,7 @@ import { optSchema } from "./ValidationSchema/TriplogSchema";
 import GoogleMaps from "./CommonTriplog/GoogleMaps";
 import { useRef } from "react";
 import PickupAddress from "../Pickers/PickupAddress";
+import * as TriplogServices from "../../services/TriplogService";
 
 const EditTripDetails = (props) => {
   const formikRef = useRef();
@@ -19,11 +20,14 @@ const EditTripDetails = (props) => {
   const [device_id, setDeviceId] = useState("");
   const [editable, setEditable] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
+  const [submiting, setSubmitting] = useState(false);
   const [shareallowed, setShareallowed] = useState(false);
   const [accountnos, setAccountNo] = useState(
     props.currentBooking.account_setting
   );
   const [tripLog, setTripLog] = useState(props.currentBooking.Triplog);
+
+  console.log(tripLog, "hey");
 
   const { user, userDetails } = useSelector((state) => {
     return {
@@ -31,6 +35,38 @@ const EditTripDetails = (props) => {
       userDetails: state.auth.userDetails,
     };
   });
+
+
+
+  let edit_initial_values = {
+    pickup_date:tripLog.pickup_date,
+    pickup_time:tripLog.pickup_time,
+    telephone: tripLog.telephone,
+    device_id: tripLog.device_id,
+    car_no:tripLog.car_no,
+    cab_name:tripLog.cab_name,
+    id:tripLog.id,
+    passenger_name: tripLog.passenger_name,
+    dispatch_time: tripLog.dispatch_time,
+    pickup_address: tripLog.pickup_address,
+    dropoff_address: tripLog.dropoff_address,
+    dropoff_lng: tripLog.dropoff_lng,
+    dropoff_lat: tripLog.dropoff_lat,
+    pickup_lat: tripLog.pickup_lat,
+    pickup_lng: tripLog.pickup_lng,
+    amt_of_passengers: "",
+    fare: tripLog.fare,
+    tip: tripLog.tip,
+    toll: tripLog.toll,
+    wait_time: tripLog.wait_time,
+    stops: tripLog.stops,
+    misc: tripLog.misc,
+    amt_of_passengers: "",
+    account_no: "",
+    job_no: tripLog.job_no,
+    dispacher_note: tripLog.dispacher_note,
+  }
+
   const initall = () => {
     setAccountNo(props.currentBooking.account_setting);
     setTripLog(props.currentBooking.Triplog);
@@ -84,9 +120,26 @@ const EditTripDetails = (props) => {
   useEffect(() => {
     initall();
   }, []);
-  const getPickUp =(l,n) =>{
-    console.log(l,n)
-  }
+
+  const EditTrip = async (values) => {
+    console.log("api call", values);
+    try {
+      setSubmitting(true);
+
+      const res = await TriplogServices.sendPushNotification(values);
+      if (res && res.status === 200) {
+        if (res.data && res.data.status === 1) {
+          // onSuccess(res.data);
+        }
+        return;
+      }
+      // onError(res.data.message);
+    } catch (err) {
+      setSubmitting(false);
+      // onError();
+    }
+  };
+
   return (
     <React.Fragment>
       <div className="modal d-block mymodal" tabIndex="-1" role="dialog">
@@ -109,22 +162,7 @@ const EditTripDetails = (props) => {
                 <div className="col-12">
                   <Formik
                     innerRef={formikRef}
-                    initialValues={{
-                      telephone: tripLog.telephone,
-                      passenger_name: tripLog.passenger_name,
-                      dispatch_time: tripLog.dispatch_time,
-                      amt_of_passengers: "",
-                      fare: tripLog.fare,
-                      tip: tripLog.tip,
-                      toll: tripLog.toll,
-                      wait_time: tripLog.wait_time,
-                      stops: tripLog.stops,
-                      misc: tripLog.misc,
-                      amt_of_passengers: "",
-                      account_no: "",
-                      job_no: tripLog.job_no,
-                      dispacher_note: tripLog.dispacher_note,
-                    }}
+                    initialValues={edit_initial_values}
                     className="form-horizontal"
                     validationSchema={optSchema}
                     onSubmit={(values) => {
@@ -141,9 +179,6 @@ const EditTripDetails = (props) => {
                               <select
                                 name="device_id"
                                 className="form-control w-100"
-                                onChange={(v) => setFieldValue("device_id", v)}
-                                disabled={editable}
-                                defaultValue={selectedOption}
                               >
                                 {userDetails.FleetDevices &&
                                   userDetails.FleetDevices.map((el) => (
@@ -170,14 +205,7 @@ const EditTripDetails = (props) => {
                                 value={tripLog.status}
                                 onChange={(v) => setFieldValue("status", v)}
                               />
-                              <Field
-                                name="telephone_line"
-                                type="hidden"
-                                value={tripLog.telephone_line}
-                                onChange={(v) =>
-                                  setFieldValue("telephone_line", v)
-                                }
-                              />
+                              <Field name="telephone_line" type="hidden" />
                             </div>
 
                             <div className="form-group col-md-4">
@@ -220,29 +248,11 @@ const EditTripDetails = (props) => {
                                   name="pickup_address"
                                   type="text"
                                   className="form-control"
-                                  component = {PickupAddress}
-                                  getPickupLatLng={getPickUp}
-                                  // value={tripLog.pickup_address}
-                                  // onChange={(v) =>
-                                  //   setFieldValue("pickup_address", v)
-                                  // }
-                                  readOnly={editable}
-                                  onKeyUp={() =>
-                                    setFieldValue("originlatlng", "")
-                                  }
+                                  // component = {PickupAddress}
+                                  // getPickupLatLng={getPickUp}
                                 />
-                                <Field
-                                  name="originlatlng"
-                                  type="hidden"
-                                  value={
-                                    tripLog.pickup_lat +
-                                    "," +
-                                    tripLog.pickup_lng
-                                  }
-                                  onChange={(v) =>
-                                    setFieldValue("originlatlng", v)
-                                  }
-                                />
+                                <Field name="pickup_lat" type="hidden" />
+                                <Field name="pickup_lng" type="hidden" />
                               </div>
 
                               <div className="form-group col-md-12">
@@ -254,27 +264,9 @@ const EditTripDetails = (props) => {
                                   name="dropoff_address"
                                   type="text"
                                   className="form-control"
-                                  value={tripLog.dropoff_address}
-                                  onChange={(v) =>
-                                    setFieldValue("dropoff_address", v)
-                                  }
-                                  readOnly={editable}
-                                  onKeyUp={() =>
-                                    setFieldValue("destlatlng", "")
-                                  }
                                 />
-                                <Field
-                                  name="destlatlng"
-                                  type="hidden"
-                                  value={
-                                    tripLog.dropoff_lat +
-                                    "," +
-                                    tripLog.dropoff_lng
-                                  }
-                                  onChange={(v) =>
-                                    setFieldValue("destlatlng", v)
-                                  }
-                                />
+                                <Field name="dropoff_lat" type="hidden" />
+                                <Field name="dropoff_lng" type="hidden" />
                               </div>
 
                               <div className="form-group col-md-12">
@@ -490,8 +482,7 @@ const EditTripDetails = (props) => {
                               </Button>
                               <Button
                                 className="border btn btn-success text-capitalize ml-1"
-                                onClick={() => props.saveEditBooking()}
-                                to={``}
+                                onClick={() => EditTrip(values)}
                               >
                                 {" "}
                                 Save
