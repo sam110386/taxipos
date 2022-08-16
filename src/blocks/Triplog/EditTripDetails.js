@@ -8,6 +8,9 @@ import GoogleMaps from "./CommonTriplog/GoogleMaps";
 import { useRef } from "react";
 import PickupAddress from "../Pickers/PickupAddress";
 import * as TriplogServices from "../../services/TriplogService";
+import GoogleAutoCompletePick from "../Pickers/GoogleAutoCompletePick";
+import GoogleAutoCompleteDrop from "../Pickers/GoogleAutoCompleteDrop";
+
 
 const EditTripDetails = (props) => {
   const formikRef = useRef();
@@ -27,7 +30,7 @@ const EditTripDetails = (props) => {
   );
   const [tripLog, setTripLog] = useState(props.currentBooking.Triplog);
 
-  console.log(tripLog, "hey");
+
 
   const { user, userDetails } = useSelector((state) => {
     return {
@@ -122,7 +125,7 @@ const EditTripDetails = (props) => {
   }, []);
 
   const EditTrip = async (values) => {
-    console.log("api call", values);
+    console.log("api call", values.pickup_lat,values.pickup_lng,values.dropoff_lng,values.dropoff_lat,values);
     try {
       setSubmitting(true);
 
@@ -138,8 +141,25 @@ const EditTripDetails = (props) => {
       setSubmitting(false);
       // onError();
     }
-  };
+  }; 
+const getPickUpLatLng = (lat,lng) =>{
+  console.log(lat,lng)
+  formikRef.current.setFieldValue("pickup_lat",lat)
+  formikRef.current.setFieldValue("pickup_lng",lng)
+setCordinates({...cordinates, pickup_lat: lat,pickup_lng: lng})
+}
+const getDropoffLatLng = (lat,lng) =>{
+  console.log(lat,lng)
+setCordinates({...cordinates,dropoff_lat: lat,dropoff_lng:lng})
+}
 
+useEffect(() =>{
+
+formikRef.current.setFieldValue("dropoff_lng",cordinates.dropoff_lng)
+formikRef.current.setFieldValue("dropoff_lat",cordinates.dropoff_lat)
+},[cordinates.dropoff_lng,cordinates.dropoff_lat])
+// pickup_address: tripLog.pickup_address,
+// dropoff_address: tripLog.dropoff_address,
   return (
     <React.Fragment>
       <div className="modal d-block mymodal" tabIndex="-1" role="dialog">
@@ -247,8 +267,11 @@ const EditTripDetails = (props) => {
                                 <Field
                                   name="pickup_address"
                                   type="text"
-                                  className="form-control"
-                                  // component = {PickupAddress}
+                                  id="pickupaddress"
+                                  className="form-control w-100"
+                                  pickupaddress = { tripLog.pickup_address}
+                                  getPickUpLatLng ={getPickUpLatLng}
+                                  component = {GoogleAutoCompletePick}
                                   // getPickupLatLng={getPickUp}
                                 />
                                 <Field name="pickup_lat" type="hidden" />
@@ -263,6 +286,9 @@ const EditTripDetails = (props) => {
                                 <Field
                                   name="dropoff_address"
                                   type="text"
+                                  dropoffaddress={tripLog.dropoff_address}
+                                  getDropoffLatLng={getDropoffLatLng}
+                                  component = {GoogleAutoCompleteDrop}
                                   className="form-control"
                                 />
                                 <Field name="dropoff_lat" type="hidden" />
