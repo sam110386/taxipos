@@ -6,7 +6,6 @@ import moment from "moment";
 import { optSchema } from "./ValidationSchema/TriplogSchema";
 import GoogleMaps from "./CommonTriplog/GoogleMaps";
 import { useRef } from "react";
-import PickupAddress from "../Pickers/PickupAddress";
 import * as TriplogServices from "../../services/TriplogService";
 import GoogleAutoCompletePick from "../Pickers/GoogleAutoCompletePick";
 import GoogleAutoCompleteDrop from "../Pickers/GoogleAutoCompleteDrop";
@@ -17,9 +16,12 @@ const EditTripDetails = (props) => {
   const [cordinates, setCordinates] = useState({
     pickup_lat: "",
     pickup_lng: "",
+ 
+  });
+  const [dropcordinates, setDropCordinates] = useState({
     dropoff_lat: "",
     dropoff_lng: "",
-  });
+  })
   const [device_id, setDeviceId] = useState("");
   const [editable, setEditable] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
@@ -38,7 +40,6 @@ const EditTripDetails = (props) => {
       userDetails: state.auth.userDetails,
     };
   });
-
 
 
   let edit_initial_values = {
@@ -114,10 +115,7 @@ const EditTripDetails = (props) => {
     setShareallowed(tripLog.share);
   };
   // tripLog.pickup_lat
-  let pickupLat = tripLog.pickup_lat;
-  let pickupLng = tripLog.pickup_lng;
-  let dropoffLat = tripLog.dropoff_lat;
-  let dropoffLng = tripLog.dropoff_lng;
+  
 
   //
   useEffect(() => {
@@ -132,7 +130,8 @@ const EditTripDetails = (props) => {
       const res = await TriplogServices.sendPushNotification(values);
       if (res && res.status === 200) {
         if (res.data && res.data.status === 1) {
-          // onSuccess(res.data);
+          onSuccess("Updated");
+          props.SetShowEditTrip(false);
         }
         return;
       }
@@ -149,17 +148,17 @@ const getPickUpLatLng = (lat,lng) =>{
 setCordinates({...cordinates, pickup_lat: lat,pickup_lng: lng})
 }
 const getDropoffLatLng = (lat,lng) =>{
-  console.log(lat,lng)
-setCordinates({...cordinates,dropoff_lat: lat,dropoff_lng:lng})
+  formikRef.current.setFieldValue("dropoff_lng",lng)
+  formikRef.current.setFieldValue("dropoff_lat",lat)
+setDropCordinates({...dropcordinates,dropoff_lat: lat,dropoff_lng:lng})
 }
 
 useEffect(() =>{
 
-formikRef.current.setFieldValue("dropoff_lng",cordinates.dropoff_lng)
-formikRef.current.setFieldValue("dropoff_lat",cordinates.dropoff_lat)
+formikRef.current.setFieldValue("dropoff_lng",dropcordinates.dropoff_lng)
+formikRef.current.setFieldValue("dropoff_lat",dropcordinates.dropoff_lat)
 },[cordinates.dropoff_lng,cordinates.dropoff_lat])
-// pickup_address: tripLog.pickup_address,
-// dropoff_address: tripLog.dropoff_address,
+
   return (
     <React.Fragment>
       <div className="modal d-block mymodal" tabIndex="-1" role="dialog">
@@ -468,10 +467,10 @@ formikRef.current.setFieldValue("dropoff_lat",cordinates.dropoff_lat)
                             <div className="form-group col-md-6">
                               <GoogleMaps
                                 latlng={{
-                                  pickupLat,
-                                  pickupLng,
-                                  dropoffLat,
-                                  dropoffLng,
+                                  pickupLat:  cordinates.pickup_lat === ""?   tripLog.pickup_lat : cordinates.pickup_lat,
+                                  pickupLng: cordinates.pickup_lng === ""?   tripLog.pickup_lng : cordinates.pickup_lng ,
+                                  dropoffLat: dropcordinates.dropoff_lat === ""? tripLog.dropoff_lat : dropcordinates.dropoff_lat ,
+                                  dropoffLng: dropcordinates.dropoff_lng === ""? tripLog.dropoff_lng : dropcordinates.dropoff_lng,
                                 }}
                                 status={props.currentBooking.Triplog.status}
                               />
