@@ -11,6 +11,7 @@ import GoogleAutoCompletePick from "../Pickers/GoogleAutoCompletePick";
 import GoogleAutoCompleteDrop from "../Pickers/GoogleAutoCompleteDrop";
 
 
+
 const EditTripDetails = (props) => {
   const formikRef = useRef();
   const [cordinates, setCordinates] = useState({
@@ -130,7 +131,7 @@ const EditTripDetails = (props) => {
       const res = await TriplogServices.sendPushNotification(values);
       if (res && res.status === 200) {
         if (res.data && res.data.status === 1) {
-          onSuccess("Updated");
+          // onSuccess("Updated");
           props.SetShowEditTrip(false);
         }
         return;
