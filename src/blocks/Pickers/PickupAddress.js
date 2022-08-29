@@ -25,12 +25,13 @@ const PickupAddress = ({ field, form, id, getPickupLatLng, ...props }) => {
       setPickupAddressLng(placeorg.geometry.location.lng());
     });
   };
+console.log( name)
   useEffect(() => {
     getPickupAddress();
   }, []);
 
   useEffect(() => {
-    getPickupLatLng(pickupLat, pickupLng);
+    // getPickupLatLng(pickupLat, pickupLng);
     setFieldValue(name, pickupAddress);
   }, [pickupLat, pickupLng]);
 

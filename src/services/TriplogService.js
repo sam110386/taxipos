@@ -17,7 +17,8 @@ const path = {
   CANCEL_TRIP:"cancel",
   LOAD_CALLER_INFO_TRIPLOG :"load_caller_info_triplog",
   OPEN_TRIPS_TRIPLOG : "open_trips_triplog",
-  TRIPLOG_CALLERID_POPUP :"triplog_callerid_popup"
+  TRIPLOG_CALLERID_POPUP :"triplog_callerid_popup",
+  SEND_PUSH_NOTIFICATION_DIRECT:"send_push_notification_direct"
 };
 
 export const loadCallerInfoTriplog = async (data) => {
@@ -137,6 +138,15 @@ export const getVehicleAgreement = async (data) => {
 export const bookVehicle = async (data) => {
   try {
     const res = await API.post(path.BOOK_VEHICLE, data, getHeader());
+    return res;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const sendPushNotification = async (data) => {
+  try {
+    const res = await API.post(path.SEND_PUSH_NOTIFICATION_DIRECT, data, getHeader());
     return res;
   } catch (err) {
     return null;

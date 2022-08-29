@@ -49,7 +49,6 @@ const TriplogWrap = (props) => {
     btndisable: false,
     CurrentPickupTime: null,
     CurrentDate: 0,
-    currentBooking: [],
     fareInput: "",
     pickupLat: "",
     pickupLng: "",
@@ -60,6 +59,9 @@ const TriplogWrap = (props) => {
     tpnum: "",
   });
   const pubnub = usePubNub();
+
+
+  console.log("currentBooking",currentBooking)
 
   const [channels] = useState([
     `PCAPP_${userDetails.DispatcherId}`,
@@ -456,6 +458,7 @@ const TriplogWrap = (props) => {
       setSubmitting(false);
       if (res && res.status === 200) {
         if (res.data && res.data.status === 1) {
+          console.log(res.data.result,"from")
           SetCurrentBooking(res.data.result);
           SetShowEditTrip(true);
           return;
@@ -537,13 +540,20 @@ const TriplogWrap = (props) => {
   };
 
   const saveEditBooking = async (values) => {
+    console.log("hey value",values)
     try {
       setSubmitting(true);
       const res = await TriplogServices.getTriplist({});
       setSubmitting(false);
       if (res && res.status === 200) {
         if (res.data && res.data.status === 1) {
-          // onSuccess(res.data);
+          const res = await TriplogServices.sendPushNotification(values);
+          if (res && res.status === 200) {
+            if (res.data && res.data.status === 1) {
+              // onSuccess(res.data);
+            }
+          }
+          
           return;
         }
         onError(res.data.message);

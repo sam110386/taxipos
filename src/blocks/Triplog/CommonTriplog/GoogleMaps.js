@@ -6,6 +6,7 @@ export default function GoogleMaps({ latlng, status }) {
   const [activeMarker, setActiveMarker] = useState(null);
   const [state, setState] = useState(null);
   const DirectionsService = new window.google.maps.DirectionsService();
+  console.log(latlng)
   useEffect(() => {
     DirectionsService.route(
       {
