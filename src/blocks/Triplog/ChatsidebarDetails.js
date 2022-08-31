@@ -9,7 +9,7 @@ import { store } from "../../store/store";
 import { setCallerIdAction, removeCallerIdAction } from "../../store/actions/SetCallerIdAction";
 import { TriplogSchema } from './ValidationSchema/TriplogSchema'
 import { CreateTrip } from "./CommonTriplog/CreateTrip";
-
+import { loader } from "../Triplog/CommonTriplog/GoogleMapAutoComplete";
 
 const ChatsidebarDetails = (props) => {
 
@@ -73,39 +73,42 @@ const ChatsidebarDetails = (props) => {
         roundtrip: "",
     }
 
-    const getDropOffAddress = () => {
-        var autocomplete1 = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddressid")), {
+    const getDropOffAddress = async () => {
+        
+        const google = await loader.load();
+        var autocomplete1 = new google.maps.places.Autocomplete((document.getElementById("dropofaddressid")), {
             types: ['geocode']
         });
-        window.google.maps.event.addListener(autocomplete1, 'place_changed', function () {
+        google.maps.event.addListener(autocomplete1, 'place_changed', function () {
             var placeorg = autocomplete1.getPlace();
             setDropofAddressLat(placeorg.geometry.location.lat())
             setDropofAddressLng(placeorg.geometry.location.lng())
             setDropofAddress(placeorg.formatted_address)
         });
-        var autocomplete2 = new window.google.maps.places.Autocomplete((document.getElementById("dropofaddressid2")), {
+        var autocomplete2 = new google.maps.places.Autocomplete((document.getElementById("dropofaddressid2")), {
             types: ['geocode']
         });
-        window.google.maps.event.addListener(autocomplete2, 'place_changed', function () {
+        google.maps.event.addListener(autocomplete2, 'place_changed', function () {
             var placeorg = autocomplete2.getPlace();
             setDropofAddress2(placeorg.formatted_address)
         });
     }
 
-    const getPickupAddress = () => {
-        var autocomplete1 = new window.google.maps.places.Autocomplete((document.getElementById("pickupaddressid")), {
+    const getPickupAddress = async () => {
+        const googledp = await loader.load();
+        var autocomplete1 = new googledp.maps.places.Autocomplete((document.getElementById("pickupaddressid")), {
             types: ['geocode']
         });
-        window.google.maps.event.addListener(autocomplete1, 'place_changed', function () {
+        googledp.maps.event.addListener(autocomplete1, 'place_changed', function () {
             var placeorg = autocomplete1.getPlace();
             setPickupAddressLat(placeorg.geometry.location.lat())
             setPickupAddressLng(placeorg.geometry.location.lng())
             setPickupAddress(placeorg.formatted_address)
         });
-        var autocomplete2 = new window.google.maps.places.Autocomplete((document.getElementById("pickupaddressid2")), {
+        var autocomplete2 = googledp.maps.places.Autocomplete((document.getElementById("pickupaddressid2")), {
             types: ['geocode']
         });
-        window.google.maps.event.addListener(autocomplete2, 'place_changed', function () {
+        googledp.maps.event.addListener(autocomplete2, 'place_changed', function () {
             var placeorg = autocomplete2.getPlace();
             setPickupAddress2(placeorg.formatted_address)
         });
@@ -310,7 +313,7 @@ const ChatsidebarDetails = (props) => {
                                                                     name="pickup_address"
                                                                     id="pickupaddressid"
                                                                     placeholder="Pick-up-Address"
-                                                                    autocomplete="off"
+                                                                    autoComplete="off"
                                                                     className={`form-control ${touched.pickup_address && errors.pickup_address
                                                                         ? "is-invalid"
                                                                         : ""
@@ -325,7 +328,7 @@ const ChatsidebarDetails = (props) => {
                                                                     name="telephone"
                                                                     placeholder="Telephone"
                                                                     className="form-control"
-                                                                    autocomplete="off"
+                                                                    autoComplete="off"
 
                                                                 />
 
@@ -343,7 +346,7 @@ const ChatsidebarDetails = (props) => {
                                                                     name="dropoff_address"
                                                                     id="dropofaddressid"
                                                                     placeholder="drop-off-Address"
-                                                                    autocomplete="off"
+                                                                    autoComplete="off"
                                                                     className={`form-control ${touched.dropoff_address && errors.dropoff_address
                                                                         ? "is-invalid"
                                                                         : ""
@@ -360,7 +363,7 @@ const ChatsidebarDetails = (props) => {
                                                                     placeholder="Please Enter Pickup Cross Street"
                                                                     name="pickup_cross_street"
                                                                     className="form-control"
-                                                                    autocomplete="off"
+                                                                    autoComplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -373,7 +376,7 @@ const ChatsidebarDetails = (props) => {
                                                                     placeholder="Please Enter Drop Cross Street"
                                                                     name="drop_cross_street"
                                                                     className="form-control"
-                                                                    autocomplete="off"
+                                                                    autoComplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -386,7 +389,7 @@ const ChatsidebarDetails = (props) => {
                                                                     name="pickup_date"
                                                                     type="date"
                                                                     className="form-control"
-                                                                    autocomplete="off"
+                                                                    autoComplete="off"
 
                                                                 />
                                                             </div>
@@ -398,7 +401,7 @@ const ChatsidebarDetails = (props) => {
                                                                     name="pickup_time"
                                                                     id="timepicker"
                                                                     className="form-control cur_time_log"
-                                                                    autocomplete="off"
+                                                                    autoComplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -411,7 +414,7 @@ const ChatsidebarDetails = (props) => {
                                                                     id="notifi"
                                                                     placeholder="Notification"
                                                                     className="form-control"
-                                                                    autocomplete="off"
+                                                                    autoComplete="off"
                                                                 />
                                                             </div>
                                                         </div>
@@ -422,7 +425,7 @@ const ChatsidebarDetails = (props) => {
                                                                 <Field
                                                                     name="fare"
                                                                     placeholder="Please Enter Tip "
-                                                                    autocomplete="off"
+                                                                    autoComplete="off"
                                                                     className={`form-control ${touched.fare && errors.fare
                                                                         ? "is-invalid"
                                                                         : ""
@@ -437,7 +440,7 @@ const ChatsidebarDetails = (props) => {
                                                                     name="notes"
                                                                     id="not"
                                                                     className="form-control cur_time_log"
-                                                                    autocomplete="off"
+                                                                    autoComplete="off"
                                                                 />
                                                             </div>
                                                         </div>

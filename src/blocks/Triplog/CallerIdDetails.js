@@ -116,7 +116,7 @@ const CallerIdDetails = (props) => {
   const handleSubmit = (values) => {
     let status = CreateTrip(values);
     if (status) {
-      props.SetShowCallerId(false);
+      props.setShowCallerId(false);
     }
   };
   const fareEstimate = () => {};
@@ -179,7 +179,7 @@ const CallerIdDetails = (props) => {
 
   const Minimize = () => {
     store.dispatch(setCallerIdAction(props.details));
-    props.SetShowCallerId(false);
+    props.setShowCallerId(false);
   };
 
   return (
@@ -212,7 +212,7 @@ const CallerIdDetails = (props) => {
                 <img
                   src="/images/b_drop.png"
                   onClick={() => {
-                    props.SetShowCallerId(false);
+                    props.setShowCallerId(false);
                   }}
                   className="rmbtn"
                   alt="Cancel"
@@ -316,7 +316,7 @@ const CallerIdDetails = (props) => {
                                   name="pickup_address"
                                   id="pickupaddressid"
                                   placeholder="Pick-up-Address"
-                                  autocomplete="off"
+                                  autoComplete="off"
                                   className={`form-control ${
                                     touched.pickup_address &&
                                     errors.pickup_address
@@ -340,7 +340,7 @@ const CallerIdDetails = (props) => {
                                   name="dropoff_address"
                                   id="dropofaddressid"
                                   placeholder="drop-off-Address"
-                                  autocomplete="off"
+                                  autoComplete="off"
                                   className={`form-control ${
                                     touched.dropoff_address &&
                                     errors.dropoff_address
@@ -369,7 +369,7 @@ const CallerIdDetails = (props) => {
                                   placeholder="Please Enter Pickup Cross Street"
                                   name="pickup_cross_street"
                                   className="form-control"
-                                  autocomplete="off"
+                                  autoComplete="off"
                                 />
                               </div>
                             </div>
@@ -382,7 +382,7 @@ const CallerIdDetails = (props) => {
                                   placeholder="Please Enter Drop Cross Street"
                                   name="drop_cross_street"
                                   className="form-control"
-                                  autocomplete="off"
+                                  autoComplete="off"
                                 />
                               </div>
                             </div>
@@ -395,7 +395,7 @@ const CallerIdDetails = (props) => {
                                   name="pickup_date"
                                   type="date"
                                   className="form-control"
-                                  autocomplete="off"
+                                  autoComplete="off"
                                 />
                               </div>
                             </div>
@@ -408,7 +408,7 @@ const CallerIdDetails = (props) => {
                                   name="pickup_time"
                                   id="timepicker"
                                   className="form-control cur_time_log"
-                                  autocomplete="off"
+                                  autoComplete="off"
                                   render={({ field }) => (
                                     <MaskedInput
                                       {...field}
@@ -441,7 +441,7 @@ const CallerIdDetails = (props) => {
                                   id="notifi"
                                   placeholder="Notification"
                                   className="form-control"
-                                  autocomplete="off"
+                                  autoComplete="off"
                                 />
                               </div>
                             </div>
@@ -451,7 +451,7 @@ const CallerIdDetails = (props) => {
                                 <Field
                                   name="fare"
                                   placeholder="Please Enter Tip "
-                                  autocomplete="off"
+                                  autoComplete="off"
                                   className={`form-control ${
                                     touched.fare && errors.fare
                                       ? "is-invalid"
@@ -467,7 +467,7 @@ const CallerIdDetails = (props) => {
                                   name="notes"
                                   id="not"
                                   className="form-control cur_time_log"
-                                  autocomplete="off"
+                                  autoComplete="off"
                                 />
                               </div>
                             </div>

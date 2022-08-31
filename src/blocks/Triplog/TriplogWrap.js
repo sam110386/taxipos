@@ -16,6 +16,7 @@ import DropoffAddress from "../Pickers/DropoffAddress";
 import MaskedInput from "react-text-mask";
 import { NotificationPicker } from "../Pickers/NotificationPicker";
 import { CarNumberPicker } from "../Pickers/CarNumberPicker";
+import CallerIdDetails from "./CallerIdDetails";
 import { store } from "../../store/store";
 import {
   loadTripListDataSuccess,
@@ -45,6 +46,8 @@ const TriplogWrap = (props) => {
   const [showDetails, setShowDetails] = useState(false);
   const [currentBooking, SetCurrentBooking] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showCallerId, setShowCallerId]= useState(false);
+  const [calleriddetail, setCalleriddetail]= useState([]);
   const [mainState, setMainState] = useState({
     btndisable: false,
     CurrentPickupTime: null,
@@ -580,7 +583,7 @@ const TriplogWrap = (props) => {
           <CallerIdInfo />
         </fieldset>
         <fieldset className="DispatchInfoDriver">
-          <legend>Dispatch info to Driver</legend>
+          <legend>Dispatch Dashboard</legend>
           <Formik
             innerRef={formikRef}
             initialValues={initial_Values}
@@ -594,7 +597,46 @@ const TriplogWrap = (props) => {
             {({ errors, touched }) => (
               <Form>
                 <>
-                  <div className="row d-flex justify-content-left pl-0 pr-0">
+                <div className="row d-flex justify-content-left">
+                <div className="col-4">
+                <Field
+                        name="telephone"
+                        component={TelephoneVerfiy}
+                        getTelenum={gettelenum}
+                        setShowCallerId={setShowCallerId}
+                        setCalleriddetail={setCalleriddetail}
+                        reset={reset}
+                        placeholder="Telephone"
+                        className="form-control"
+                        autoComplete="off"
+                      />
+
+                      <br />
+                      {errors.telephone && touched.telephone ? (
+                        <div className="d-block invalid-feedback mt-n4 ml-3">
+                          {errors.telephone}
+                        </div>
+                      ) : null}
+                      </div>
+                      <div className="col-4">
+                        <Button
+                          className="border btn btn-success text-capitalize ml-1"
+                          onClick={() => openDetails()}
+                          to={``}
+                          style={{
+                            borderRadius: 8,
+                            backgroundColor: "#1c7be0d7",
+                            padding: "7px 14px",
+                            color: "white",
+                            fontSize: "12px",
+                          }}
+                          variant="contained"
+                          >
+                          Details
+                      </Button>
+                      </div>
+                  </div>    
+                  <div className="row d-flex justify-content-left pl-0 pr-0 invisible" style={{"height":0}}>
                     <Field
                       name="TextCity"
                       type="hidden"
@@ -615,7 +657,7 @@ const TriplogWrap = (props) => {
                       type="hidden"
                       className="form-control"
                     />
-                    <div className="col-4">
+                    <div className="col-4 invisible">
                       <Field
                         component={PickupAddress}
                         getPickupLatLng={getPickupLatLng}
@@ -638,7 +680,7 @@ const TriplogWrap = (props) => {
                       ) : null}
                     </div>
                     <br />
-                    <div className="col-1 pl-0">
+                    <div className="col-1 pl-0 invisible">
                       <Field
                         name="pickup_time"
                         className="form-control"
@@ -661,7 +703,7 @@ const TriplogWrap = (props) => {
                         )}
                       />
                     </div>
-                    <div className="col-2 pr-0 pl-0">
+                    <div className="col-2 pr-0 pl-0 invisible">
                       <Field
                         type="date"
                         name="pickup_date"
@@ -669,17 +711,19 @@ const TriplogWrap = (props) => {
                         className="form-control unstyled"
                       />
                     </div>
-                    <div className="col-2">
+                    <div className="col-2 invisible">
                       <Field
+                        
                         component={NotificationPicker}
                         name="direct_notification_time"
                         placeholder="Notification"
                         id="direct_notification_time"
                         className="form-control"
+                        key={"rand_1"}
                       />
                     </div>
-                    <div className="col-1 pl-0">
-                      <Field
+                    <div className="col-1 pl-0 invisible">
+                     {/* <Field
                         name="telephone"
                         component={TelephoneVerfiy}
                         getTelenum={gettelenum}
@@ -687,10 +731,6 @@ const TriplogWrap = (props) => {
                         placeholder="Telephone"
                         className="form-control"
                         autoComplete="off"
-                        // onChange={(e) =>{
-                        //   setMainState({...mainState,tpnum:e.target.value})
-                        //   console.log(mainState.tpnum)
-                        // }}
                       />
 
                       <br />
@@ -699,14 +739,15 @@ const TriplogWrap = (props) => {
                           {errors.telephone}
                         </div>
                       ) : null}
+                      */}
                     </div>
 
                     <Field
-                      name="TextDetails"
+                      name="TextDetails "
                       type="hidden"
-                      className="form-control"
+                      className="form-control invisible"
                     />
-                    <div className="col-1 pr-0 pl-0">
+                    <div className="col-1 pr-0 pl-0 invisible">
                       <Field
                         placeholder="Account Number"
                         name="account_no"
@@ -720,7 +761,7 @@ const TriplogWrap = (props) => {
                         </div>
                       ) : null}
                     </div>
-                    <div className="col-1 pr-0">
+                    <div className="col-1 pr-0 invisible">
                       <div role="group" aria-labelledby="checkbox-group">
                         <label>
                           <Field type="checkbox" name="TextShare" />
@@ -729,7 +770,7 @@ const TriplogWrap = (props) => {
                       </div>
                     </div>
                   </div>
-                  <div className="row d-flex justify-content-left pl-0 pr-0 mt-3 ">
+                  <div className="row d-flex justify-content-left pl-0 pr-0 mt-3 " style={{"height":0}}>
                     <div className="col-4">
                       <Field
                         component={DropoffAddress}
@@ -738,7 +779,7 @@ const TriplogWrap = (props) => {
                         id="dropofaddress"
                         autoComplete="off"
                         placeholder="drop-off-Address"
-                        className={`form-control ${
+                        className={`invisible form-control ${
                           touched.dropoff_address && errors.dropoff_address
                             ? "is-invalid"
                             : ""
@@ -753,7 +794,7 @@ const TriplogWrap = (props) => {
                         </div>
                       ) : null}
                     </div>
-                    <div className="col-1 pl-0 pr-0">
+                    <div className="col-1 pl-0 pr-0 invisible">
                       <Field
                         placeholder="Fare"
                         name="fare"
@@ -764,7 +805,7 @@ const TriplogWrap = (props) => {
                       />
                     </div>
 
-                    <div className="col-1 pr-0">
+                    <div className="col-1 pr-0 invisible">
                       <Field
                         component={CarNumberPicker}
                         getDeviceId={getDeviceId}
@@ -774,8 +815,9 @@ const TriplogWrap = (props) => {
                     </div>
                     <Field name="device_id" type="hidden" />
                     <Field name="car_no" type="hidden" />
-                    <div className="col-2 pr-0">
+                    <div className="col-2 pr-0 invisible">
                       <Field
+                        
                         as="select"
                         className="form-control w-100"
                         name="cab_name"
@@ -822,7 +864,7 @@ const TriplogWrap = (props) => {
                         Get Fare
                       </Button> */}
 
-                      <Button
+                      {/*<Button
                         className="border btn btn-success text-capitalize ml-1"
                         onClick={() => openDetails()}
                         to={``}
@@ -836,10 +878,10 @@ const TriplogWrap = (props) => {
                         variant="contained"
                       >
                         Details
-                      </Button>
+                      </Button>*/}
 
                       <Button
-                        className="border btn btn-success text-capitalize ml-1"
+                        className="border btn btn-success text-capitalize ml-1 invisible"
                         type="submit"
                         style={{
                           borderRadius: 8,
@@ -860,7 +902,7 @@ const TriplogWrap = (props) => {
             )}
           </Formik>
         </fieldset>
-        <div className="row">
+        <div className="row d-none">
           <div className="col-12 pull-right text-right mt-2 mb-2">
             <Button
               className="border link-success text-capitalize ml-1"
@@ -916,6 +958,7 @@ const TriplogWrap = (props) => {
           />
         )}
         {showDetails && <TripDetails SetShowTrip={setShowDetails} />}
+        {showCallerId && <CallerIdDetails setShowCallerId={setShowCallerId} details={calleriddetail} />}
       </div>
     </React.Fragment>
   );

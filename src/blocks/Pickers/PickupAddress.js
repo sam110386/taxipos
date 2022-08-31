@@ -2,16 +2,16 @@ import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useFormikContext } from "formik";
 import { loader } from "../Triplog/CommonTriplog/GoogleMapAutoComplete";
-
 const PickupAddress = ({ field, form, id, getPickupLatLng, ...props }) => {
-  const [pickupAddress, setPickupAddress] = useState("");
+  const [pickupAddress, setPickupAddress] = useState(field.value);
   const [pickupLat, setPickupAddressLat] = useState("");
   const [pickupLng, setPickupAddressLng] = useState("");
   const { setFieldValue, getFieldMeta } = useFormikContext();
   const { name, value } = field;
 
   const getPickupAddress = async () => {
-    var google = await loader.load();
+    
+    const google = await loader.load();
     let autocomplete = new google.maps.places.Autocomplete(
       document.getElementById(id),
       {
@@ -31,11 +31,11 @@ console.log( name)
   }, []);
 
   useEffect(() => {
-    // getPickupLatLng(pickupLat, pickupLng);
+    getPickupLatLng(pickupLat, pickupLng);
     setFieldValue(name, pickupAddress);
   }, [pickupLat, pickupLng]);
 
-  return <input name={name} id={id} {...field} {...props} />;
+  return <input name={name} id={id} {...field} {...props} value={value}/>;
 };
 
 export default PickupAddress;

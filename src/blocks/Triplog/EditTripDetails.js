@@ -1,28 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { Formik, Field } from "formik";
 import { useSelector } from "react-redux";
 import { Button } from "@material-ui/core";
 import moment from "moment";
 import { optSchema } from "./ValidationSchema/TriplogSchema";
-import GoogleMaps from "./CommonTriplog/GoogleMaps";
-import { useRef } from "react";
-import * as TriplogServices from "../../services/TriplogService";
-import GoogleAutoCompletePick from "../Pickers/GoogleAutoCompletePick";
-import GoogleAutoCompleteDrop from "../Pickers/GoogleAutoCompleteDrop";
 
+import * as TriplogServices from "../../services/TriplogService";
+import PickupAddress from "../Pickers/PickupAddress";
+import DropoffAddress from "../Pickers/DropoffAddress";
+import GoogleMaps from "./CommonTriplog/GoogleMaps";
 
 
 const EditTripDetails = (props) => {
   const formikRef = useRef();
-  const [cordinates, setCordinates] = useState({
-    pickup_lat: "",
-    pickup_lng: "",
- 
-  });
-  const [dropcordinates, setDropCordinates] = useState({
-    dropoff_lat: "",
-    dropoff_lng: "",
-  })
+  
   const [device_id, setDeviceId] = useState("");
   const [editable, setEditable] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
@@ -32,7 +23,11 @@ const EditTripDetails = (props) => {
     props.currentBooking.account_setting
   );
   const [tripLog, setTripLog] = useState(props.currentBooking.Triplog);
-
+  
+  const [pickupLat, setPickupLat] = useState(tripLog.pickup_lat);
+  const [pickupLng, setPickupLng] = useState(tripLog.pickup_lng);
+  const [dropoffLat, setDropoffLat] = useState(tripLog.dropoff_lat);
+  const [dropoffLng, setDropoffLng] = useState(tripLog.dropoff_lng);  
 
 
   const { user, userDetails } = useSelector((state) => {
@@ -124,11 +119,11 @@ const EditTripDetails = (props) => {
   }, []);
 
   const EditTrip = async (values) => {
-    console.log("api call", values.pickup_lat,values.pickup_lng,values.dropoff_lng,values.dropoff_lat,values);
+    console.log("api call", values);
     try {
       setSubmitting(true);
 
-      const res = await TriplogServices.sendPushNotification(values);
+      const res = await TriplogServices.editBooking(values);
       if (res && res.status === 200) {
         if (res.data && res.data.status === 1) {
           // onSuccess("Updated");
@@ -142,23 +137,23 @@ const EditTripDetails = (props) => {
       // onError();
     }
   }; 
-const getPickUpLatLng = (lat,lng) =>{
-  console.log(lat,lng)
-  formikRef.current.setFieldValue("pickup_lat",lat)
-  formikRef.current.setFieldValue("pickup_lng",lng)
-setCordinates({...cordinates, pickup_lat: lat,pickup_lng: lng})
+const getPickUpLatLng = (pickupAddressLat, pickupAddressLng) =>{
+  
+  setPickupLat(pickupAddressLat);
+  setPickupLng(pickupAddressLng);
 }
 const getDropoffLatLng = (lat,lng) =>{
-  formikRef.current.setFieldValue("dropoff_lng",lng)
-  formikRef.current.setFieldValue("dropoff_lat",lat)
-setDropCordinates({...dropcordinates,dropoff_lat: lat,dropoff_lng:lng})
+  setDropoffLat(lat);
+  setDropoffLng(lng);
 }
-
-useEffect(() =>{
-
-formikRef.current.setFieldValue("dropoff_lng",dropcordinates.dropoff_lng)
-formikRef.current.setFieldValue("dropoff_lat",dropcordinates.dropoff_lat)
-},[cordinates.dropoff_lng,cordinates.dropoff_lat])
+useEffect(() => {
+  if (formikRef.current) {
+    formikRef.current.setFieldValue("pickup_lat", pickupLat);
+    formikRef.current.setFieldValue("pickup_lng", pickupLng);
+    formikRef.current.setFieldValue("dropoff_lat", dropoffLat);
+    formikRef.current.setFieldValue("dropoff_lng", dropoffLng);
+  }
+}, [pickupLat, pickupLng, dropoffLat, dropoffLng]);
 
   return (
     <React.Fragment>
@@ -202,7 +197,7 @@ formikRef.current.setFieldValue("dropoff_lat",dropcordinates.dropoff_lat)
                               >
                                 {userDetails.FleetDevices &&
                                   userDetails.FleetDevices.map((el) => (
-                                    <option value={el.value}>{el.label}</option>
+                                    <option value={el.value} key={"car_"+el.value}>{el.label}</option>
                                   ))}
                               </select>
                               <Field
@@ -260,11 +255,23 @@ formikRef.current.setFieldValue("dropoff_lat",dropcordinates.dropoff_lat)
                             </div>
 
                             <div className="form-group col-md-6">
-                              <div className="form-group col-md-12">
+                              <div className="form-group col-md-12 position-relative">
                                 <label className="form_lbl">
                                   Pick Up Address:{" "}
                                 </label>
                                 <Field
+                                      component={PickupAddress}
+                                      getPickupLatLng={getPickUpLatLng}
+                                      name="pickup_address"
+                                      id="pickupaddressid"
+                                      placeholder={tripLog.pickup_address}
+                                      autoComplete="off"
+                                      className={`form-control w-100`}
+                                      value={tripLog.pickup_address}
+                                    />
+                                    <Field name="pickup_lat" type="hidden" value={tripLog.pickup_lat}/>
+                                    <Field name="pickup_lng" type="hidden" value={tripLog.pickup_lng}/>
+                                {/*<Field
                                   name="pickup_address"
                                   type="text"
                                   id="pickupaddress"
@@ -276,23 +283,27 @@ formikRef.current.setFieldValue("dropoff_lat",dropcordinates.dropoff_lat)
                                 />
                                 <Field name="pickup_lat" type="hidden" />
                                 <Field name="pickup_lng" type="hidden" />
+                                */}
                               </div>
 
                               <div className="form-group col-md-12">
                                 <label className="form_lbl">
                                   Drop off Address:{" "}
                                 </label>
-
                                 <Field
-                                  name="dropoff_address"
-                                  type="text"
-                                  dropoffaddress={tripLog.dropoff_address}
-                                  getDropoffLatLng={getDropoffLatLng}
-                                  component = {GoogleAutoCompleteDrop}
-                                  className="form-control"
-                                />
-                                <Field name="dropoff_lat" type="hidden" />
-                                <Field name="dropoff_lng" type="hidden" />
+                                      component={DropoffAddress}
+                                      getDropoffLatLng={getDropoffLatLng}
+                                      name="dropoff_address"
+                                      id="dropofaddressid"
+                                      placeholder={tripLog.dropoff_address}
+                                      autoComplete="off"
+                                      className={`form-control`}
+                                      value={tripLog.dropoff_address}
+                                      
+                                    />
+                                
+                                <Field name="dropoff_lat" type="hidden" value={tripLog.dropoff_lat}/>
+                                <Field name="dropoff_lng" type="hidden" value={tripLog.dropoff_lng}/>
                               </div>
 
                               <div className="form-group col-md-12">
@@ -438,7 +449,7 @@ formikRef.current.setFieldValue("dropoff_lat",dropcordinates.dropoff_lat)
                                 >
                                   {accountnos &&
                                     Object.keys(accountnos).map((i) => (
-                                      <option value={i}>{accountnos[i]}</option>
+                                      <option value={i} key={"acc_"+i}>{accountnos[i]}</option>
                                     ))}
                                 </select>
                               </div>
@@ -466,12 +477,13 @@ formikRef.current.setFieldValue("dropoff_lat",dropcordinates.dropoff_lat)
                               </div>
                             </div>
                             <div className="form-group col-md-6">
+                              
                               <GoogleMaps
                                 latlng={{
-                                  pickupLat:  cordinates.pickup_lat === ""?   tripLog.pickup_lat : cordinates.pickup_lat,
-                                  pickupLng: cordinates.pickup_lng === ""?   tripLog.pickup_lng : cordinates.pickup_lng ,
-                                  dropoffLat: dropcordinates.dropoff_lat === ""? tripLog.dropoff_lat : dropcordinates.dropoff_lat ,
-                                  dropoffLng: dropcordinates.dropoff_lng === ""? tripLog.dropoff_lng : dropcordinates.dropoff_lng,
+                                  pickupLat:  pickupLat === ""?   tripLog.pickup_lat : pickupLat,
+                                  pickupLng: pickupLng === ""?   tripLog.pickup_lng : pickupLng ,
+                                  dropoffLat: dropoffLat === ""? tripLog.dropoff_lat : dropoffLat,
+                                  dropoffLng: dropoffLng=== ""? tripLog.dropoff_lng : dropoffLng,
                                 }}
                                 status={props.currentBooking.Triplog.status}
                               />
@@ -485,7 +497,6 @@ formikRef.current.setFieldValue("dropoff_lat",dropcordinates.dropoff_lat)
                                 type="checkbox"
                                 name="sharing_allowed"
                                 checked={values.sharing_allowed ? true : false}
-                                defaultChecked={shareallowed ? true : false}
                                 onChange={(v) =>
                                   setFieldValue(
                                     "sharing_allowed",

@@ -107,7 +107,7 @@ function Page(props) {
               ? "container-fluid text-black"
               : "container-fluid"
           }
-          id={props.page === "triplog" ? "dashboardcs" : null}
+          id={props.page === "triplog" ? "dashboard" : null}
         >
           {getPage()}
         </div>

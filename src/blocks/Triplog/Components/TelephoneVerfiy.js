@@ -2,9 +2,9 @@ import React from "react";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import { useState, useEffect } from "react";
 import { telephoneverifyication } from "../../../services/TriplogService";
-import CallerIdDetails from "../CallerIdDetails";
 
-function TelephoneVerfiy({ getTelenum,reset }) {
+
+function TelephoneVerfiy({ getTelenum,setShowCallerId,setCalleriddetail,reset }) {
   const [num, setNum] = useState("");
   const [data, setData] = useState({});
   const [toogle, setToogle] = useState(false);
@@ -20,8 +20,8 @@ function TelephoneVerfiy({ getTelenum,reset }) {
       console.log(res);
       if (res && res.status === 200) {
         if (res.data && res.data.status === 1) {
-          setDetail({ ...detail, phone_no: res.data.result.phone_no });
-          setToogle(true);
+          setCalleriddetail({ ...detail, phone_no: res.data.result.phone_no });
+          setShowCallerId(true);
           setData(res.data.result);
           return;
         }
@@ -40,7 +40,7 @@ getTelenum(num)
 }
 },[num,reset])
   return (
-    <>
+    <span className="relative">
       <input
         name="telephone"
         placeholder="Telephone"
@@ -58,15 +58,13 @@ getTelenum(num)
           paddingRight: "10px",
           float: "Right",
           display: "block",
-          marginTop: "-40px",
+          marginTop: "-47px",
+          cursor:"pointer"
         }}
       >
         <ManageSearchIcon />
       </span>
-      {toogle && (
-        <CallerIdDetails SetShowCallerId={setToogle} details={detail} />
-      )}
-    </>
+    </span>
   );
 }
 

@@ -23,7 +23,7 @@ const profileReducer = (state = initialState, action) => {
     case GOOGLE_PLACE_API_KEY:
       return {
         ...state,
-        googleplaceapikey: action.data,
+        googleplaceapikey: action.data.googleapikey,
       };
     case REMOVE_ALL_KEYS:
       return {

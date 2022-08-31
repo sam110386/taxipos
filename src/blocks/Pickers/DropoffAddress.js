@@ -5,12 +5,12 @@ import { loader } from '../Triplog/CommonTriplog/GoogleMapAutoComplete';
 
 const DropoffAddress = ({ field, form, id,getDropoffLatLng, ...props }) => {
 
-    const [dropofAddress, setDropofAddress] = useState("");
+    const [dropofAddress, setDropofAddress] = useState(field.value);
     const [dropoffLat, setDropofAddressLat] = useState("");
     const [dropoffLng, setDropofAddressLng] = useState("");
    
     const { setFieldValue } = useFormikContext();
-    const { name  } = field;
+    const { name,value  } = field;
  
 
     const getDropOffAddress = async () => {
@@ -39,6 +39,7 @@ const DropoffAddress = ({ field, form, id,getDropoffLatLng, ...props }) => {
         id={id}
         {...field}
         {...props}
+        value={value}
     />;
 };
 

@@ -6,17 +6,17 @@ export default function GoogleMaps({ latlng, status }) {
   const [activeMarker, setActiveMarker] = useState(null);
   const [state, setState] = useState(null);
   const DirectionsService = new window.google.maps.DirectionsService();
-  console.log(latlng)
+  console.log("latlng.pickupLat",latlng.pickupLat)
   useEffect(() => {
     DirectionsService.route(
       {
         origin: new window.google.maps.LatLng(
-          latlng.pickupLat === "" ? -37.8136 : parseFloat(latlng.pickupLat),
-          latlng.pickupLng === "" ? 144.9631 : parseFloat(latlng.pickupLng)
+          latlng.pickupLat === "" ? 40.776676 : parseFloat(latlng.pickupLat),
+          latlng.pickupLng === "" ? -73.971321 : parseFloat(latlng.pickupLng)
         ),
         destination: new window.google.maps.LatLng(
-          latlng.dropoffLat === "" ? -37.8116 : parseFloat(latlng.dropoffLat),
-          latlng.dropoffLng === "" ? 145.23 : parseFloat(latlng.dropoffLng)
+          latlng.dropoffLat === "" ? 40.776676 : parseFloat(latlng.dropoffLat),
+          latlng.dropoffLng === "" ? -73.971321 : parseFloat(latlng.dropoffLng)
         ),
         travelMode: window.google.maps.TravelMode.DRIVING,
       },

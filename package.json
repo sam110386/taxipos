@@ -39,7 +39,6 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-easy-crop": "^3.5.2",
-    "react-google-autocomplete": "^2.7.0",
     "react-google-maps": "^9.4.5",
     "react-gtm-module": "^2.0.11",
     "react-hot-toast": "^2.0.0",
