@@ -1,6 +1,5 @@
 import API from "../config/DiaAxios";
 import { getHeader } from "./Api";
-import { toast } from "react-hot-toast";
 
 const path = {
   GET_PRE_AUTH_CAR_DETAILS: "getPreAuthVehiclePriceDetail",
@@ -119,45 +118,3 @@ export const reloadTripDetails = async (data)=>{
   }
 }
 
-export const addVehicleToFavourite = async (data) => {
-  try {
-    toast.loading("Adding to favourite");
-    const res = await API.post(
-      path.ADD_VEHICLE_TO_FAVOURITE,
-      data,
-      getHeader()
-    );
-    if (toast) toast.dismiss();
-    if (res && res.status === 200) {
-      if (res.data && res.data.status) {
-        toast.success(res.data.message || "Added successfully !");
-        return;
-      }
-      toast.error(res.data.message || "Failed to add to favourite.");
-    }
-  } catch (err) {
-    if (toast) toast.dismiss();
-    toast.error("Failed to add to favourite.");
-  }
-};
-export const removeVehicleFromFavourite = async (data) => {
-  try {
-    toast.loading("Removing from favourite");
-    const res = await API.post(
-      path.REMOVE_VEHICLE_TO_FAVOURITE,
-      data,
-      getHeader()
-    );
-    if (toast) toast.dismiss();
-    if (res && res.status === 200) {
-      if (res.data && res.data.status) {
-        toast.success(res.data.message || "Removed successfully !");
-        return;
-      }
-      toast.error(res.data.message || "Failed to add to favourite.");
-    }
-  } catch (err) {
-    if (toast) toast.dismiss();
-    toast.error("Failed to add to favourite.");
-  }
-};

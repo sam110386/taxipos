@@ -25,7 +25,6 @@ import {
 } from "../../store/actions/TripAction";
 import { initial_Values } from "./ValidationSchema/TriplogSchema";
 import * as CarService from "../../services/CarService";
-import { FullPageLoader } from "../Loaders";
 import TelephoneVerfiy from "./Components/TelephoneVerfiy";
 import { usePubNub } from "pubnub-react";
 import { useDispatch } from "react-redux";
@@ -76,9 +75,7 @@ const TriplogWrap = (props) => {
 
     var TripId = message.tripid;
     if (message.messageType == "cancelTripWeb") {
-      // $("table#tripLogTable tr#tripRow" + TripId).remove();
-      // return;
-      //store.dispatch(loadTripListDataRemove(res.data.result));
+      
       const tripids = Object.keys(tripList).filter((key, index) => {
         const data = tripList[key].DispatcherTrip.trip_id !== TripId;
         return data;
@@ -92,9 +89,6 @@ const TriplogWrap = (props) => {
       dispatch(loadTripListDataRemove(filteredTrips));
     }
     if (message.status == "3") {
-      // $("table#tripLogTable tr#tripRow" + TripId).remove();
-      // return;
-      //store.dispatch(loadTripListDataRemove(res.data.result));
       const tripids = Object.keys(tripList).filter((key, index) => {
         const data = tripList[key].DispatcherTrip.trip_id !== TripId;
         return data;
@@ -197,64 +191,7 @@ const TriplogWrap = (props) => {
   useEffect(() => {
     formikRef.current.setFieldValue("telephone", mainState.tpnum);
   }, [mainState.tpnum]);
-  // const sendInfoToCar_triplog = async(car_no, device_id, id, status, call_type_line)=> {
-
-  //     var call_type = '';
-  //     if (status === "deactivated") {
-  //         setSelectedOpt('')
-  //         // $("#" + id + "").focus();
-  //         alert("Car # " + car_no + " is Deactivated. Speak to Management.");
-  //         return false;
-  //     }
-  //     if (status === "not_found") {
-  //         setSelectedOpt('')
-  //         // $("#" + id + "").focus();
-  //         alert("Car # " + car_no + " does not exist.");
-  //         return false;
-  //     }
-  //     if (status === "not_booked") {
-  //         setSelectedOpt('')
-  //         // $("#" + id + "").focus();
-  //         alert("Car # " + car_no + " is not booked in.");
-  //         return false;
-  //     }
-  //     if (status === "no_lined_device") {
-  //         setSelectedOpt('')
-  //         // $("#" + id + "").focus();
-  //         alert("No lined device found.");
-  //         return false;
-  //     } else if (status === "lined_device") {
-  //         setSelectedOpt('')
-  //         call_type = call_type_line;
-  //     }
-  //     if (status === "net_activated") {
-  //         setSelectedOpt('')
-  //         // $("#" + id + "").focus();
-  //         call_type = 'NET';
-
-  //     }
-  //     if (status === "auto_activated") {
-  //         setSelectedOpt('')
-  //         // $("#" + id + "").focus();
-  //         call_type = '';
-
-  //     }
-
-  //     var params = { id, device_id, car_no,call_type }
-  //     // $("#" + id + "").removeClass('focused');
-  //     // $("#" + id + "").blur();
-  //     let res = await CarService.carAssignment(params)
-  //     // console.log(res,"myres")
-  //     // $.ajax({
-  //     //     url: SITE_URL + "dispachers/send_push_notification_direct",
-  //     //     type: "post",
-  //     //     data: params,
-  //     //     async: false,
-  //     //     success: function (data) {
-
-  //     //     }
-  //     // });
-  // }
+  
 
   const initialize = () => {
     updateCurrentTime();
@@ -309,10 +246,10 @@ const TriplogWrap = (props) => {
 
           return;
         }
-        onError(res.data.message);
+        //onError(res.data.message);
       }
     } catch (err) {
-      onError();
+      onError(err);
     }
   };
 

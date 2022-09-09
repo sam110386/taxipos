@@ -627,7 +627,6 @@ const TripList = (props) => {
       return "";
     }
   };
-  const onError = () => {};
   const CancelTrip = async (i, tripid) => {
     const confir = window.confirm(
       "Are you sure you want to cancel this booking ?"
@@ -645,11 +644,9 @@ const TripList = (props) => {
             toast.success(res.data.message);
             return;
           }
-          onError(res.data.message);
         }
       } catch (err) {
         setSubmitting(false);
-        onError();
       }
     } else {
       return;

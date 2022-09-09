@@ -12,7 +12,6 @@ const CallerIdInfo = () => {
   // const [currentPhone,setCurrentPhone] = useState(null);
   let ar = [1, 2, 3, 4];
 
-  const onError = () => {};
 
   const LoadCallorInfoTripLog = async () => {
     try {
@@ -23,11 +22,9 @@ const CallerIdInfo = () => {
           setCallerTripInfo(res.data.result.phone_data);
           setLoading(false);
         }
-        onError(res.data.message);
       }
     } catch (err) {
       setLoading(false);
-      onError();
     }
   };
 
@@ -38,10 +35,9 @@ const CallerIdInfo = () => {
         if (res.data && res.data.status === 1) {
           setCallerIdData(res.data.result);
         }
-        onError(res.data.message);
       }
     } catch (err) {
-      onError();
+      console.log(err);
     }
 
     setShowDetails(true);
